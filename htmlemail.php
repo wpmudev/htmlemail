@@ -1,11 +1,11 @@
 <?php
 /*
 Plugin Name: HTML Email Templates
-Plugin URI: http://premium.wpmudev.org/project/html-email-templates
-Description: Allows you to add HTML templates for all of the standard Wordpress emails. Customization:disable password change emails
+Plugin URI: http://premium.wpmudev.org/project/html-email-templates/
+Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates are network wide.
 Author: Aaron Edwards (Incsub)
 Version: 1.0
-Author URI: http://uglyrobot.com
+Author URI: http://incsub.com
 Network: true
 WDP ID: 142
 */
@@ -58,11 +58,6 @@ class HTML_emailer {
 
 	//Class Functions
 	/**
-	* PHP 4 Compatible Constructor
-	*/
-	function HTML_emailer(){$this->__construct();}
-
-	/**
 	* PHP 5 Constructor
 	*/
 	function __construct(){
@@ -77,7 +72,7 @@ class HTML_emailer {
 			$this->plugin_dir = WPMU_PLUGIN_DIR . '/';
 			$this->plugin_url = WPMU_PLUGIN_URL . '/';
 		} else {
-			wp_die(__('There was an issue determining where HTML Email is installed. Please reinstall.', 'psts'));
+			wp_die(__('There was an issue determining where HTML Email is installed. Please reinstall.', $this->localizationDomain));
 		}
 
 		//localize
@@ -90,19 +85,15 @@ class HTML_emailer {
 		//Filters
 		add_filter('wp_mail', array(&$this,'wp_mail'));
 		add_filter('retrieve_password_message', array(&$this,'fix_pass_msg'));
-
-		// Replaces the From Name and Address with custom info
-		add_filter('wp_mail_from', create_function('$old', 'return "contact@wpmudev.org";') );
-		add_filter('wp_mail_from_name', create_function('$old', 'return "WPMU DEV";') );
 	}
 
 	function localization() {
 		// Load up the localization file if we're using WordPress in a different language
-		// Place it in this plugin's "languages" folder and name it "mp-[value in wp-config].mo"
+		// Place it in this plugin's "languages" folder and name it "html_email-[value in wp-config].mo"
 		if ($this->location == 'plugins')
-			load_plugin_textdomain( 'psts', false, '/htmlemail/languages/' );
+			load_plugin_textdomain( $this->localizationDomain, false, '/htmlemail/languages/' );
 		else if ($this->location == 'mu-plugins')
-			load_muplugin_textdomain( 'psts', '/htmlemail/languages/' );
+			load_muplugin_textdomain( $this->localizationDomain, '/htmlemail/languages/' );
 	}
 
 	function wp_mail($args) {
@@ -144,9 +135,9 @@ class HTML_emailer {
 		//If you change this from add_options_page, MAKE SURE you change the filter_plugin_actions function (below) to
 		//reflect the page filename (ie - options-general.php) of the page your plugin is under!
 		if (is_multisite() && is_network_admin())
-			$page = add_submenu_page( 'settings.php', __('HTML Email Template', 'psts'), __('HTML Email Template', 'psts'), 'manage_network_options', 'html-template', array(&$this, 'admin_options_page') );
+			$page = add_submenu_page( 'settings.php', __('HTML Email Template', $this->localizationDomain), __('HTML Email Template', $this->localizationDomain), 'manage_network_options', 'html-template', array(&$this, 'admin_options_page') );
 		else if (!is_multisite())
-			$page = add_submenu_page( 'options-general.php', __('HTML Email Template', 'psts'), __('HTML Email Template', 'psts'), 'manage_options', 'html-template', array(&$this, 'admin_options_page') );
+			$page = add_submenu_page( 'options-general.php', __('HTML Email Template', $this->localizationDomain), __('HTML Email Template', $this->localizationDomain), 'manage_options', 'html-template', array(&$this, 'admin_options_page') );
 
 		add_filter( 'plugin_action_links_' . plugin_basename(__FILE__), array(&$this, 'filter_plugin_actions'), 10, 2 );
 	}
@@ -171,36 +162,36 @@ class HTML_emailer {
 	function admin_options_page() {
 		global $current_user;
 
-		if ($_POST['save_html_email_options']) {
-			if (! wp_verify_nonce($_POST['_wpnonce'], 'html_email-update-options') ) die(__('Whoops! There was a problem with the data you posted. Please go back and try again.',$this->localizationDomain));
+		if (isset($_POST['save_html_email_options'])) {
+			if (! wp_verify_nonce($_POST['_wpnonce'], 'html_email-update-options') ) die(__('Whoops! There was a problem with the data you posted. Please go back and try again.', $this->localizationDomain));
 
 			$template = stripslashes($_POST['template']);
 			update_site_option('html_template', $template);
-			echo '<div class="updated"><p>' . __('Success! Your changes were sucessfully saved!',$this->localizationDomain) . '</p></div>';
+			echo '<div class="updated"><p>' . __('Success! Your changes were sucessfully saved!', $this->localizationDomain) . '</p></div>';
 		}
 
-		if ($_POST['preview_html_email']) {
-			if (! wp_verify_nonce($_POST['_wpnonce'], 'html_email-update-options') ) wp_die(__('Whoops! There was a problem with the data you posted. Please go back and try again.',$this->localizationDomain));
+		if (isset($_POST['preview_html_email'])) {
+			if (! wp_verify_nonce($_POST['_wpnonce'], 'html_email-update-options') ) wp_die(__('Whoops! There was a problem with the data you posted. Please go back and try again.', $this->localizationDomain));
 
 			wp_mail($current_user->user_email, 'Test HTML Email Subject', "This is a test message I want to try out to see if it works\n\nIs it working well?");
-			echo '<div class="updated"><p>' . sprintf(__('Preview email was mailed to %s!',$this->localizationDomain), $current_user->user_email). '</p></div>';
+			echo '<div class="updated"><p>' . sprintf(__('Preview email was mailed to %s!', $this->localizationDomain), $current_user->user_email). '</p></div>';
 		}
 		?>
 		<div class="wrap">
 		<form method="post">
 		<?php wp_nonce_field('html_email-update-options'); ?>
-		<h2><?php _e('HTML Email Template',$this->localizationDomain); ?></h2>
-		<p><?php _e('This plugin will wrap every WordPress email sent within an HTML template.',$this->localizationDomain); ?></p>
+		<h2><?php _e('HTML Email Template', $this->localizationDomain); ?></h2>
+		<p><?php _e('This plugin will wrap every WordPress email sent within an HTML template.', $this->localizationDomain); ?></p>
 		<table class="form-table">
 			<tr valign="top">
-				<th scope="row"><?php _e('HTML Template', 'mp') ?></th>
+				<th scope="row"><?php _e('HTML Template', $this->localizationDomain) ?></th>
 				<td>
 					<textarea name="template" rows="25" style="width: 95%"><?php echo esc_attr(get_site_option('html_template')); ?></textarea><br />
-					<span class="description"><?php _e('Please enter the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message.', 'mp') ?></span>
+					<span class="description"><?php _e('Please enter the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message.', $this->localizationDomain) ?></span>
 				</td>
 			</tr>
 		</table>
-		<p><div class="submit"><input type="submit" name="save_html_email_options" class="button-primary" value="Save &raquo;" />&nbsp;&nbsp;&nbsp;<input type="submit" name="preview_html_email" class="button-primary" value="Preview" /></div>			</p>
+		<p><div class="submit"><input type="submit" name="save_html_email_options" class="button-primary" value="<?php _e('Save', $this->localizationDomain); ?>" />&nbsp;&nbsp;&nbsp;<input type="submit" name="preview_html_email" class="button-secondary" value="<?php _e('Preview &raquo;', $this->localizationDomain); ?>" /></div>			</p>
 		</form>
 		</div>
 		<?php
@@ -210,11 +201,5 @@ class HTML_emailer {
 //instantiate the class
 $html_email_var = new HTML_emailer();
 
-//disable password change emails
-if (!function_exists('wp_password_change_notification')) {
-	function wp_password_change_notification(&$user) {
-		//do nothing here, we are disabling
-		return false;
-	}
-}
+include_once( dirname( __FILE__ ) . '/includes/wpmudev-dash-notification.php' );
 ?>

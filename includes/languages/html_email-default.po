@@ -1,0 +1,75 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: html emails\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2013-03-06 17:40-0600\n"
+"PO-Revision-Date: 2013-03-06 17:40-0600\n"
+"Last-Translator: Aaron Edwards\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-KeywordsList: __;_e;_n;_x\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Poedit-SearchPath-0: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail\n"
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:75
+msgid "There was an issue determining where HTML Email is installed. Please reinstall."
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:138
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:140
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:183
+msgid "HTML Email Template"
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:150
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:152
+msgid "Settings"
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:166
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:174
+msgid "Whoops! There was a problem with the data you posted. Please go back and try again."
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:170
+msgid "Success! Your changes were sucessfully saved!"
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:177
+#, php-format
+msgid "Preview email was mailed to %s!"
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:184
+msgid "This plugin will wrap every WordPress email sent within an HTML template."
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:187
+msgid "HTML Template"
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:190
+msgid "Please enter the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message."
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:194
+msgid "Save"
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:194
+msgid "Preview &raquo;"
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/includes/wpmudev-dash-notification.php:57
+#, php-format
+msgid "Easily get updates, support, and one-click WPMU DEV plugin/theme installations right from in your dashboard - <strong><a href=\"%s\" title=\"Install Now &raquo;\">install the free WPMU DEV Dashboard plugin</a></strong>. &nbsp;&nbsp;&nbsp;<small><a href=\"http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/\">(find out more)</a></small>"
+msgstr ""
+
+#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/includes/wpmudev-dash-notification.php:61
+#, php-format
+msgid "Updates, Support, Premium Plugins, Community - <strong><a href=\"%s\" title=\"Activate Now &raquo;\">activate the WPMU DEV Dashboard plugin now</a></strong>."
+msgstr ""
+
