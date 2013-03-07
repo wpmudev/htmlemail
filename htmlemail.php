@@ -91,9 +91,9 @@ class HTML_emailer {
 		// Load up the localization file if we're using WordPress in a different language
 		// Place it in this plugin's "languages" folder and name it "html_email-[value in wp-config].mo"
 		if ($this->location == 'plugins')
-			load_plugin_textdomain( $this->localizationDomain, false, '/htmlemail/languages/' );
+			load_plugin_textdomain( $this->localizationDomain, false, '/htmlemail/includes/languages/' );
 		else if ($this->location == 'mu-plugins')
-			load_muplugin_textdomain( $this->localizationDomain, '/htmlemail/languages/' );
+			load_muplugin_textdomain( $this->localizationDomain, '/htmlemail/includes/languages/' );
 	}
 
 	function wp_mail($args) {

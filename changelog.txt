@@ -1,0 +1,11 @@
+Plugin Name: HTML Email Templates
+Author: Aaron Edwards (incsub)
+http://premium.wpmudev.org/project/html-email-templates/
+
+Change Log:
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+
+1.0 - 3/6/2013
+----------------------------------------------------------------------
+- Initial release
