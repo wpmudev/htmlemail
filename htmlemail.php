@@ -80,6 +80,7 @@ class HTML_emailer {
 
 		//Actions
 		add_action('admin_menu', array(&$this,'admin_menu_link'));
+		add_action('network_admin_menu', array(&$this,'admin_menu_link'));
 		add_action('phpmailer_init', array(&$this,'convert_plain_text'));
 
 		//Filters
@@ -134,7 +135,7 @@ class HTML_emailer {
 	function admin_menu_link() {
 		//If you change this from add_options_page, MAKE SURE you change the filter_plugin_actions function (below) to
 		//reflect the page filename (ie - options-general.php) of the page your plugin is under!
-		if (is_multisite() && is_network_admin())
+		if (is_multisite())
 			$page = add_submenu_page( 'settings.php', __('HTML Email Template', $this->localizationDomain), __('HTML Email Template', $this->localizationDomain), 'manage_network_options', 'html-template', array(&$this, 'admin_options_page') );
 		else if (!is_multisite())
 			$page = add_submenu_page( 'options-general.php', __('HTML Email Template', $this->localizationDomain), __('HTML Email Template', $this->localizationDomain), 'manage_options', 'html-template', array(&$this, 'admin_options_page') );
