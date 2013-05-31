@@ -202,5 +202,5 @@ class HTML_emailer {
 //instantiate the class
 $html_email_var = new HTML_emailer();
 
-include_once( dirname( __FILE__ ) . '/includes/wpmudev-dash-notification.php' );
+include_once( dirname( __FILE__ ) . '/includes/dash-notice/wpmudev-dash-notification.php' );
 ?>
