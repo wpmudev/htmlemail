@@ -202,5 +202,6 @@ class HTML_emailer {
 //instantiate the class
 $html_email_var = new HTML_emailer();
 
+global $wpmudev_notices;
+$wpmudev_notices[] = array( 'id'=> 142,'name'=> 'HTML Email Templates', 'screens' => array( 'settings_page_html-template', 'settings_page_html-template-network' ) );
 include_once( dirname( __FILE__ ) . '/includes/dash-notice/wpmudev-dash-notification.php' );
-?>
