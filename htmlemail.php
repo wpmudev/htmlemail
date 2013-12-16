@@ -103,7 +103,11 @@ class HTML_emailer {
 		$reply_to = '';
 
 		//Set the content type header, charset, and reply to headers
-		$headers = "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
+		if ( is_array($headers) ) {
+			$headers[] = "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
+		} else {
+			$headers = "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
+		}
 
 		$this->plain_text_message = $message;
 
