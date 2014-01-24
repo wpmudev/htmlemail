@@ -3,15 +3,17 @@
 Plugin Name: HTML Email Templates
 Plugin URI: http://premium.wpmudev.org/project/html-email-templates/
 Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates are network wide.
-Author: Aaron Edwards (Incsub)
+Author: WPMU DEV
 Version: 1.0
-Author URI: http://incsub.com
+Author URI: http://premium.wpmudev.org/
 Network: true
 WDP ID: 142
 */
 
 /*
-Copyright 2010-2013 Incsub
+Copyright 2010-2014 Incsub
+Author - Aaron Edwards
+Contributors - Barry Getty
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
