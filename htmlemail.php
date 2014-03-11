@@ -2,9 +2,9 @@
 /*
 Plugin Name: HTML Email Templates
 Plugin URI: http://premium.wpmudev.org/project/html-email-templates/
-Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates are network wide.
+Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates are set network wide.
 Author: WPMU DEV
-Version: 1.0
+Version: 1.1
 Author URI: http://premium.wpmudev.org/
 Network: true
 WDP ID: 142
@@ -106,9 +106,9 @@ class HTML_emailer {
 
 		//Set the content type header, charset, and reply to headers
 		if ( is_array($headers) ) {
-			$headers[] = "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
+			$headers[] = 'Content-Type: text/html; charset="' . get_option('blog_charset') . '"';
 		} else {
-			$headers = "Content-Type: text/html; charset=\"" . get_option('blog_charset') . "\"\n";
+			$headers .= 'Content-Type: text/html; charset="' . get_option('blog_charset') . "\"\n";
 		}
 
 		$this->plain_text_message = $message;
