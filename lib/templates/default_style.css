@@ -1,0 +1,17 @@
+html { background: white; }
+h1, h2, h3, h4, h5, h6 {padding: 0;margin:0; line-height: 100%;}
+a:link, a, a:visited, a:link {color:#LINK_COLOR;}
+p {margin: 0 0 1.35em 0;}
+h1, h2, h3, h4, h5, h6 {margin:0.5em 0 0.5em 0;}
+h1 {font-size: 2em;} h2 {font-size: 1.5em;} h3 {font-size: 1.17em;} h4 {font-size: 1em;} h5 {font-size: 0.83em;} h6 {font-size: 0.67em;}
+img { max-width: 95%; height: auto; }
+.header_image img {max-width: 100%;}
+.alignleft { display: inline; float: left;}
+.alignright { display: inline; float: right;}
+.aligncenter { clear: both; display: block; margin-left: auto; margin-right: auto; }
+img.alignleft, img.alignright, img.alignnone { margin: 7px; }
+
+.width {width:100%;}
+.container, .content {min-width:100%;}
+.title {color: #TITLE_COLOR;}
+.text_right {text-align: right;}

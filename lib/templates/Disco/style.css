@@ -1,0 +1,77 @@
+/*
+Theme Name: Disco
+Theme URI: http://premium.wpmudev.org
+Author: Cole (Incsub), Maniu(Incsub)
+Author URI: http://premium.wpmudev.org
+Description: Responsive theme with: max width 500px, max content width 449px, header image support
+Version: 1.5
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+*/
+body, .body_style, h1, h2, h3, h4, h5, h6, td {
+	font-family:Arial, Helvetica, sans-serif;
+}
+body, .body_style {
+	font-size:12px;
+	color:#ALTERNATIVE_COLOR;
+}
+body, .body_style {
+	background-color:#BG_COLOR;
+}
+table {
+    width: 100%;
+}
+
+.holder {
+	padding:1.5%;
+}
+.width {
+	max-width:500px;
+}
+.content_main {
+	background-color: #181818;
+	border: 1px solid #303030;
+}
+
+
+.title {
+	font-size: 40px;
+	line-height: 40px;
+	margin:0px;
+	padding:15px 0;
+	font-weight: bold;
+}
+.header_image {
+	text-align: center;
+}
+.header_image img {
+	vertical-align: bottom;
+	max-width: 100%;
+	height: auto;
+}
+.email_content, .email_content table, .contact_info, .email_content h1, .email_content h2, .email_content h3, .email_content h4, .email_content h5, .email_content h6 {
+	color: #BODY_COLOR;
+}
+.email_content {
+	padding:5px 25px;
+}
+.contact_info {
+	padding:0 25px 25px 25px;
+}
+.from {
+	padding:25px 25px 10px;
+	font-weight: bold;
+	font-size: 18px;
+}
+p {
+	font-size:12px;
+	line-height:22px;
+}
+.view_link a {
+	line-height: 25px;
+}
+.site-link {
+	padding: 10px;
+	text-align: center;
+	font-size: 11px;
+}

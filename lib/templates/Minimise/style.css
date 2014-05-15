@@ -1,0 +1,87 @@
+/*
+Theme Name: Minimise
+Theme URI: http://premium.wpmudev.org
+Author: Cole (Incsub), Maniu (Incsub)
+Author URI: http://premium.wpmudev.org
+Description: Responsive theme with: max width 700px, max content width 628px
+Version: 1.5
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+*/
+
+body, .body_style, h1, h2, h3, h4, h5, h6, td {
+	font-family:Georgia, Arial, Sans-serif;
+}
+body, .body_style {
+	font-size:12px;
+	color:#ALTERNATIVE_COLOR;
+}
+.body_style {
+	background-color:#BG_COLOR;
+}
+
+
+.holder {
+	padding:2.5%;
+}
+.width {
+	max-width:700px;
+}
+.content_main {
+	background-color:#ffffff;
+	border:1px solid #cccccc;
+}
+
+
+.from, .branding_html {
+	font-size:14px;
+	padding:15px 5% 10px;
+}
+.title {
+	font-size: 50px;
+	line-height: 60px;
+	margin:0px;
+	padding:0px 5%;
+	font-weight: bold;
+	text-shadow: -1px -1px 0px #000000;
+	color: #TITLE_COLOR;
+}
+.separator_holder {
+	padding:15px 5%;
+}
+.separator {
+	width:630px;
+	max-width: 100%;
+	border-bottom:1px solid #cccccc;
+}
+.email_content, .email_content table, .email_content h1, .email_content h2, .email_content h3, .email_content h4, .email_content h5, .email_content h6 {
+	color: #BODY_COLOR;
+}
+.email_content, .contact_info {
+	padding:5px 35px;
+}
+p {
+	font-size:12px;
+	line-height:22px;
+}
+.contact_info {
+	font-family: monospace;
+	padding: 0 5% 35px;
+}
+.view_link {
+	text-align: center;
+}
+.view_link a {
+	line-height: 25px;
+}
+
+
+.content_site-link {
+	width: 100%;
+	text-align: center;
+	text-transform: uppercase;
+	font-weight:bold;
+}
+.site-link {
+	padding-top:20px;
+}
