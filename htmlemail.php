@@ -132,6 +132,7 @@ class HTML_emailer {
                 add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts') );
                 //Return template data
                 add_action('wp_ajax_htmlemail_get_template_data', array($this, 'htmlemail_template_data') );
+                add_action('wp_ajax_get_preview_data', array($this, 'get_preview_data') );
 	}
 
 	function localization() {
@@ -159,11 +160,19 @@ class HTML_emailer {
 
 		//Force WP to add <p> tags to the message content
 		$message = wpautop($message);
-		$message = str_replace('MESSAGE', $message, get_site_option('html_template'));
+
+		$message = preg_replace( "/(MESSAGE)/i", $message, get_site_option('html_template') );
+
+                $message = $this->replace_placeholders($message, $demo_message = false );
 //                Replace date and Time
                 $message = str_replace('%date%', date_i18n(get_option('date_format')), $message );
                 $message = str_replace('%time%', date_i18n(get_option('time_format')) , $message );
 
+                //Replace User name
+                $user = get_user_by('email', $to );
+                if( $user ){
+                   $message = preg_replace( '~\{USER_NAME}~', $user->display_name, $message);
+                }
 		//Compact & return all the vars
 		return compact( 'to', 'subject', 'message', 'headers', 'attachments' );
 	}
@@ -391,46 +400,35 @@ class HTML_emailer {
                     $contents_parts['footer'] = $contents_parts['footer'].$body_footer.'
                         </html>';
                 }
-                //adds content header tag if missing on top
-                if(strpos($contents_parts['header'].$contents_parts['content'],'{CONTENT_HEADER}') === false) {
-                    if(strpos($contents_parts['content'],'<body') !== false)
-                        $has_body = 'content';
-                    elseif(strpos($contents_parts['header'],'<body') !== false)
-                        $has_body = 'header';
-                    else
-                        $has_body = '';
+            //Merge header, content and footer
+            $content = $contents_parts['header'].$contents_parts['content'].$contents_parts['footer'];
 
-                    if($has_body) {
-                        $start = stripos($contents_parts[$has_body], '<body');
-                        $end = stripos($contents_parts[$has_body], '>', $start);
-                        $contents_parts[$has_body] = substr_replace($contents_parts[$has_body], "{CONTENT_HEADER}", $end+1, 0);
-                    }
-                }
-                //adds content footer tag if missing on bottom
-                if(strpos($contents_parts['content'].$contents_parts['footer'],'{CONTENT_FOOTER}') === false) {
-                    if(strpos($contents_parts['content'],'</body>') !== false)
-                        $has_body = 'content';
-                    elseif(strpos($contents_parts['footer'],'</body>') !== false)
-                        $has_body = 'footer';
-                    else
-                        $has_body = '';
+            //Replace BLOG_URL with actual URL as DOM compatibility escapes img src
+            $content = preg_replace( "/{BLOG_URL}/i", network_site_url(), $content );
 
-                    if($has_body)
-                        $contents_parts[$has_body] = str_replace( "</body>", "{CONTENT_FOOTER}{FOOTER}</body>", $contents_parts[$has_body]);
-                }
-            //Replace placeholders
-            $content = $this->replace_placeholders( $contents_parts['header'].$contents_parts['content'].$contents_parts['footer'] );
+            //Do the inline styling
             $content = $this->do_inline_styles( $content, $contents_parts['default_style'] . $contents_parts['style']. $contents_parts['style_header'] );
+
+            //Check for DOM compatibilty from E-Newsletter
             $content = $this->dom_compatibility($content);
-            $possible_settings = array('BG_COLOR', 'BG_IMAGE', 'HEADER_IMAGE', 'LINK_COLOR', 'BODY_COLOR', 'ALTERNATIVE_COLOR', 'TITLE_COLOR', 'EMAIL_TITLE' );
+
+            //Replace CSS Variabls
+            $possible_settings = array('BG_COLOR', 'BG_IMAGE', 'LINK_COLOR', 'BODY_COLOR', 'ALTERNATIVE_COLOR', 'TITLE_COLOR', 'EMAIL_TITLE' );
             foreach ( $possible_settings as $possible_setting ) {
                 if(defined('BUILDER_DEFAULT_'.$possible_setting)){
                     $this->settings[] = $possible_setting;
                 }
             }
+
             foreach( $this->settings as $setting ){
                 if( defined( 'BUILDER_DEFAULT_' . $setting ) ){
-                    $value = constant( 'BUILDER_DEFAULT_' . $setting );
+                    if( $setting == 'BG_IMAGE'){
+                        //full path for image
+                        $value =  defined( constant( 'BUILDER_DEFAULT_' . $setting ) ) ? $this->theme_url . constant( 'BUILDER_DEFAULT_' . $setting ) : '';
+
+                    }else{
+                        $value = constant( 'BUILDER_DEFAULT_' . $setting );
+                    }
                 }
                 if( stripos( $setting, 'color') ){
                     $value = preg_replace('/[^A-Za-z0-9\-]/', '', $value);
@@ -523,81 +521,49 @@ class HTML_emailer {
        /**
         * Replaces placeholder text in email templates
         */
-       function replace_placeholders( $content ){
-            $placeholders = array(
-               'CONTENT_HEADER',
-               'CONTENT_FOOTER',
-               'FOOTER',
-               'CONTACT_INFO',
-               'FROM_NAME',
-               'FROM_EMAIL',
-               'BLOG_URL',
-               'BLOG_NAME',
-               'EMAIL_TITLE',
-               'ADMIN_EMAIL',
-               'BG_IMAGE',
-               'HEADER_IMAGE',
-               'BRANDING_HTML'
-            );
-            $user_info = get_userdata(  get_current_user_id() );
-            $timezone = get_option('timezone_string');
-            // set the default timezone to use. Available since PHP 5.1
-            date_default_timezone_set($timezone);
-            foreach( $placeholders as $placeholder ){
-                switch ($placeholder) {
-                    case 'FROM_NAME':
-                        //Current User public name
-                        $content = str_replace( '{' . $placeholder . '}', $user_info->display_name, $content );
-                        break;
-                    case 'FROM_EMAIL':
-                        //Current User public name
-                        $from_email = '<a href="mailto:' . $user_info->user_email . '">' . $user_info->user_email . '</a>';
-                        $content = str_replace( '{' . $placeholder . '}', $from_email, $content );
-                        break;
-                    case 'CONTACT_INFO':
-                        $contact = '<div style="padding-top:15px; padding-bottom:1px;"><img height="13" width="13" style="vertical-align: middle;" src="{BLOG_URL}/wp-admin/images/date-button.gif" alt="Datum"  /> Email sent %date% @ %time%</div>
-                            <div style="color:inherit"><img height="12" width="12" style="vertical-align: middle;" src="{BLOG_URL}/wp-admin/images/comment-grey-bubble.png" alt="Contact"  /> For any requests, please contact <a href="mailto:{ADMIN_EMAIL}">{ADMIN_EMAIL}</a></div>';
-                        $content = str_replace( '{' . $placeholder . '}', $contact, $content );
-                        break;
-                    case 'EMAIL_TITLE':
-                        //Current User public name
-                        $content = str_replace( '{' . $placeholder . '}', get_bloginfo('name'), $content );
-                        break;
-                    case 'ADMIN_EMAIL':
-                        //ADMIN EMAIL
-                        $content = str_replace( '{' . $placeholder . '}', get_option( 'admin_email' ), $content );
-                        break;
-                    case 'BLOG_URL':
-                        //Current User public name
-                        $content = str_replace( '{' . $placeholder . '}', network_site_url(), $content );
-                        break;
-                    case 'BLOG_NAME':
-                        //Current User public name
-                        $content = str_replace( '{' . $placeholder . '}', get_bloginfo('name'), $content );
-                        break;
-                    case 'BG_IMAGE':
-                        //Background Image
-                        $content = str_replace( '{' . $placeholder . '}', $this->theme_url . '/' . constant('BUILDER_DEFAULT_BG_IMAGE'), $content );
-                        break;
-                    case 'HEADER_IMAGE':
-                        $header_image = defined();constant('BUILDER_DEFAULT_HEADER_IMAGE') ? '<img src="'. $this->theme_url . '/' . constant('BUILDER_DEFAULT_HEADER_IMAGE') . '" />': '';
-                        //Header Image
-                        $content = str_replace( '{' . $placeholder . '}', $header_image, $content );
-                        break;
-                    case 'FOOTER':
-                    case 'CONTENT_FOOTER':
-                    case 'CONTENT_HEADER':
-                        //Header Image
-                        $content = str_replace( '{' . $placeholder . '}', '', $content );
-                        break;
-                    case 'BRANDING_HTML':
-                        //Header Image
-                        $content = str_replace( '{' . $placeholder . '}', get_bloginfo('description'), $content );
-                        break;
-                }
-            }
-           return $content;
-       }
+       function replace_placeholders( $content, $demo_message = true ){
+
+         $placeholders = '';
+         preg_match_all( "/\{.+\}/U", $content, $placeholders );
+         $placeholders = $placeholders[0];
+         $blog_url = network_site_url();
+         $admin_email = get_option( 'admin_email' );
+
+         $message = "This is a test message I want to try out to see if it works. This will be replaced with wordpress email content.
+             Is it working well?";
+
+         $user_info = get_userdata( get_current_user_id() );
+
+         $bg_image = defined( 'BUILDER_DEFAULT_BG_IMAGE' ) ? $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_BG_IMAGE' ) : '';
+         $header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" />' : '';
+
+         $placeholders_list = array(
+             '{}'   =>  '',
+             '{CONTENT_HEADER}' => '',
+             '{CONTENT_FOOTER}' => '',
+             '{FOOTER}' => '',
+             '{FROM_NAME}' => $user_info->display_name,
+             '{FROM_EMAIL}' => $user_info->user_email,
+             '{BLOG_URL}' => $blog_url,
+             '{BLOG_NAME}' => get_bloginfo( 'name' ),
+             '{EMAIL_TITLE}' => get_bloginfo( 'name' ),
+             '{ADMIN_EMAIL}' => $admin_email,
+             '{BG_IMAGE}' => $bg_image,
+             '{HEADER_IMAGE}' => $header_image,
+             '{BRANDING_HTML}' => get_bloginfo( 'description' )
+         );
+         foreach ( $placeholders as $placeholder ) {
+             if ( !isset( $placeholders_list [$placeholder] ) ) {
+                 continue;
+             }
+             $content = preg_replace( "/($placeholder)/i", $placeholders_list[$placeholder], $content );
+         }
+         //Show for preview only
+         if( $demo_message ){
+             $content = preg_replace( "/(MESSAGE)/i", $message, $content );
+         }
+         return $content;
+     }
        /**
         * Checks if on setting page for HTML Email Template
         * @global type $html_template
@@ -610,6 +576,18 @@ class HTML_emailer {
                 return false;
             }
             return true;
+       }
+       /**
+        * Returns data for preview
+        */
+       function get_preview_data(){
+           if( empty($_POST) ) {
+               wp_send_json_error('no data');
+           }
+           $content = $_POST['content'];
+           $content = stripslashes($content);
+           $content = $this->replace_placeholders($content);
+           wp_send_json_success($content);
        }
 
 } //End Class
