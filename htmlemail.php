@@ -160,9 +160,6 @@ class HTML_emailer {
 		//Force WP to add <p> tags to the message content
 		$message = wpautop($message);
 		$message = str_replace('MESSAGE', $message, get_site_option('html_template'));
-                $timezone = get_option('timezone_string');
-                // set the default timezone to use. Available since PHP 5.1
-                date_default_timezone_set($timezone);
 //                Replace date and Time
                 $message = str_replace('%date%', date_i18n(get_option('date_format')), $message );
                 $message = str_replace('%time%', date_i18n(get_option('time_format')) , $message );
@@ -263,7 +260,7 @@ class HTML_emailer {
                 </div>
                 <div class="template-content-holder">
                     <span class="description"><?php _e('Edit the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message.', $this->localizationDomain) ?></span>
-                    <textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_attr(get_site_option('html_template')); ?></textarea><br />                    
+                    <textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_attr(get_site_option('html_template')); ?></textarea><br />
                 </div>
 		</form>
 		</div>
