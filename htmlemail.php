@@ -263,7 +263,7 @@ class HTML_emailer {
                     </div><?php
                 } ?>
                 <div class="submit">
-                    <a name="preview_template" id="preview_template" class="button button-secondary" href="<?php echo plugins_url('preview.html?keepThis=true&TB_iframe=true&height=400&width=700', __FILE__); ?>" title="Live Preview"><?php _e('Preview', $this->localizationDomain); ?></a>
+                    <a name="preview_template" id="preview_template" class="button button-secondary" href="<?php echo plugins_url('preview.html?TB_iframe=true&height=500&width=700', __FILE__); ?>" title="Live Preview"><?php _e('Preview', $this->localizationDomain); ?></a>
                     <input type="submit" name="preview_html_email" class="button-secondary" value="<?php _e('Test Email', $this->localizationDomain); ?>" />
                     <input type="submit" name="save_html_email_options" class="button-primary" value="<?php _e('Save', $this->localizationDomain); ?>" />
                 </div>
@@ -523,9 +523,15 @@ class HTML_emailer {
         */
        function replace_placeholders( $content, $demo_message = true ){
 
-         $placeholders = '';
+         $placeholders = $links = '';
          preg_match_all( "/\{.+\}/U", $content, $placeholders );
-         $placeholders = $placeholders[0];
+         //Jugaad, need to find a fix for this
+         preg_match_all( "/\%7B.+\%7D/U", $content, $links );
+
+         $placeholders = !empty( $placeholders ) ? $placeholders[0] : '';
+         $links = !empty( $links ) ? $links[0] : '';
+         $placeholders = array_merge( $placeholders, $links );
+
          $blog_url = network_site_url();
          $admin_email = get_option( 'admin_email' );
 
@@ -538,12 +544,25 @@ class HTML_emailer {
          $header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" />' : '';
 
          //Sidebar
-         $sidebar = $this->htmlemail_template_sidebar();
-         $sidebar = apply_filters ('htmlemail_template_sidebar', $sidebar['markup'], $sidebar['post_list'] );
+         $posts_list = $this->htmlemail_recent_posts();
+         $posts_list = apply_filters( 'htmlemail_sidebar_posts', $posts_list );
+         $sidebar_title = apply_filters ('htmlemail_sidebar_title', "What's new" );
 
+         //Placeholder for posts
+         $count = 1;
+         $placeholder_posts = array();
+         foreach ( $posts_list as $post ){
+             if( $count > 4 ){
+                 break;
+             }
+             $placeholder_posts["{POST_$count}"] = $this->short_str ( $post['post_title'], '...', 10 );
+             //Jugaad, to keep the template styling and links
+             $placeholder_posts["%7BPOST_". $count. "_LINK%7D"] = esc_url( get_permalink($post['ID']) );
+             $count++;
+         }
          $placeholders_list = array(
              '{}'   =>  '',
-             '{SIDEBAR}'   =>  $sidebar,
+             '{SIDEBAR_TITLE}'   =>  $sidebar_title,
              '{CONTENT_HEADER}' => '',
              '{CONTENT_FOOTER}' => '',
              '{FOOTER}' => '',
@@ -557,6 +576,7 @@ class HTML_emailer {
              '{HEADER_IMAGE}' => $header_image,
              '{BRANDING_HTML}' => get_bloginfo( 'description' ),
          );
+         $placeholders_list = $placeholders_list + $placeholder_posts;
          foreach ( $placeholders as $placeholder ) {
              if ( !isset( $placeholders_list [$placeholder] ) ) {
                  continue;
@@ -616,28 +636,14 @@ class HTML_emailer {
             return $str;
         }
        /**
-        * Generates content of sidebar for email template
+        * Returns an array for recent posts
         * @return boolean
         */
-       function htmlemail_template_sidebar(){
+       function htmlemail_recent_posts(){
            //Recent Posts with their links
             $args = array( 'numberposts' => '4' );
             $recent_posts = wp_get_recent_posts( $args );
-            if( empty( $recent_posts) ){
-                return false;
-            }else{
-                $posts_list = '<h3 style="margin-top:14px;">Recent Posts</h3>'
-                        . '<ul class="sidebar">';
-                $count = 0;
-                foreach( $recent_posts as $post ){
-                    $count++;
-                    $class = $count == 4 ? 'class="last"' : '';
-                    $title = $this->short_str ( $post["post_title"], '..', 10 );
-                    $posts_list .= '<li><a '. $class .' href="' . get_permalink($post["ID"]) . '" title="Look '.esc_attr( $title ).'" >' .   $title . '</a></li>';
-                }
-                $posts_list .= '</ul>';
-        }
-        return array('markup'   =>  $posts_list, 'post_list' => $recent_posts );
+            return $recent_posts;
     }
 
 } //End Class
