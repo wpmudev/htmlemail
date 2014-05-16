@@ -172,6 +172,8 @@ class HTML_emailer {
                 $user = get_user_by('email', $to );
                 if( $user ){
                    $message = preg_replace( '~\{USER_NAME}~', $user->display_name, $message);
+                }else{
+                    $message = preg_replace( '~\{USER_NAME}~', '', $message);
                 }
 		//Compact & return all the vars
 		return compact( 'to', 'subject', 'message', 'headers', 'attachments' );
@@ -538,7 +540,13 @@ class HTML_emailer {
          $message = "This is a test message I want to try out to see if it works. This will be replaced with wordpress email content.
              Is it working well?";
 
-         $user_info = get_userdata( get_current_user_id() );
+         $from_email = get_site_option('admin_email');
+         $user_info = get_userdata( $from_email );
+         if( $user_info ){
+             $display_name = $user_info->display_name;
+         }else{
+             $display_name = '';
+         }
 
          $bg_image = defined( 'BUILDER_DEFAULT_BG_IMAGE' ) ? $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_BG_IMAGE' ) : '';
          $header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" />' : '';
@@ -566,8 +574,8 @@ class HTML_emailer {
              '{CONTENT_HEADER}' => '',
              '{CONTENT_FOOTER}' => '',
              '{FOOTER}' => '',
-             '{FROM_NAME}' => $user_info->display_name,
-             '{FROM_EMAIL}' => $user_info->user_email,
+             '{FROM_NAME}' => $display_name,
+             '{FROM_EMAIL}' => $from_email,
              '{BLOG_URL}' => $blog_url,
              '{BLOG_NAME}' => get_bloginfo( 'name' ),
              '{EMAIL_TITLE}' => get_bloginfo( 'name' ),
