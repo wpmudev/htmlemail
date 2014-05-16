@@ -537,8 +537,13 @@ class HTML_emailer {
          $bg_image = defined( 'BUILDER_DEFAULT_BG_IMAGE' ) ? $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_BG_IMAGE' ) : '';
          $header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" />' : '';
 
+         //Sidebar
+         $sidebar = $this->htmlemail_template_sidebar();
+         $sidebar = apply_filters ('htmlemail_template_sidebar', $sidebar['markup'], $sidebar['post_list'] );
+
          $placeholders_list = array(
              '{}'   =>  '',
+             '{SIDEBAR}'   =>  $sidebar,
              '{CONTENT_HEADER}' => '',
              '{CONTENT_FOOTER}' => '',
              '{FOOTER}' => '',
@@ -550,7 +555,7 @@ class HTML_emailer {
              '{ADMIN_EMAIL}' => $admin_email,
              '{BG_IMAGE}' => $bg_image,
              '{HEADER_IMAGE}' => $header_image,
-             '{BRANDING_HTML}' => get_bloginfo( 'description' )
+             '{BRANDING_HTML}' => get_bloginfo( 'description' ),
          );
          foreach ( $placeholders as $placeholder ) {
              if ( !isset( $placeholders_list [$placeholder] ) ) {
@@ -589,6 +594,51 @@ class HTML_emailer {
            $content = $this->replace_placeholders($content);
            wp_send_json_success($content);
        }
+       /**
+        * Shortens string
+        * @param type $after
+        * @param type $length
+        * @return type
+        */
+       function short_str($str, $after = '', $length) {
+            if( empty($str) ){
+                $str = explode(' ', get_the_title(), $length);
+            }else{
+                $str = explode( ' ', $str, $length );
+            }
+            
+            if (count($str)>=$length) {
+                    array_pop($str);
+                    $str = implode(" ",$str). $after;
+            } else {
+                    $str = implode(" ",$str);
+            }
+            return $str;
+        }
+       /**
+        * Generates content of sidebar for email template
+        * @return boolean
+        */
+       function htmlemail_template_sidebar(){
+           //Recent Posts with their links
+            $args = array( 'numberposts' => '4' );
+            $recent_posts = wp_get_recent_posts( $args );
+            if( empty( $recent_posts) ){
+                return false;
+            }else{
+                $posts_list = '<h3 style="margin-top:14px;">Recent Posts</h3>'
+                        . '<ul class="sidebar">';
+                $count = 0;
+                foreach( $recent_posts as $post ){
+                    $count++;
+                    $class = $count == 4 ? 'class="last"' : '';
+                    $title = $this->short_str ( $post["post_title"], '..', 10 );
+                    $posts_list .= '<li><a '. $class .' href="' . get_permalink($post["ID"]) . '" title="Look '.esc_attr( $title ).'" >' .   $title . '</a></li>';
+                }
+                $posts_list .= '</ul>';
+        }
+        return array('markup'   =>  $posts_list, 'post_list' => $recent_posts );
+    }
 
 } //End Class
 //instantiate the class
