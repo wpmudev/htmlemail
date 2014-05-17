@@ -1,0 +1,28 @@
+/* 
+    Created on : 14 May, 2014, 4:08:11 PM
+    Author     : umesh
+*/
+.email-templates-wrapper{
+    padding: 0 30px; 
+}
+.template-holder img.theme-preview {
+     max-width: 215px;
+}
+.template-holder a{
+    font-size: medium; line-height: 1.5; 
+}
+.template-holder a img {
+    border: 2px solid transparent;
+}
+.template-holder .active-theme img {
+    border: 2px solid #007a42;
+}
+.slick-prev:before, .slick-next:before {
+    color: #0074a2;
+}
+.slick-list {
+    margin-left: 8px;
+}
+.template-holder.slick-slide a:focus, .template-holder.slick-slide a:active {
+    outline: 0;
+}

@@ -1,0 +1,66 @@
+/*
+Theme Name: iLetter
+Theme URI: http://premium.wpmudev.org
+Author: Cole (Incsub)
+Author URI: http://premium.wpmudev.org
+Description: Responsive theme with: max width 640px, max content width 600px, header image support
+Version: 1.5
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+*/
+body, .body_style, h1, h2, h3, h4, h5, h6, td {
+	font-family:Arial, Helvetica, sans-serif;
+}
+body, .body_style {
+	font-size:12px;
+	color:#ALTERNATIVE_COLOR;
+}
+.body_style {
+	background-color:#BG_COLOR;
+}
+
+
+.holder {
+	padding:1.5%;
+}
+.width {
+	max-width:640px;
+}
+.content_main {
+	background-color:#ffffff;
+	border-radius: 10px;
+}
+
+
+.title {
+	font-size: 29px;
+	line-height: 29px;
+	margin:0px;
+	padding:15px 20px 15px 20px;
+	font-weight: bold;
+}
+.email_content, .email_content table, .contact_info, .email_content h1, .email_content h2, .email_content h3, .email_content h4, .email_content h5, .email_content h6 {
+	color: #BODY_COLOR;
+}
+.email_content, .contact_info {
+	padding:5px 20px;
+}
+p {
+	font-size:12px;
+	line-height:22px;
+}
+.view_link {
+	text-align: center;
+}
+.view_link a {
+	line-height: 25px;
+}
+.site-link {
+	padding: 10px;
+	text-align: center;
+	font-size: 11px;
+}
+.branding_html {
+    margin:0px;
+    padding:15px 20px 15px 20px;
+}

@@ -1,0 +1,71 @@
+/*
+Theme Name: Promy
+Theme URI: http://premium.wpmudev.org
+Author: Cole (Incsub)
+Author URI: http://premium.wpmudev.org
+Description: Responsive theme with: max width 600px, max content width 560px, header image support
+Version: 1
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+*/
+body, .body_style, h1, h2, h3, h4, h5, h6, td {
+	font-family:Arial, Helvetica, sans-serif;
+}
+body, .body_style {
+	font-size:12px;
+	color:#ALTERNATIVE_COLOR;
+}
+.body_style {
+	background-color:#BG_COLOR;
+}
+
+
+.holder {
+	padding:1.5%;
+}
+.width {
+	max-width:600px;
+}
+.content_main {
+	background-color:#2C8FD6;
+	border-radius: 8px;
+}
+
+
+.header_image img {
+	border-radius: 8px 8px 0 0;
+}
+.title {
+	font-size: 29px;
+	line-height: 29px;
+	margin:0px;
+	padding: 10px 0;
+	text-align: left;
+}
+.email_content, .email_content table, .email_content h1, .email_content h2, .email_content h3, .email_content h4, .email_content h5, .email_content h6 {
+	color: #BODY_COLOR;
+}
+.email_content {
+	padding:5px 20px 15px 20px;
+	font-size: 14px;
+}
+.email_content img {
+	border-radius: 8px;
+}
+.contact_info {
+	padding: 20px 10px 30px 10px;
+	text-align: center;
+	font-size: 13px;
+}
+p {
+	font-size:12px;
+	line-height:22px;
+}
+.view_link {
+	text-align: right;
+	padding: 16px 20px 0 0;
+}
+.site-link {
+	text-align: center;
+	font-size: 11px;
+}
