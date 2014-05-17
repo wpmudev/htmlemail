@@ -10,7 +10,8 @@ Change Log:
 ----------------------------------------------------------------------
 - New: Added Templates and Instant Preview option
 - Filters: Works for template with sidebar:
-             htmlemail_sidebar_posts => List of posts to be displayed, htmlemail_sidebar_title => Tile of sidebar
+    htmlemail_sidebar_posts => List of posts to be displayed, 
+    htmlemail_sidebar_title => Tile of sidebar
 
 1.1 - 3/6/2014
 ----------------------------------------------------------------------
