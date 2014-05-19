@@ -201,12 +201,21 @@ class HTML_emailer {
 		//If you change this from add_options_page, MAKE SURE you change the filter_plugin_actions function (below) to
 		//reflect the page filename (ie - options-general.php) of the page your plugin is under!
 		if ( is_multisite() ) {
-			$html_template = add_submenu_page( 'settings.php', __( 'HTML Email Template', $this->localizationDomain ), __( 'HTML Email Template', $this->localizationDomain ), 'manage_network_options', 'html-template', array( &$this, 'admin_options_page' ) );
+			$html_template = add_submenu_page( 'settings.php', __( 'HTML Email Template', $this->localizationDomain ), __( 'HTML Email Template', $this->localizationDomain ), 'manage_network_options', 'html-template', array(
+				&$this,
+				'admin_options_page'
+			) );
 		} else if ( ! is_multisite() ) {
-			$html_template = add_submenu_page( 'options-general.php', __( 'HTML Email Template', $this->localizationDomain ), __( 'HTML Email Template', $this->localizationDomain ), 'manage_options', 'html-template', array( &$this, 'admin_options_page' ) );
+			$html_template = add_submenu_page( 'options-general.php', __( 'HTML Email Template', $this->localizationDomain ), __( 'HTML Email Template', $this->localizationDomain ), 'manage_options', 'html-template', array(
+				&$this,
+				'admin_options_page'
+			) );
 		}
 
-		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array( &$this, 'filter_plugin_actions' ), 10, 2 );
+		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array(
+			&$this,
+			'filter_plugin_actions'
+		), 10, 2 );
 		add_action( "load-{$html_template}", array( &$this, 'register_scripts' ) );
 	}
 
@@ -282,15 +291,15 @@ class HTML_emailer {
 					   href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
 					   title="<?php _e( 'Live Preview', $this->localizationDomain ); ?>"><?php _e( 'Preview', $this->localizationDomain ); ?></a>
 					<input type="submit" name="preview_html_email" class="button-secondary"
-						   value="<?php _e( 'Test Email', $this->localizationDomain ); ?>" />
+					       value="<?php _e( 'Test Email', $this->localizationDomain ); ?>" />
 					<input type="submit" name="save_html_email_options" class="button-primary"
-						   value="<?php _e( 'Save', $this->localizationDomain ); ?>" />
+					       value="<?php _e( 'Save', $this->localizationDomain ); ?>" />
 				</div>
 				<div class="template-content-holder">
                     <span
-						class="description"><?php _e( 'Edit the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message.', $this->localizationDomain ) ?></span>
+	                    class="description"><?php _e( 'Edit the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message.', $this->localizationDomain ) ?></span>
 					<textarea name="template" id="template-content" rows="25"
-							  style="width: 100%"><?php echo esc_attr( get_site_option( 'html_template' ) ); ?></textarea><br />
+					          style="width: 100%"><?php echo esc_attr( get_site_option( 'html_template' ) ); ?></textarea><br />
 				</div>
 			</form>
 		</div>
@@ -301,7 +310,11 @@ class HTML_emailer {
 		wp_register_style( 'slick_style', $this->assets_path . 'slick/slick.css' );
 		wp_register_script( 'slick_js', $this->assets_path . 'slick/slick.min.js', array( 'jquery' ), '', true );
 		wp_register_style( 'htmlemail_css', $this->assets_path . 'css/htmlemail.css' );
-		wp_register_script( 'htmlemail_js', $this->assets_path . 'js/htmlemail.js', array( 'jquery', 'slick_js', 'thickbox' ), '', true );
+		wp_register_script( 'htmlemail_js', $this->assets_path . 'js/htmlemail.js', array(
+			'jquery',
+			'slick_js',
+			'thickbox'
+		), '', true );
 	}
 
 	function enqueue_scripts() {
@@ -393,20 +406,20 @@ class HTML_emailer {
 		$build_theme = array_merge( $build_htmls, $build_styles );
 		foreach ( $build_theme as $type => $possible_files ) {
 			foreach ( $possible_files as $possible_file ) {
-				if ( isset( $contents_parts[$type] ) && ! empty( $contents_parts[$type] ) ) {
+				if ( isset( $contents_parts[ $type ] ) && ! empty( $contents_parts[ $type ] ) ) {
 					continue;
 				}
 				if ( file_exists( $possible_file ) ) {
-					$handle                = fopen( $possible_file, "r" );
-					$contents_parts[$type] = fread( $handle, filesize( $possible_file ) );
+					$handle                  = fopen( $possible_file, "r" );
+					$contents_parts[ $type ] = fread( $handle, filesize( $possible_file ) );
 					fclose( $handle );
 
 					if ( strpos( $type, 'style' ) !== false ) {
-						$contents_parts[$type] = preg_replace( "/^\s*\/\*[^(\*\/)]*\*\//m", "", $contents_parts[$type] );
+						$contents_parts[ $type ] = preg_replace( "/^\s*\/\*[^(\*\/)]*\*\//m", "", $contents_parts[ $type ] );
 					}
 				}
-				if ( ! isset( $contents_parts[$type] ) ) {
-					$contents_parts[$type] = '';
+				if ( ! isset( $contents_parts[ $type ] ) ) {
+					$contents_parts[ $type ] = '';
 				}
 			}
 		}
@@ -448,7 +461,15 @@ class HTML_emailer {
 		$content = $this->dom_compatibility( $content );
 
 		//Replace CSS Variabls
-		$possible_settings = array( 'BG_COLOR', 'BG_IMAGE', 'LINK_COLOR', 'BODY_COLOR', 'ALTERNATIVE_COLOR', 'TITLE_COLOR', 'EMAIL_TITLE' );
+		$possible_settings = array(
+			'BG_COLOR',
+			'BG_IMAGE',
+			'LINK_COLOR',
+			'BODY_COLOR',
+			'ALTERNATIVE_COLOR',
+			'TITLE_COLOR',
+			'EMAIL_TITLE'
+		);
 		foreach ( $possible_settings as $possible_setting ) {
 			if ( defined( 'BUILDER_DEFAULT_' . $possible_setting ) ) {
 				$this->settings[] = $possible_setting;
@@ -614,7 +635,7 @@ class HTML_emailer {
 			}
 			$placeholder_posts["{POST_$count}"] = $this->short_str( $post['post_title'], '...', 10 );
 			//Jugaad, to keep the template styling and links
-			$placeholder_posts["%7BPOST_" . $count . "_LINK%7D"] = esc_url( get_permalink( $post['ID'] ) );
+			$placeholder_posts[ "%7BPOST_" . $count . "_LINK%7D" ] = esc_url( get_permalink( $post['ID'] ) );
 			$count ++;
 		}
 		$placeholders_list = array(
@@ -637,10 +658,10 @@ class HTML_emailer {
 		);
 		$placeholders_list = $placeholders_list + $placeholder_posts;
 		foreach ( $placeholders as $placeholder ) {
-			if ( ! isset( $placeholders_list [$placeholder] ) ) {
+			if ( ! isset( $placeholders_list [ $placeholder ] ) ) {
 				continue;
 			}
-			$content = preg_replace( "/($placeholder)/i", $placeholders_list[$placeholder], $content );
+			$content = preg_replace( "/($placeholder)/i", $placeholders_list[ $placeholder ], $content );
 		}
 		//Show for preview only
 		if ( $demo_message ) {
@@ -721,5 +742,9 @@ class HTML_emailer {
 $html_email_var = new HTML_emailer();
 
 global $wpmudev_notices;
-$wpmudev_notices[] = array( 'id' => 142, 'name' => 'HTML Email Templates', 'screens' => array( 'settings_page_html-template', 'settings_page_html-template-network' ) );
+$wpmudev_notices[] = array(
+	'id'      => 142,
+	'name'    => 'HTML Email Templates',
+	'screens' => array( 'settings_page_html-template', 'settings_page_html-template-network' )
+);
 include_once( dirname( __FILE__ ) . '/includes/dash-notice/wpmudev-dash-notification.php' );
