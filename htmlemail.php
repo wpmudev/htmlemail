@@ -165,11 +165,10 @@ class HTML_emailer {
 		$message = preg_replace( "/(MESSAGE)/i", $message, get_site_option( 'html_template' ) );
 
 		$message = $this->replace_placeholders( $message, $demo_message = false );
-
 		//Replace User name
 		$user = get_user_by( 'email', $to );
 		if ( $user ) {
-			$message = preg_replace( '~\{USER_NAME}~', $user->display_name, $message );
+			$message = preg_replace( '~\{USER_NAME}~', $user->data->display_name, $message );
 		} else {
 			$message = preg_replace( '~\{USER_NAME}~', '', $message );
 		}
