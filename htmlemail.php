@@ -86,7 +86,7 @@ class HTML_emailer {
 	/**
 	 * @var path to assets
 	 */
-	var $settings = '';
+	var $settings = array();
 
 	//Class Functions
 	/**
@@ -429,12 +429,14 @@ class HTML_emailer {
 			$build_htmls['header'][] = $this->template_directory . "default_header.html";
 			$build_htmls['footer'][] = $this->template_directory . "default_footer.html";
 		}
-		if ( defined( 'BUILDER_SETTING_USE_DEFAULT_STYLES' ) ) {
-			$build_styles['default_style'][] = $this->template_directory . "default_style.css";
-		}
 
 		$build_styles['style'][]        = $this->theme_path . "/style.css";
 		$build_styles['style_header'][] = $this->theme_path . "/style_header.css";
+                $build_styles['default_style'] = '';
+
+                if ( defined( 'BUILDER_SETTING_USE_DEFAULT_STYLES' ) ) {
+			$build_styles['default_style'][] = $this->template_directory . "default_style.css";
+		}
 
 		$build_theme = array_merge( $build_htmls, $build_styles );
 		foreach ( $build_theme as $type => $possible_files ) {
@@ -486,9 +488,9 @@ class HTML_emailer {
 
 		//Replace BLOG_URL with actual URL as DOM compatibility escapes img src
 		$content = preg_replace( "/{BLOG_URL}/i", network_site_url(), $content );
-
+                $style = isset( $contents_parts['default_style'] ) ? $contents_parts['default_style'] . $contents_parts['style'] . $contents_parts['style_header'] : $contents_parts['style'] . $contents_parts['style_header'];
 		//Do the inline styling
-		$content = $this->do_inline_styles( $content, $contents_parts['default_style'] . $contents_parts['style'] . $contents_parts['style_header'] );
+		$content = $this->do_inline_styles( $content, $style );
 
 		//Check for DOM compatibilty from E-Newsletter
 		$content = $this->dom_compatibility( $content );

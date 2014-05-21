@@ -143,6 +143,6 @@ li.config-step:last-child{
 li .step-count {
     display: block;
     font-weight: bold;
-    padding: 5px;
+    padding: 5px 0;
     width: 45px;
 }
