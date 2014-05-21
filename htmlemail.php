@@ -270,10 +270,10 @@ class HTML_emailer {
 					<h3><?php _e( 'Four easy steps to send better emails:', $this->localizationDomain ); ?></h3>
 					<?php
 					$configuration_steps = array(
-						'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a> or type your own/paste some HTML below.',
-						'Preview allows you to quickly see what your emails will look like.',
-						'You can send a Test Email to check what it will look like as an actual email. With this, you can specify an email address for this to be sent to.',
-						'Select "Save" and the HTML you have below will be used as your HTML Email Template for all Emails.'
+						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a> or type your own/paste some HTML below.', $this->localizationDomain ),
+						__( 'Preview allows you to quickly see what your emails will look like.', $this->localizationDomain ),
+						__( 'You can send a Test Email to check what it will look like as an actual email. With this, you can specify an email address for this to be sent to.', $this->localizationDomain ),
+						__( 'Select "Save" and the HTML you have below will be used as your HTML Email Template for all Emails.', $this->localizationDomain )
 					); ?>
 					<ul class='config-steps'><?php
 						$count = 1;
@@ -281,7 +281,7 @@ class HTML_emailer {
 							?>
 							<li class='config-step'>
 							<span class="step-count"><?php echo "Step $count <br />"; ?></span><?php
-							_e( $step, $this->localizationDomain ); ?>
+							echo $step; ?>
 							</li><?php
 							$count ++;
 						} ?>
@@ -646,17 +646,17 @@ class HTML_emailer {
 			$placeholders[] = 'Images';
 			//Return Placeholder desc table
 			$placeholder_desc = array(
-				'{SIDEBAR_TITLE}' => "Title for the sidebar in email e.g. What's trending",
-				'{FROM_NAME}'     => "Sender's name if sender's email is associated with a user account",
-				'{FROM_EMAIL}'    => "Sender's email, email specified in site settings",
-				'{BLOG_URL}'      => 'Blog / Site URL',
-				'{BLOG_NAME}'     => 'Blog / Site name',
-				'{ADMIN_EMAIL}'   => 'Email address of the support or contact person. Same as {FROM_EMAIL}',
-				'{BRANDING_HTML}' => 'Blog Description',
-				'{date}'          => 'Current date',
-				'{time}'          => 'Current time',
-				'MESSAGE'         => 'Email content',
-				'Images'          => 'Image in templates need to be replaced by a logo or a brand image'
+				'{SIDEBAR_TITLE}' => __( "Title for the sidebar in email e.g. What's trending", $this->localizationDomain ),
+				'{FROM_NAME}'     => __( "Sender's name if sender's email is associated with a user account", $this->localizationDomain ),
+				'{FROM_EMAIL}'    => __( "Sender's email, email specified in site settings", $this->localizationDomain ),
+				'{BLOG_URL}'      => __( 'Blog / Site URL', $this->localizationDomain ),
+				'{BLOG_NAME}'     => __( 'Blog / Site name', $this->localizationDomain ),
+				'{ADMIN_EMAIL}'   => __( 'Email address of the support or contact person. Same as {FROM_EMAIL}', $this->localizationDomain ),
+				'{BRANDING_HTML}' => __( 'Blog Description', $this->localizationDomain ),
+				'{date}'          => __( 'Current date', $this->localizationDomain ),
+				'{time}'          => __( 'Current time', $this->localizationDomain ),
+				'MESSAGE'         => __( 'Email content', $this->localizationDomain ),
+				'Images'          => __( 'Image in templates need to be replaced by a logo or a brand image', $this->localizationDomain )
 			);
 
 			$output = '<div class="placeholders-list-wrapper" id="placeholder-list-wrapper">'
@@ -672,7 +672,7 @@ class HTML_emailer {
 				}
 				$output .= '<tr>';
 				$output .= '<td>' . $p_name . '</td>';
-				$output .= '<td>' . __( $p_desc, $this->localizationDomain ) . '</td>';
+				$output .= '<td>' .  $p_desc . '</td>';
 				$output .= '</tr>';
 			}
 			$output .= '</table>'
