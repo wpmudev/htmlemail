@@ -6,18 +6,23 @@
 			<table class="content content_title" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td valign="middle" class="branding_html" data-builder="branding_html">
+                                        <!-- By default it is replaced by site description when sending email,
+                                            Although you can place any text here -->
 						{BRANDING_HTML}
 					</td>
 				</tr>
 				<tr>
 					<td class="title" data-builder="title_color">
 						<div data-builder="blog_name">
+<!--                                        {BLOG_NAME} is replaced by site name when sending email,
+                                            Although you can place any text here -->
 							{BLOG_NAME}
 						</div>
 					</td>
 				</tr>
 				<tr>
 					<td valign="middle" class="header_image" data-builder="header_image">
+<!--                                        {HEADER_IMAGE} can be replaced by a <img> tag with a complete url as image source, if template do not supports a {HEADER_IMAGE}, it will be removed while sending mail -->
 						{HEADER_IMAGE}
 					</td>
 				</tr>
@@ -25,12 +30,17 @@
 			<table class="content content_main" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td class="from">
+<!--                                       {FROM_EMAIL} is replaced by admin email specified in site settings,
+                                           {FROM_NAME} is replace if the {FROM_EMAIL} is associated with an account 
+                                            You can directly replace both the parameters with a specific value
+                                -->
 						From <span data-builder="from_name">{FROM_NAME}</span> (<span data-builder="from_email">{FROM_EMAIL}</span>)
 					</td>
 				</tr>
 				<tr>
 					<td class="email_content" data-builder="body_color">
 						<div data-builder="email_content">
+                                                    <!--MESSAGE is replace by email content while sending out an email-->
 							MESSAGE
 						</div>
 					</td>
@@ -38,8 +48,8 @@
 				<tr>
 					<td class="contact_info" data-builder="body_color">
 						<div data-builder="contact_info">
-							<div style="padding-top:15px; padding-bottom:1px;"><img height="13" width="13" style="vertical-align: middle;" src="{BLOG_URL}/wp-admin/images/date-button.gif" alt="Datum"  /> Email sent {date} @ {time}</div>
-                                                        <div style="color:inherit"><img height="12" width="12" style="vertical-align: middle;" src="{BLOG_URL}/wp-admin/images/comment-grey-bubble.png" alt="Contact"  /> For any requests, please contact <a href="mailto:{ADMIN_EMAIL}">{ADMIN_EMAIL}</a></div>
+							<div style="padding-top:15px; padding-bottom:1px;"><img height="13" width="13" style="vertical-align: middle;" src="{BLOG_URL}wp-admin/images/date-button.gif" alt="Datum"  /> Email sent {date} @ {time}</div>
+                                                        <div style="color:inherit"><img height="12" width="12" style="vertical-align: middle;" src="{BLOG_URL}wp-admin/images/comment-grey-bubble.png" alt="Contact"  /> For any requests, please contact <a href="mailto:{ADMIN_EMAIL}">{ADMIN_EMAIL}</a></div>
 						</div>
 					</td>
 				</tr>
@@ -48,6 +58,8 @@
 			<table class="content content_site-link" align="center" border="0" cellspacing="0" cellpadding="0">
 				<tr>
 					<td class="site-link">
+<!--                                            {BLOG_URL} and {BLOG_NAME} are respectively replaced by site url and site name
+                                            specified in settings-->
 						visit site: <a href="{BLOG_URL}">{BLOG_NAME}.</a>
 					</td>
 				</tr>

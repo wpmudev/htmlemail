@@ -3,26 +3,146 @@
     Author     : umesh
 */
 .email-templates-wrapper{
-    padding: 0 30px; 
+    max-height: 250px;
+    overflow: hidden;
+    padding: 0 30px 20px 32px;
+}
+/* Templates Wrapper */
+.template-wrapper {
+    background: white;
+    display: none;
+    padding: 10px 0;
+}
+.template-toggle{
+    font-size: 13px;
+    font-weight: normal;
+    text-decoration: none;
+}
+.template-toggle:active, .template-toggle:focus {
+    outline: none;
+}
+.toggle-indicator{
+    display: inline-block;
+}
+/* Slider Styling */
+.template-holder {
+    float: left;
 }
 .template-holder img.theme-preview {
-     max-width: 215px;
+    max-width: 215px;
 }
 .template-holder a{
-    font-size: medium; line-height: 1.5; 
+    font-size: medium;
+    line-height: 1.5; 
 }
 .template-holder a img {
     border: 2px solid transparent;
 }
-.template-holder .active-theme img {
-    border: 2px solid #007a42;
+.template-holder.active-theme {
+    opacity: 1;
+}
+.template-holder.active-theme img {
+    border: 2px solid #2ea2cc;
+    box-shadow: 0 8px 15px rgba(0,0,0,0.6);
+}
+/* Fixes arrow position */
+.slick-next {
+    margin-right: 7px;
 }
 .slick-prev:before, .slick-next:before {
-    color: #0074a2;
+    color: #2ea2cc;
+    font-size: 24px;
 }
 .slick-list {
     margin-left: 8px;
 }
+.slick-slide {
+    opacity: 0.6;
+}
 .template-holder.slick-slide a:focus, .template-holder.slick-slide a:active {
     outline: 0;
+}
+/*Refernce Link */
+.list-ref {
+    display: none;
+}
+/* Buttons Styling*/
+.action-wrapper {
+    overflow: hidden;
+}
+.action-wrapper .spinner {
+    float: none; 
+    margin-top: 4px;
+    margin-bottom: 0;
+}
+.action-wrapper .button-primary, .action-wrapper .button-secondary, .action-wrapper #preview_template {
+    float: left;
+}
+.action-wrapper .button-secondary, .action-wrapper #preview_template {
+    margin-left: 5px;
+}
+#load_template {
+    margin: 0 0 0 8px;
+}
+.preview-email {
+    clear: left;
+    display: none;
+    float: left;
+    margin-top: 25px;
+    overflow: hidden;
+}
+.preview-email .button-primary {
+    float: none;
+}
+.preview-email .button-primary:active, .preview-email .button-primary:focus {
+    vertical-align: 0;
+}
+.preview-email input[name="preview_html_email_address"] {
+    line-height: 1.5;
+    padding: 4px;
+    width: 220px;
+}
+/* Placeholder list table styling */
+.template-placeholders-list {
+    background: white;
+    border: 1px solid #c1c1c1;
+    width: 60%;
+}
+.template-placeholders-list tr:nth-child(even) {
+    background: #F3F3F3;
+}
+.template-placeholders-list tr:nth-child(odd) {
+    background: white;
+}
+.template-placeholders-list th, .template-placeholders-list td {
+    padding: 5px;
+    text-align: left;
+}
+.template-placeholders-list td:first-child {
+    width: 24%;
+}
+/*Configuration guide */
+.config-guide {
+    background: white;
+    padding: 1px 5px;
+}
+.config-guide h3 {
+    padding: 4px;
+}
+li.config-step {
+    display: inline-block;
+    overflow: hidden;
+    margin: 0 5px 0 0;
+    padding: 5px 0;
+    vertical-align: top;
+    width: 20%;
+}
+li.config-step:last-child{
+    margin: 0;
+}
+li .step-count {
+    display: block;
+    font-weight: bold;
+    padding: 5px;
+    width: 45px;
 }

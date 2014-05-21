@@ -20,8 +20,16 @@
 				<div class="content">
 					<table bgcolor="#999999">
 					<tr>
-						<td><img src="https://lorempixel.com/200/50/" /></td>
-						<td align="right"><h6 class="collapse">{BLOG_NAME}</h6></td>
+						<td>
+<!--                                                This is a demo image it can be replaced by company logo
+                                                    you just need to specify a image URL-->
+                                                    <img src="https://lorempixel.com/200/50/" />
+                                                </td>
+						<td align="right">
+                                                    <!-- {BLOG_NAME} is replaced by site name when sending email,
+                                                    Although you can place any text here -->
+                                                    <h6 class="collapse">{BLOG_NAME}</h6>
+                                                </td>
 					</tr>
 				</table>
 				</div>
@@ -42,12 +50,17 @@
 			<table>
 				<tr>
 					<td>
-						
+<!--						{USER_NAME} is replaced if the email to which notification is sent, is associated
+                                                with a user account, otherwise it is removed -->
 						<h3>Hey, {USER_NAME}</h3>
+                                                <!--MESSAGE is replace by email content while sending out an email-->
 						<p class="lead">MESSAGE</p>
 						
 						<!-- A Real Hero (and a real human being) -->
-						<p><img src="https://lorempixel.com/600/300" /></p><!-- /hero -->
+						<p>
+<!--                                                    This is a demo image it can be replaced by any branding image or
+                                                you can simply remove it -->
+                                                    <img src="https://lorempixel.com/600/300" /></p><!-- /hero -->
 						<br/>							
 												
 						<!-- social & contact -->
@@ -61,9 +74,13 @@
 											<td>				
 												
 												<h5 class="">Connect with Us:</h5>
-												<p class=""><a href="#" class="soc-btn fb">Facebook</a> <a href="#" class="soc-btn tw">Twitter</a> <a href="#" class="soc-btn gp">Google+</a></p>
+												<p class="">
+                                                                                                    <!--Specify URLs to Social links-->
+                                                                                                    <a href="#" class="soc-btn fb">Facebook</a>
+                                                                                                    <a href="#" class="soc-btn tw">Twitter</a>
+                                                                                                    <a href="#" class="soc-btn gp">Google+</a>
+                                                                                                </p>
 						
-												
 											</td>
 										</tr>
 									</table><!-- /column 1 -->	
@@ -73,10 +90,12 @@
 										<tr>
 											<td>				
 																			
-												<h5 class="">Contact Info:</h5>												
+												<h5 class="">Contact Info:</h5>
+                                                                                                <!--Change business contact-->
 												<p>Phone: <strong>408.341.0600</strong><br/>
-                Email: <strong><a href="emailto:hseldon@trantor.com">{FROM_EMAIL}</a></strong></p>
-                
+                Email: <strong>{FROM_EMAIL}</strong></p>
+                <!-- {FROM_EMAIL} is replaced by admin email specified in site settings,
+                    You can directly replace the parameter with a specific email -->
 											</td>
 										</tr>
 									</table><!-- /column 2 -->
@@ -110,6 +129,7 @@
 				<tr>
 					<td align="center">
 						<p>
+                                                    <!--Specify a page link to terms and privacy pages in site-->
 							<a href="#">Terms</a> |
 							<a href="#">Privacy</a>
 						</p>

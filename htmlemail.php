@@ -254,9 +254,9 @@ class HTML_emailer {
 			if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'html_email-update-options' ) ) {
 				wp_die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->localizationDomain ) );
 			}
-
-			wp_mail( $current_user->user_email, 'Test HTML Email Subject', "This is a test message I want to try out to see if it works\n\nIs it working well?" );
-			echo '<div class="updated"><p>' . sprintf( __( 'Preview email was mailed to %s!', $this->localizationDomain ), $current_user->user_email ) . '</p></div>';
+                        $email = isset( $_POST['preview_html_email_address'] ) ?  $_POST['preview_html_email_address'] : $current_user->user_email;
+			wp_mail( $email, 'Test HTML Email Subject', "This is a test message I want to try out to see if it works\n\nIs it working well?" );
+			echo '<div class="updated"><p>' . sprintf( __( 'Preview email was mailed to %s!', $this->localizationDomain ), $email ) . '</p></div>';
 		}
 		?>
 		<div class="wrap">
@@ -266,40 +266,72 @@ class HTML_emailer {
 
 				<p><?php _e( 'This plugin will wrap every WordPress email sent within an HTML template.', $this->localizationDomain ); ?></p>
 
-				<h3><?php _e( 'HTML Email Template', $this->localizationDomain ) ?></h3><?php
-				$templates = array();
-				$templates = apply_filters( 'htmlemail_templates', $templates );
-				if ( ! empty( $templates ) && is_array( $templates ) ) {
-					?>
-					<div class="email-templates-wrapper">
-					<div class="email-templates"><?php
-						foreach ( $templates as $template ) {
+				<div class='config-guide'>
+					<h3><?php _e( 'Four easy steps to send better emails:', $this->localizationDomain ); ?></h3>
+					<?php
+					$configuration_steps = array(
+						'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a> or type your own/paste some HTML below.',
+						'Preview allows you to quickly see what your emails will look like.',
+						'You can send a Test Email to check the actual email preview. You can specify an email address or admin email address will be used by default',
+						'Select "Save" and the HTML you have below will be used as your HTML Email Template for all Emails.'
+					); ?>
+					<ul class='config-steps'><?php
+						$count = 1;
+						foreach ( $configuration_steps as $step ) {
 							?>
-							<div class="template-holder">
-								<!--Template preview-->
-								<a href="#<?php echo $template['name']; ?>"
-								   title="<?php echo $template['name']; ?>"><?php echo $template['name']; ?><br /><img
-										class="theme-preview" src="<?php echo $template['screenshot']; ?>"
-										alt="<?php echo $template['name']; ?>" /></a>
-							</div> <?php
+							<li class='config-step'>
+							<span class="step-count"><?php echo "Step $count <br />"; ?></span><?php
+							_e( $step, $this->localizationDomain ); ?>
+							</li><?php
+							$count ++;
 						} ?>
-					</div>
-					</div><?php
-				} ?>
-				<div class="submit">
-					<a name="preview_template" id="preview_template" class="button button-secondary"
-					   href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
-					   title="<?php _e( 'Live Preview', $this->localizationDomain ); ?>"><?php _e( 'Preview', $this->localizationDomain ); ?></a>
-					<input type="submit" name="preview_html_email" class="button-secondary"
-					       value="<?php _e( 'Test Email', $this->localizationDomain ); ?>" />
+					</ul>
+				</div>
+				<h5>
+					<a href="#template-wrapper" class="template-toggle" title="<?php _e( 'Click to toggle templates', $this->localizationDomain ); ?>"><?php _e( 'Choose from sample Templates', $this->localizationDomain ) ?> [<span class="toggle-indicator">+</span>]</a>
+				</h5>
+
+				<div class="template-wrapper" id="template-wrapper"><?php
+					$templates = array();
+					$templates = apply_filters( 'htmlemail_templates', $templates );
+					if ( ! empty( $templates ) && is_array( $templates ) ) {
+						?>
+						<div class="email-templates-wrapper">
+						<div class="email-templates"><?php
+							foreach ( $templates as $template ) {
+								?>
+								<div class="template-holder">
+									<!--Template preview-->
+									<a href="#<?php echo $template['name']; ?>"
+										title="<?php echo $template['name']; ?>"><?php echo $template['name']; ?>
+										<br /><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo $template['name']; ?>" /></a>
+								</div> <?php
+							} ?>
+						</div>
+						</div><?php
+					} ?>
+					<a name="load_template" id="load_template" class="button button-primary disabled" href="#" title="<?php _e( 'Load template markup', $this->localizationDomain ); ?>"><?php _e( 'Load Template', $this->localizationDomain ); ?>
+						<span class="template-name"></span></a>
+				</div>
+				<div class="action-wrapper submit">
 					<input type="submit" name="save_html_email_options" class="button-primary"
-					       value="<?php _e( 'Save', $this->localizationDomain ); ?>" />
+						value="<?php _e( 'Save', $this->localizationDomain ); ?>" />
+					<a name="preview_template" id="preview_template" class="button button-secondary"
+						href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
+						title="<?php _e( 'Live Preview', $this->localizationDomain ); ?>"><?php _e( 'Preview', $this->localizationDomain ); ?></a>
+					<input type="button" name="specify_email" class="button-secondary specify_email"
+						value="<?php _e( 'Test Email', $this->localizationDomain ); ?>" />
+					<span class="spinner"></span><br />
+                                        <div class="preview-email">
+                                            <input type="text" name="preview_html_email_address" value="<?php echo $current_user->user_email; ?>" placeholder="Email address"/>
+                                            <input type="submit" name="preview_html_email" class="button-primary"
+						value="<?php _e( 'Send', $this->localizationDomain ); ?>" />
+                                        </div>
 				</div>
 				<div class="template-content-holder">
-                    <span
-	                    class="description"><?php _e( 'Edit the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message.', $this->localizationDomain ) ?></span>
-					<textarea name="template" id="template-content" rows="25"
-					          style="width: 100%"><?php echo esc_attr( get_site_option( 'html_template' ) ); ?></textarea><br />
+                                    <span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message. <span class="list-ref">For a list of variables, <a href="#placeholder-list-wrapper" title="Variables list for Template">click here</a>. You can use the available variables anywhere in'
+                                                                        . 'in template, they will be automatically replaced with a default value, or you can manually specify a value in place of them.</span>', $this->localizationDomain ) ?></span>
+					<textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_attr( get_site_option( 'html_template' ) ); ?></textarea><br />
 				</div>
 			</form>
 		</div>
@@ -362,8 +394,9 @@ class HTML_emailer {
 		if ( empty( $_GET['theme'] ) ) {
 			wp_send_json_error( 'no theme specified' );
 		}
-		$content = $this->get_contents_elements( $_GET['theme'] );
-		wp_send_json_success( $content );
+		$content           = $this->get_contents_elements( $_GET['theme'] );
+		$placeholders_list = $this->list_placeholders( $content, true );
+		wp_send_json_success( array( 'content' => $content, 'placeholders' => $placeholders_list ) );
 	}
 
 	/**
@@ -406,20 +439,20 @@ class HTML_emailer {
 		$build_theme = array_merge( $build_htmls, $build_styles );
 		foreach ( $build_theme as $type => $possible_files ) {
 			foreach ( $possible_files as $possible_file ) {
-				if ( isset( $contents_parts[ $type ] ) && ! empty( $contents_parts[ $type ] ) ) {
+				if ( isset( $contents_parts[$type] ) && ! empty( $contents_parts[$type] ) ) {
 					continue;
 				}
 				if ( file_exists( $possible_file ) ) {
-					$handle                  = fopen( $possible_file, "r" );
-					$contents_parts[ $type ] = fread( $handle, filesize( $possible_file ) );
+					$handle                = fopen( $possible_file, "r" );
+					$contents_parts[$type] = fread( $handle, filesize( $possible_file ) );
 					fclose( $handle );
 
 					if ( strpos( $type, 'style' ) !== false ) {
-						$contents_parts[ $type ] = preg_replace( "/^\s*\/\*[^(\*\/)]*\*\//m", "", $contents_parts[ $type ] );
+						$contents_parts[$type] = preg_replace( "/^\s*\/\*[^(\*\/)]*\*\//m", "", $contents_parts[$type] );
 					}
 				}
-				if ( ! isset( $contents_parts[ $type ] ) ) {
-					$contents_parts[ $type ] = '';
+				if ( ! isset( $contents_parts[$type] ) ) {
+					$contents_parts[$type] = '';
 				}
 			}
 		}
@@ -588,10 +621,9 @@ class HTML_emailer {
 	}
 
 	/**
-	 * Replaces placeholder text in email templates
+	 * Returns the list of placeholders in template content
 	 */
-	function replace_placeholders( $content, $demo_message = true ) {
-
+	function list_placeholders( $content, $desc = false ) {
 		$placeholders = $links = '';
 		preg_match_all( "/\{.+\}/U", $content, $placeholders );
 		//Jugaad, need to find a fix for this
@@ -600,6 +632,55 @@ class HTML_emailer {
 		$placeholders = ! empty( $placeholders ) ? $placeholders[0] : '';
 		$links        = ! empty( $links ) ? $links[0] : '';
 		$placeholders = array_merge( $placeholders, $links );
+		if ( $desc ) {
+			$placeholders[] = 'MESSAGE';
+			$placeholders[] = 'Images';
+			//Return Placeholder desc table
+			$placeholder_desc = array(
+				'{SIDEBAR_TITLE}' => "Title for the sidebar in email e.g. What's trending",
+				'{FROM_NAME}'     => "Sender's name if sender's email is associated with a user account",
+				'{FROM_EMAIL}'    => "Sender's email, email specified in site settings",
+				'{BLOG_URL}'      => 'Blog / Site URL',
+				'{BLOG_NAME}'     => 'Blog / Site name',
+				'{ADMIN_EMAIL}'   => 'Email address of the support or contact person. Same as {FROM_EMAIL}',
+				'{BRANDING_HTML}' => 'Blog Description',
+				'{date}'          => 'Current date',
+				'{time}'          => 'Current time',
+				'MESSAGE'         => 'Email content',
+				'Images'          => 'Image in templates need to be replaced by a logo or a brand image'
+			);
+
+			$output = '<div class="placeholders-list-wrapper" id="placeholder-list-wrapper">'
+			          . '<h4>' . __( 'Variables in template', $this->localizationDomain ) . '</h4>'
+			          . '<table class="template-placeholders-list">';
+			$output .= '<th>Variable name</th>';
+			$output .= '<th>Default value</th>';
+
+			//Get list of common variables
+			foreach ( $placeholder_desc as $p_name => $p_desc ) {
+				if ( ! in_array( $p_name, $placeholders ) ) {
+					continue;
+				}
+				$output .= '<tr>';
+				$output .= '<td>' . $p_name . '</td>';
+				$output .= '<td>' . __( $p_desc, $this->localizationDomain ) . '</td>';
+				$output .= '</tr>';
+			}
+			$output .= '</table>'
+			           . '</div>';
+
+			return $output;
+		}
+
+		return $placeholders;
+	}
+
+	/**
+	 * Replaces placeholder text in email templates
+	 */
+	function replace_placeholders( $content, $demo_message = true ) {
+
+		$placeholders = $this->list_placeholders( $content );
 
 		$blog_url    = network_site_url();
 		$admin_email = get_option( 'admin_email' );
@@ -635,7 +716,7 @@ class HTML_emailer {
 			}
 			$placeholder_posts["{POST_$count}"] = $this->short_str( $post['post_title'], '...', 10 );
 			//Jugaad, to keep the template styling and links
-			$placeholder_posts[ "%7BPOST_" . $count . "_LINK%7D" ] = esc_url( get_permalink( $post['ID'] ) );
+			$placeholder_posts["%7BPOST_" . $count . "_LINK%7D"] = esc_url( get_permalink( $post['ID'] ) );
 			$count ++;
 		}
 		$placeholders_list = array(
@@ -658,10 +739,10 @@ class HTML_emailer {
 		);
 		$placeholders_list = $placeholders_list + $placeholder_posts;
 		foreach ( $placeholders as $placeholder ) {
-			if ( ! isset( $placeholders_list [ $placeholder ] ) ) {
+			if ( ! isset( $placeholders_list [$placeholder] ) ) {
 				continue;
 			}
-			$content = preg_replace( "/($placeholder)/i", $placeholders_list[ $placeholder ], $content );
+			$content = preg_replace( "/($placeholder)/i", $placeholders_list[$placeholder], $content );
 		}
 		//Show for preview only
 		if ( $demo_message ) {
