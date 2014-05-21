@@ -29,7 +29,7 @@ jQuery( document ).ready( function($) {
     jQuery('body').on('click', '#load_template', function(e){
         e.preventDefault();
         jQuery('.placeholders-list-wrapper').remove();
-        if( ! confirm("All the unsaved template changes will be lost, you want to continue?") ){
+        if( ! confirm( htmlemail_text['load_template'] ) ){
             return false;
         }
         //Display reference link for placeholder list table
@@ -87,7 +87,7 @@ jQuery( document ).ready( function($) {
         $template_content = jQuery('#template-content').val();
         $message = $template_content.indexOf("MESSAGE");
         if( !$message || $message == -1 ){
-            alert('You need to place MESSAGE somewhere in the template, preferably a main content section.');
+            alert( htmlemail_text['message_missing'] );
             return false;
         }
         return true;

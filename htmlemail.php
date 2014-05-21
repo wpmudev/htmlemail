@@ -133,6 +133,7 @@ class HTML_emailer {
 		//Return template data
 		add_action( 'wp_ajax_htmlemail_get_template_data', array( $this, 'htmlemail_template_data' ) );
 		add_action( 'wp_ajax_get_preview_data', array( $this, 'get_preview_data' ) );
+
 	}
 
 	function localization() {
@@ -346,6 +347,14 @@ class HTML_emailer {
 			'slick_js',
 			'thickbox'
 		), '', true );
+                //Lolcalize string to js, to make them translatable
+                $template_load_warning = __( "All the unsaved template changes will be lost, you want to continue?", $this->localizationDomain );
+                $message_missing = __("You need to place MESSAGE somewhere in the template, preferably a main content section.", $this->localizationDomain );
+                $htmlemail_help_text = array(
+                    'load_template' => $template_load_warning,
+                    'message_missing'   => $message_missing
+                );
+                wp_localize_script('htmlemail_js', 'htmlemail_text', $htmlemail_help_text );
 	}
 
 	function enqueue_scripts() {
