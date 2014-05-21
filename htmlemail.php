@@ -271,7 +271,7 @@ class HTML_emailer {
 					$configuration_steps = array(
 						'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a> or type your own/paste some HTML below.',
 						'Preview allows you to quickly see what your emails will look like.',
-						'You can send a Test Email to check the actual email preview. You can specify an email address or your profile email address will be used by default',
+						'You can send a Test Email to check what it will look like as an actual email. With this, you can specify an email address for this to be sent to.',
 						'Select "Save" and the HTML you have below will be used as your HTML Email Template for all Emails.'
 					); ?>
 					<ul class='config-steps'><?php
