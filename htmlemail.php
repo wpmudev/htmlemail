@@ -432,7 +432,6 @@ class HTML_emailer {
 
 		$build_styles['style'][]        = $this->theme_path . "/style.css";
 		$build_styles['style_header'][] = $this->theme_path . "/style_header.css";
-                $build_styles['default_style'] = '';
 
                 if ( defined( 'BUILDER_SETTING_USE_DEFAULT_STYLES' ) ) {
 			$build_styles['default_style'][] = $this->template_directory . "default_style.css";
