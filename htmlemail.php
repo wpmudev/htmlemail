@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: HTML Email Templates
-Plugin URI: http://premium.wpmudev.org/project/html-email-templates/
+Plugin URI: https://premium.wpmudev.org/project/html-email-templates/
 Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates are set network wide.
 Author: WPMU DEV
 Version: 1.2
@@ -40,9 +40,9 @@ class HTML_emailer {
 	var $optionsName = 'html_email_options';
 
 	/**
-	 * @var string $localizationDomain Domain used for localization
+	 * @var string $textdomain Domain used for localization
 	 */
-	var $localizationDomain = "html_email";
+	var $textdomain = "html_email";
 
 	/**
 	 * @var string $pluginurl The path to this plugin
@@ -104,7 +104,7 @@ class HTML_emailer {
 			$this->plugin_dir = WPMU_PLUGIN_DIR . '/';
 			$this->plugin_url = WPMU_PLUGIN_URL . '/';
 		} else {
-			wp_die( __( 'There was an issue determining where HTML Email is installed. Please reinstall.', $this->localizationDomain ) );
+			wp_die( __( 'There was an issue determining where HTML Email is installed. Please reinstall.', $this->textdomain ) );
 		}
 		//Template Directory
 		$this->template_directory = $this->plugin_dir . 'lib/templates/';
@@ -140,9 +140,9 @@ class HTML_emailer {
 		// Load up the localization file if we're using WordPress in a different language
 		// Place it in this plugin's "languages" folder and name it "html_email-[value in wp-config].mo"
 		if ( $this->location == 'plugins' ) {
-			load_plugin_textdomain( $this->localizationDomain, false, '/htmlemail/includes/languages/' );
+			load_plugin_textdomain( $this->textdomain, false, '/htmlemail/includes/languages/' );
 		} else if ( $this->location == 'mu-plugins' ) {
-			load_muplugin_textdomain( $this->localizationDomain, '/htmlemail/includes/languages/' );
+			load_muplugin_textdomain( $this->textdomain, '/htmlemail/includes/languages/' );
 		}
 	}
 
@@ -201,12 +201,12 @@ class HTML_emailer {
 		//If you change this from add_options_page, MAKE SURE you change the filter_plugin_actions function (below) to
 		//reflect the page filename (ie - options-general.php) of the page your plugin is under!
 		if ( is_multisite() ) {
-			$html_template = add_submenu_page( 'settings.php', __( 'HTML Email Template', $this->localizationDomain ), __( 'HTML Email Template', $this->localizationDomain ), 'manage_network_options', 'html-template', array(
+			$html_template = add_submenu_page( 'settings.php', __( 'HTML Email Template', $this->textdomain ), __( 'HTML Email Template', $this->textdomain ), 'manage_network_options', 'html-template', array(
 				&$this,
 				'admin_options_page'
 			) );
 		} else if ( ! is_multisite() ) {
-			$html_template = add_submenu_page( 'options-general.php', __( 'HTML Email Template', $this->localizationDomain ), __( 'HTML Email Template', $this->localizationDomain ), 'manage_options', 'html-template', array(
+			$html_template = add_submenu_page( 'options-general.php', __( 'HTML Email Template', $this->textdomain ), __( 'HTML Email Template', $this->textdomain ), 'manage_options', 'html-template', array(
 				&$this,
 				'admin_options_page'
 			) );
@@ -224,9 +224,9 @@ class HTML_emailer {
 	 */
 	function filter_plugin_actions( $links, $file ) {
 		if ( is_multisite() ) {
-			$settings_link = '<a href="' . network_admin_url( 'settings.php?page=html-template' ) . '">' . __( 'Settings', $this->localizationDomain ) . '</a>';
+			$settings_link = '<a href="' . network_admin_url( 'settings.php?page=html-template' ) . '">' . __( 'Settings', $this->textdomain ) . '</a>';
 		} else {
-			$settings_link = '<a href="' . admin_url( 'options-general.php?page=html-template' ) . '">' . __( 'Settings', $this->localizationDomain ) . '</a>';
+			$settings_link = '<a href="' . admin_url( 'options-general.php?page=html-template' ) . '">' . __( 'Settings', $this->textdomain ) . '</a>';
 		}
 
 		array_unshift( $links, $settings_link ); // before other links
@@ -242,45 +242,45 @@ class HTML_emailer {
 
 		if ( isset( $_POST['save_html_email_options'] ) ) {
 			if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'html_email-update-options' ) ) {
-				die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->localizationDomain ) );
+				die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->textdomain ) );
 			}
 
 			$template = stripslashes( $_POST['template'] );
 			update_site_option( 'html_template', $template );
-			echo '<div class="updated"><p>' . __( 'Success! Your changes were sucessfully saved!', $this->localizationDomain ) . '</p></div>';
+			echo '<div class="updated"><p>' . __( 'Success! Your changes were sucessfully saved!', $this->textdomain ) . '</p></div>';
 		}
 
 		if ( isset( $_POST['preview_html_email'] ) ) {
 			if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'html_email-update-options' ) ) {
-				wp_die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->localizationDomain ) );
+				wp_die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->textdomain ) );
 			}
                         $email = isset( $_POST['preview_html_email_address'] ) ?  $_POST['preview_html_email_address'] : $current_user->user_email;
 			wp_mail( $email, 'Test HTML Email Subject', "This is a test message I want to try out to see if it works\n\nIs it working well?" );
-			echo '<div class="updated"><p>' . sprintf( __( 'Preview email was mailed to %s!', $this->localizationDomain ), $email ) . '</p></div>';
+			echo '<div class="updated"><p>' . sprintf( __( 'Preview email was mailed to %s!', $this->textdomain ), $email ) . '</p></div>';
 		}
 		?>
 		<div class="wrap">
 			<form method="post">
 				<?php wp_nonce_field( 'html_email-update-options' ); ?>
-				<h2><?php _e( 'HTML Email Template', $this->localizationDomain ); ?></h2>
+				<h2><?php _e( 'HTML Email Template', $this->textdomain ); ?></h2>
 
-				<p><?php _e( 'This plugin will wrap every WordPress email sent within an HTML template.', $this->localizationDomain ); ?></p>
+				<p><?php _e( 'This plugin will wrap every WordPress email sent within an HTML template.', $this->textdomain ); ?></p>
 
 				<div class='config-guide'>
-					<h3><?php _e( 'Four easy steps to send better emails:', $this->localizationDomain ); ?></h3>
+					<h3><?php _e( 'Four easy steps to send better emails:', $this->textdomain ); ?></h3>
 					<?php
 					$configuration_steps = array(
-						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a> or type your own/paste some HTML below.', $this->localizationDomain ),
-						__( 'Preview allows you to quickly see what your emails will look like.', $this->localizationDomain ),
-						__( 'You can send a Test Email to check what it will look like as an actual email. With this, you can specify an email address for this to be sent to.', $this->localizationDomain ),
-						__( 'Select "Save" and the HTML you have below will be used as your HTML Email Template for all Emails.', $this->localizationDomain )
+						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a> or type/paste your own HTML into the textarea.', $this->textdomain ),
+						__( 'Click "Preview" to quickly see what your emails will look like in a popup.', $this->textdomain ),
+						__( 'Send a "Test Email" to preview your template in actual email clients. You can specify an email address for this to be sent to.', $this->textdomain ),
+						__( 'Select "Save" and the HTML you have below will be used as your HTML Email Template for all transactional emails from your site.', $this->textdomain )
 					); ?>
 					<ul class='config-steps'><?php
 						$count = 1;
 						foreach ( $configuration_steps as $step ) {
 							?>
 							<li class='config-step'>
-							<span class="step-count"><?php echo "Step $count <br />"; ?></span><?php
+							<span class="step-count"><?php echo sprintf( __('Step %d', $this->textdomain), $count) . "<br />"; ?></span><?php
 							echo $step; ?>
 							</li><?php
 							$count ++;
@@ -288,7 +288,7 @@ class HTML_emailer {
 					</ul>
 				</div>
 				<h5>
-					<a href="#template-wrapper" class="template-toggle" title="<?php _e( 'Click to toggle templates', $this->localizationDomain ); ?>"><?php _e( 'Choose from sample Templates', $this->localizationDomain ) ?> [<span class="toggle-indicator">+</span>]</a>
+					<a href="#template-wrapper" class="template-toggle" title="<?php _e( 'Click to toggle templates', $this->textdomain ); ?>"><?php _e( 'Choose from sample Templates', $this->textdomain ) ?> [<span class="toggle-indicator">+</span>]</a>
 				</h5>
 
 				<div class="template-wrapper" id="template-wrapper"><?php
@@ -310,28 +310,27 @@ class HTML_emailer {
 						</div>
 						</div><?php
 					} ?>
-					<a name="load_template" id="load_template" class="button button-primary disabled" href="#" title="<?php _e( 'Load template markup', $this->localizationDomain ); ?>"><?php _e( 'Load Template', $this->localizationDomain ); ?>
+					<a name="load_template" id="load_template" class="button button-primary disabled" href="#" title="<?php _e( 'Load template markup', $this->textdomain ); ?>"><?php _e( 'Load Template', $this->textdomain ); ?>
 						<span class="template-name"></span></a>
 				</div>
 				<div class="action-wrapper submit">
 					<input type="submit" name="save_html_email_options" class="button-primary"
-						value="<?php _e( 'Save', $this->localizationDomain ); ?>" />
+						value="<?php _e( 'Save', $this->textdomain ); ?>" />
 					<a name="preview_template" id="preview_template" class="button button-secondary"
 						href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
-						title="<?php _e( 'Live Preview', $this->localizationDomain ); ?>"><?php _e( 'Preview', $this->localizationDomain ); ?></a>
+						title="<?php _e( 'Live Preview', $this->textdomain ); ?>"><?php _e( 'Preview', $this->textdomain ); ?></a>
 					<input type="button" name="specify_email" class="button-secondary specify_email"
-						value="<?php _e( 'Test Email', $this->localizationDomain ); ?>" />
+						value="<?php _e( 'Test Email', $this->textdomain ); ?>" />
 					<span class="spinner"></span><br />
                                         <div class="preview-email">
                                             <input type="text" name="preview_html_email_address" value="<?php echo $current_user->user_email; ?>" placeholder="Email address"/>
                                             <input type="submit" name="preview_html_email" class="button-primary"
-						value="<?php _e( 'Send', $this->localizationDomain ); ?>" />
+						value="<?php _e( 'Send', $this->textdomain ); ?>" />
                                         </div>
 				</div>
 				<div class="template-content-holder">
-                                    <span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message. <span class="list-ref">For a list of variables, <a href="#placeholder-list-wrapper" title="Variables list for Template">click here</a>. You can use the available variables anywhere in'
-                                                                        . 'in template, they will be automatically replaced with a default value, or you can manually specify a value in place of them.</span>', $this->localizationDomain ) ?></span>
-					<textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_attr( get_site_option( 'html_template' ) ); ?></textarea><br />
+					<span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message. <span class="list-ref">For a list of variables, <a href="#placeholder-list-wrapper" title="Variables list for Template">click here</a>. You can use the available variables anywhere in the template, they will be automatically replaced with a default value, or you can manually specify a value in place of them.</span>', $this->textdomain ) ?></span>
+					<textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_textarea( get_site_option( 'html_template' ) ); ?></textarea><br />
 				</div>
 			</form>
 		</div>
@@ -347,14 +346,14 @@ class HTML_emailer {
 			'slick_js',
 			'thickbox'
 		), '', true );
-                //Lolcalize string to js, to make them translatable
-                $template_load_warning = __( "All the unsaved template changes will be lost, you want to continue?", $this->localizationDomain );
-                $message_missing = __("You need to place MESSAGE somewhere in the template, preferably a main content section.", $this->localizationDomain );
-                $htmlemail_help_text = array(
-                    'load_template' => $template_load_warning,
-                    'message_missing'   => $message_missing
-                );
-                wp_localize_script('htmlemail_js', 'htmlemail_text', $htmlemail_help_text );
+		//Lolcalize string to js, to make them translatable
+		$template_load_warning = __( "Your custom template changes will be lost, are you sure you want to continue?", $this->textdomain );
+		$message_missing = __("You need to place MESSAGE somewhere in the template, preferably a main content section.", $this->textdomain );
+		$htmlemail_help_text = array(
+				'load_template' => $template_load_warning,
+				'message_missing'   => $message_missing
+		);
+		wp_localize_script('htmlemail_js', 'htmlemail_text', $htmlemail_help_text );
 	}
 
 	function enqueue_scripts() {
@@ -646,21 +645,21 @@ class HTML_emailer {
 			$placeholders[] = 'Images';
 			//Return Placeholder desc table
 			$placeholder_desc = array(
-				'{SIDEBAR_TITLE}' => __( "Title for the sidebar in email e.g. What's trending", $this->localizationDomain ),
-				'{FROM_NAME}'     => __( "Sender's name if sender's email is associated with a user account", $this->localizationDomain ),
-				'{FROM_EMAIL}'    => __( "Sender's email, email specified in site settings", $this->localizationDomain ),
-				'{BLOG_URL}'      => __( 'Blog / Site URL', $this->localizationDomain ),
-				'{BLOG_NAME}'     => __( 'Blog / Site name', $this->localizationDomain ),
-				'{ADMIN_EMAIL}'   => __( 'Email address of the support or contact person. Same as {FROM_EMAIL}', $this->localizationDomain ),
-				'{BRANDING_HTML}' => __( 'Blog Description', $this->localizationDomain ),
-				'{date}'          => __( 'Current date', $this->localizationDomain ),
-				'{time}'          => __( 'Current time', $this->localizationDomain ),
-				'MESSAGE'         => __( 'Email content', $this->localizationDomain ),
-				'Images'          => __( 'Image in templates need to be replaced by a logo or a brand image', $this->localizationDomain )
+				'{SIDEBAR_TITLE}' => __( "Title for the sidebar in email e.g. What's trending", $this->textdomain ),
+				'{FROM_NAME}'     => __( "Sender's name if sender's email is associated with a user account", $this->textdomain ),
+				'{FROM_EMAIL}'    => __( "Sender's email, email specified in site settings", $this->textdomain ),
+				'{BLOG_URL}'      => __( 'Blog / Site URL', $this->textdomain ),
+				'{BLOG_NAME}'     => __( 'Blog / Site name', $this->textdomain ),
+				'{ADMIN_EMAIL}'   => __( 'Email address of the support or contact person. Same as {FROM_EMAIL}', $this->textdomain ),
+				'{BRANDING_HTML}' => __( 'Blog Description', $this->textdomain ),
+				'{date}'          => __( 'Current date', $this->textdomain ),
+				'{time}'          => __( 'Current time', $this->textdomain ),
+				'MESSAGE'         => __( 'Email content', $this->textdomain ),
+				'Images'          => __( 'Image in templates need to be replaced by a logo or a brand image', $this->textdomain )
 			);
 
 			$output = '<div class="placeholders-list-wrapper" id="placeholder-list-wrapper">'
-			          . '<h4>' . __( 'Variables in template', $this->localizationDomain ) . '</h4>'
+			          . '<h4>' . __( 'Variables in template', $this->textdomain ) . '</h4>'
 			          . '<table class="template-placeholders-list">';
 			$output .= '<th>Variable name</th>';
 			$output .= '<th>Default value</th>';
