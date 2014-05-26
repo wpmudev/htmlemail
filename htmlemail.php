@@ -95,9 +95,9 @@ class HTML_emailer {
 	function __construct() {
 
 		//setup proper directories
-		if ( defined( 'WP_PLUGIN_URL' ) && defined( 'WP_PLUGIN_DIR' ) && file_exists( WP_PLUGIN_DIR . '/htmlemail/' . basename( __FILE__ ) ) ) {
+		if ( defined( 'WP_PLUGIN_URL' ) && defined( 'WP_PLUGIN_DIR' ) && file_exists( plugin_dir_path( __FILE__ ) . basename( __FILE__ ) ) ) {
 			$this->location   = 'plugins';
-			$this->plugin_dir = WP_PLUGIN_DIR . '/htmlemail/';
+			$this->plugin_dir = plugin_dir_path( __FILE__ );
 			$this->plugin_url = plugins_url( '', __FILE__ ) . '/';
 		} else if ( defined( 'WPMU_PLUGIN_URL' ) && defined( 'WPMU_PLUGIN_DIR' ) && file_exists( WPMU_PLUGIN_DIR . '/' . basename( __FILE__ ) ) ) {
 			$this->location   = 'mu-plugins';
@@ -254,7 +254,7 @@ class HTML_emailer {
 			if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'html_email-update-options' ) ) {
 				wp_die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->textdomain ) );
 			}
-                        $email = isset( $_POST['preview_html_email_address'] ) ?  $_POST['preview_html_email_address'] : $current_user->user_email;
+			$email = isset( $_POST['preview_html_email_address'] ) ? $_POST['preview_html_email_address'] : $current_user->user_email;
 			wp_mail( $email, 'Test HTML Email Subject', "This is a test message I want to try out to see if it works\n\nIs it working well?" );
 			echo '<div class="updated"><p>' . sprintf( __( 'Preview email was mailed to %s!', $this->textdomain ), $email ) . '</p></div>';
 		}
@@ -280,7 +280,7 @@ class HTML_emailer {
 						foreach ( $configuration_steps as $step ) {
 							?>
 							<li class='config-step'>
-							<span class="step-count"><?php echo sprintf( __('Step %d', $this->textdomain), $count) . "<br />"; ?></span><?php
+							<span class="step-count"><?php echo sprintf( __( 'Step %d', $this->textdomain ), $count ) . "<br />"; ?></span><?php
 							echo $step; ?>
 							</li><?php
 							$count ++;
@@ -288,7 +288,8 @@ class HTML_emailer {
 					</ul>
 				</div>
 				<h5>
-					<a href="#template-wrapper" class="template-toggle" title="<?php _e( 'Click to toggle templates', $this->textdomain ); ?>"><?php _e( 'Choose from sample Templates', $this->textdomain ) ?> [<span class="toggle-indicator">+</span>]</a>
+					<a href="#template-wrapper" class="template-toggle" title="<?php _e( 'Click to toggle templates', $this->textdomain ); ?>"><?php _e( 'Choose from sample Templates', $this->textdomain ) ?>
+						[<span class="toggle-indicator">+</span>]</a>
 				</h5>
 
 				<div class="template-wrapper" id="template-wrapper"><?php
@@ -303,8 +304,8 @@ class HTML_emailer {
 								<div class="template-holder">
 									<!--Template preview-->
 									<a href="#<?php echo $template['name']; ?>"
-										title="<?php echo $template['name']; ?>"><?php echo $template['name']; ?>
-										<br /><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo $template['name']; ?>" /></a>
+									   title="<?php echo $template['name']; ?>"><?php echo $template['name']; ?>
+										<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo $template['name']; ?>"/></a>
 								</div> <?php
 							} ?>
 						</div>
@@ -315,22 +316,23 @@ class HTML_emailer {
 				</div>
 				<div class="action-wrapper submit">
 					<input type="submit" name="save_html_email_options" class="button-primary"
-						value="<?php _e( 'Save', $this->textdomain ); ?>" />
+					       value="<?php _e( 'Save', $this->textdomain ); ?>"/>
 					<a name="preview_template" id="preview_template" class="button button-secondary"
-						href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
-						title="<?php _e( 'Live Preview', $this->textdomain ); ?>"><?php _e( 'Preview', $this->textdomain ); ?></a>
+					   href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
+					   title="<?php _e( 'Live Preview', $this->textdomain ); ?>"><?php _e( 'Preview', $this->textdomain ); ?></a>
 					<input type="button" name="specify_email" class="button-secondary specify_email"
-						value="<?php _e( 'Test Email', $this->textdomain ); ?>" />
-					<span class="spinner"></span><br />
-                                        <div class="preview-email">
-                                            <input type="text" name="preview_html_email_address" value="<?php echo $current_user->user_email; ?>" placeholder="Email address"/>
-                                            <input type="submit" name="preview_html_email" class="button-primary"
-						value="<?php _e( 'Send', $this->textdomain ); ?>" />
-                                        </div>
+					       value="<?php _e( 'Test Email', $this->textdomain ); ?>"/>
+					<span class="spinner"></span><br/>
+
+					<div class="preview-email">
+						<input type="text" name="preview_html_email_address" value="<?php echo $current_user->user_email; ?>" placeholder="Email address"/>
+						<input type="submit" name="preview_html_email" class="button-primary"
+						       value="<?php _e( 'Send', $this->textdomain ); ?>"/>
+					</div>
 				</div>
 				<div class="template-content-holder">
-					<span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message. <span class="list-ref">For a list of variables, <a href="#placeholder-list-wrapper" title="Variables list for Template">click here</a>. You can use the available variables anywhere in the template, they will be automatically replaced with a default value, or you can manually specify a value in place of them.</span>', $this->textdomain ) ?></span>
-					<textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_textarea( get_site_option( 'html_template' ) ); ?></textarea><br />
+					<span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message. <span class="list-ref">For a list of variables, <a href="#placeholder-list-wrapper" title="Variables list for Template">click here</a>. You can use the available variables anywhere in the template, they will be automatically replaced with a default value, or you can manually specify a value in place of them.</span>', $this->textdomain ) ?></span>
+					<textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_textarea( get_site_option( 'html_template' ) ); ?></textarea><br/>
 				</div>
 			</form>
 		</div>
@@ -348,12 +350,12 @@ class HTML_emailer {
 		), '', true );
 		//Lolcalize string to js, to make them translatable
 		$template_load_warning = __( "Your custom template changes will be lost, are you sure you want to continue?", $this->textdomain );
-		$message_missing = __("You need to place MESSAGE somewhere in the template, preferably a main content section.", $this->textdomain );
-		$htmlemail_help_text = array(
-				'load_template' => $template_load_warning,
-				'message_missing'   => $message_missing
+		$message_missing       = __( "You need to place {MESSAGE} somewhere in the template, preferably a main content section.", $this->textdomain );
+		$htmlemail_help_text   = array(
+			'load_template'   => $template_load_warning,
+			'message_missing' => $message_missing
 		);
-		wp_localize_script('htmlemail_js', 'htmlemail_text', $htmlemail_help_text );
+		wp_localize_script( 'htmlemail_js', 'htmlemail_text', $htmlemail_help_text );
 	}
 
 	function enqueue_scripts() {
@@ -440,27 +442,27 @@ class HTML_emailer {
 		$build_styles['style'][]        = $this->theme_path . "/style.css";
 		$build_styles['style_header'][] = $this->theme_path . "/style_header.css";
 
-                if ( defined( 'BUILDER_SETTING_USE_DEFAULT_STYLES' ) ) {
+		if ( defined( 'BUILDER_SETTING_USE_DEFAULT_STYLES' ) ) {
 			$build_styles['default_style'][] = $this->template_directory . "default_style.css";
 		}
 
 		$build_theme = array_merge( $build_htmls, $build_styles );
 		foreach ( $build_theme as $type => $possible_files ) {
 			foreach ( $possible_files as $possible_file ) {
-				if ( isset( $contents_parts[$type] ) && ! empty( $contents_parts[$type] ) ) {
+				if ( isset( $contents_parts[ $type ] ) && ! empty( $contents_parts[ $type ] ) ) {
 					continue;
 				}
 				if ( file_exists( $possible_file ) ) {
-					$handle                = fopen( $possible_file, "r" );
-					$contents_parts[$type] = fread( $handle, filesize( $possible_file ) );
+					$handle                  = fopen( $possible_file, "r" );
+					$contents_parts[ $type ] = fread( $handle, filesize( $possible_file ) );
 					fclose( $handle );
 
 					if ( strpos( $type, 'style' ) !== false ) {
-						$contents_parts[$type] = preg_replace( "/^\s*\/\*[^(\*\/)]*\*\//m", "", $contents_parts[$type] );
+						$contents_parts[ $type ] = preg_replace( "/^\s*\/\*[^(\*\/)]*\*\//m", "", $contents_parts[ $type ] );
 					}
 				}
-				if ( ! isset( $contents_parts[$type] ) ) {
-					$contents_parts[$type] = '';
+				if ( ! isset( $contents_parts[ $type ] ) ) {
+					$contents_parts[ $type ] = '';
 				}
 			}
 		}
@@ -494,7 +496,7 @@ class HTML_emailer {
 
 		//Replace BLOG_URL with actual URL as DOM compatibility escapes img src
 		$content = preg_replace( "/{BLOG_URL}/i", network_site_url(), $content );
-                $style = isset( $contents_parts['default_style'] ) ? $contents_parts['default_style'] . $contents_parts['style'] . $contents_parts['style_header'] : $contents_parts['style'] . $contents_parts['style_header'];
+		$style   = isset( $contents_parts['default_style'] ) ? $contents_parts['default_style'] . $contents_parts['style'] . $contents_parts['style_header'] : $contents_parts['style'] . $contents_parts['style_header'];
 		//Do the inline styling
 		$content = $this->do_inline_styles( $content, $style );
 
@@ -641,21 +643,18 @@ class HTML_emailer {
 		$links        = ! empty( $links ) ? $links[0] : '';
 		$placeholders = array_merge( $placeholders, $links );
 		if ( $desc ) {
-			$placeholders[] = 'MESSAGE';
-			$placeholders[] = 'Images';
 			//Return Placeholder desc table
 			$placeholder_desc = array(
-				'{SIDEBAR_TITLE}' => __( "Title for the sidebar in email e.g. What's trending", $this->textdomain ),
-				'{FROM_NAME}'     => __( "Sender's name if sender's email is associated with a user account", $this->textdomain ),
-				'{FROM_EMAIL}'    => __( "Sender's email, email specified in site settings", $this->textdomain ),
-				'{BLOG_URL}'      => __( 'Blog / Site URL', $this->textdomain ),
-				'{BLOG_NAME}'     => __( 'Blog / Site name', $this->textdomain ),
-				'{ADMIN_EMAIL}'   => __( 'Email address of the support or contact person. Same as {FROM_EMAIL}', $this->textdomain ),
-				'{BRANDING_HTML}' => __( 'Blog Description', $this->textdomain ),
-				'{date}'          => __( 'Current date', $this->textdomain ),
-				'{time}'          => __( 'Current time', $this->textdomain ),
-				'MESSAGE'         => __( 'Email content', $this->textdomain ),
-				'Images'          => __( 'Image in templates need to be replaced by a logo or a brand image', $this->textdomain )
+				'{SIDEBAR_TITLE}'    => __( "Title for the sidebar in email e.g. What's trending", $this->textdomain ),
+				'{FROM_NAME}'        => __( "Sender's name if sender's email is associated with a user account", $this->textdomain ),
+				'{FROM_EMAIL}'       => __( "Sender's email, email specified in site settings", $this->textdomain ),
+				'{BLOG_URL}'         => __( 'Blog / Site URL', $this->textdomain ),
+				'{BLOG_NAME}'        => __( 'Blog / Site name', $this->textdomain ),
+				'{ADMIN_EMAIL}'        => __( 'Email address of the support or contact person. Same as {FROM_EMAIL}', $this->textdomain ),
+				'{BLOG_DESCRIPTION}' => __( 'Blog Description', $this->textdomain ),
+				'{DATE}'             => __( 'Current date', $this->textdomain ),
+				'{TIME}'             => __( 'Current time', $this->textdomain ),
+				'{MESSAGE}'            => __( 'Email content', $this->textdomain )
 			);
 
 			$output = '<div class="placeholders-list-wrapper" id="placeholder-list-wrapper">'
@@ -671,7 +670,7 @@ class HTML_emailer {
 				}
 				$output .= '<tr>';
 				$output .= '<td>' . $p_name . '</td>';
-				$output .= '<td>' .  $p_desc . '</td>';
+				$output .= '<td>' . $p_desc . '</td>';
 				$output .= '</tr>';
 			}
 			$output .= '</table>'
@@ -724,38 +723,38 @@ class HTML_emailer {
 			}
 			$placeholder_posts["{POST_$count}"] = $this->short_str( $post['post_title'], '...', 10 );
 			//Jugaad, to keep the template styling and links
-			$placeholder_posts["%7BPOST_" . $count . "_LINK%7D"] = esc_url( get_permalink( $post['ID'] ) );
+			$placeholder_posts[ "%7BPOST_" . $count . "_LINK%7D" ] = esc_url( get_permalink( $post['ID'] ) );
 			$count ++;
-		}
-		$placeholders_list = array(
-			'{}'               => '',
-			'{SIDEBAR_TITLE}'  => $sidebar_title,
-			'{CONTENT_HEADER}' => '',
-			'{CONTENT_FOOTER}' => '',
-			'{FOOTER}'         => '',
-			'{FROM_NAME}'      => $display_name,
-			'{FROM_EMAIL}'     => $from_email,
-			'{BLOG_URL}'       => $blog_url,
-			'{BLOG_NAME}'      => get_bloginfo( 'name' ),
-			'{EMAIL_TITLE}'    => get_bloginfo( 'name' ),
-			'{ADMIN_EMAIL}'    => $admin_email,
-			'{BG_IMAGE}'       => $bg_image,
-			'{HEADER_IMAGE}'   => $header_image,
-			'{BRANDING_HTML}'  => get_bloginfo( 'description' ),
-			'{date}'           => $date,
-			'{time}'           => $time
-		);
-		$placeholders_list = $placeholders_list + $placeholder_posts;
-		foreach ( $placeholders as $placeholder ) {
-			if ( ! isset( $placeholders_list [$placeholder] ) ) {
-				continue;
-			}
-			$content = preg_replace( "/($placeholder)/i", $placeholders_list[$placeholder], $content );
 		}
 		//Show for preview only
 		if ( $demo_message ) {
-			$content = preg_replace( "/(MESSAGE)/i", $message, $content );
+			$content = preg_replace( "/({MESSAGE})/i", $message, $content );
 			$content = preg_replace( "/({USER_NAME})/i", 'Jon', $content );
+		}
+		$placeholders_list = array(
+			'{}'                 => '',
+			'{SIDEBAR_TITLE}'    => $sidebar_title,
+			'{CONTENT_HEADER}'   => '',
+			'{CONTENT_FOOTER}'   => '',
+			'{FOOTER}'           => '',
+			'{FROM_NAME}'        => $display_name,
+			'{FROM_EMAIL}'       => $from_email,
+			'{BLOG_URL}'         => $blog_url,
+			'{BLOG_NAME}'        => get_bloginfo( 'name' ),
+			'{EMAIL_TITLE}'      => get_bloginfo( 'name' ),
+			'{ADMIN_EMAIL}'        => $admin_email,
+			'{BG_IMAGE}'         => $bg_image,
+			'{HEADER_IMAGE}'     => $header_image,
+			'{BLOG_DESCRIPTION}' => get_bloginfo( 'description' ),
+			'{DATE}'             => $date,
+			'{TIME}'             => $time
+		);
+		$placeholders_list = $placeholders_list + $placeholder_posts;
+		foreach ( $placeholders as $placeholder ) {
+			if ( ! isset( $placeholders_list [ $placeholder ] ) ) {
+				continue;
+			}
+			$content = preg_replace( "/($placeholder)/i", $placeholders_list[ $placeholder ], $content );
 		}
 
 		return $content;

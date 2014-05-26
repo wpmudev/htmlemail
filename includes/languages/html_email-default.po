@@ -52,7 +52,7 @@ msgid "HTML Template"
 msgstr ""
 
 #: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:190
-msgid "Please enter the HTML of your email template here. You need to place MESSAGE somewhere in the template, preferably a main content section. That will be replaced with the email message."
+msgid "Please enter the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message."
 msgstr ""
 
 #: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:194
