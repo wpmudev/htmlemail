@@ -3,13 +3,12 @@
     Author     : umesh
 */
 .email-templates-wrapper{
-    max-height: 250px;
+    max-height: 300px;
     overflow: hidden;
-    padding: 0 30px 20px 32px;
+    padding: 0 30px 20px;
 }
 /* Templates Wrapper */
 .template-wrapper {
-    background: white;
     display: none;
     padding: 10px 0;
 }
@@ -29,32 +28,37 @@
     float: left;
 }
 .template-holder img.theme-preview {
-    max-width: 215px;
+    max-width: 220px;
 }
 .template-holder a{
     font-size: medium;
     line-height: 1.5; 
 }
+.template-selector{
+    float: left;
+    margin: 0 10px;
+}
 .template-holder a img {
     border: 2px solid transparent;
+    margin: 5px 0 0 0;
 }
 .template-holder.active-theme {
     opacity: 1;
 }
 .template-holder.active-theme img {
     border: 2px solid #2ea2cc;
-    box-shadow: 0 8px 15px rgba(0,0,0,0.6);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.6);
 }
 /* Fixes arrow position */
 .slick-next {
-    margin-right: 7px;
+    margin-right: 22px;
 }
 .slick-prev:before, .slick-next:before {
     color: #2ea2cc;
-    font-size: 24px;
+    font-size: 30px;
 }
 .slick-list {
-    margin-left: 8px;
+    /*margin-left: 12px;*/
 }
 .slick-slide {
     opacity: 0.6;
@@ -81,8 +85,9 @@
 .action-wrapper .button-secondary, .action-wrapper #preview_template {
     margin-left: 5px;
 }
-#load_template {
-    margin: 0 0 0 8px;
+.load_template.button-primary {
+    margin: 10px 0 0 10px;
+    max-width: 220px;
 }
 .preview-email {
     clear: left;
@@ -123,11 +128,10 @@
 }
 /*Configuration guide */
 .config-guide {
-    background: white;
     padding: 1px 5px;
 }
 .config-guide h3 {
-    padding: 4px;
+    padding: 4px 4px 4px 0;
 }
 li.config-step {
     display: inline-block;

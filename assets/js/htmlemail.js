@@ -12,21 +12,26 @@ jQuery( document ).ready( function($) {
     jQuery('body').on('click', '.template-holder.slick-slide a', function(e){
         e.preventDefault();
 
-        $load_button = jQuery('#load_template');
-
+        //Remove active class from other templates
         jQuery('.template-holder').removeClass('active-theme');
+
+        //Add active class to current theme
         jQuery(this).parent(). addClass('active-theme');
+
+        //hide all other load template buttons
+        jQuery('.load_template').addClass('disabled');
 
         $theme_name = jQuery(this).attr('href');
         $theme_name = $theme_name.substr($theme_name.indexOf("#") + 1);
 
-        $load_button.removeClass('disabled').attr('href', '#' + $theme_name );
-        $load_button.find('span.template-name').html( ' ' + $theme_name);
+        $load_button = jQuery('#load_template_' + $theme_name );
+
+        $load_button.removeClass('disabled').attr('href', '#' + $theme_name).css('display', 'inline-block');
     });
     /**
      * On click of load template button get template default data and add it to textarea
      */
-    jQuery('body').on('click', '#load_template', function(e){
+    jQuery('body').on('click', '.load_template', function(e){
         e.preventDefault();
         jQuery('.placeholders-list-wrapper').remove();
         if( ! confirm( htmlemail_text['load_template'] ) ){

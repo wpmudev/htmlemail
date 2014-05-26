@@ -298,21 +298,22 @@ class HTML_emailer {
 					if ( ! empty( $templates ) && is_array( $templates ) ) {
 						?>
 						<div class="email-templates-wrapper">
-						<div class="email-templates"><?php
-							foreach ( $templates as $template ) {
-								?>
-								<div class="template-holder">
-									<!--Template preview-->
-									<a href="#<?php echo $template['name']; ?>"
-									   title="<?php echo $template['name']; ?>"><?php echo $template['name']; ?>
-										<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo $template['name']; ?>"/></a>
-								</div> <?php
-							} ?>
-						</div>
+							<div class="email-templates"><?php
+
+								foreach ( $templates as $template ) {
+									?>
+									<div class="template-holder">
+										<!--Template preview-->
+										<a class="template-selector" href="#<?php echo $template['name']; ?>" title="<?php echo __( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
+											<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo $template['name']; ?>"/></a>
+
+										<a id="load_template_<?php echo $template['name']; ?>" class="load_template button-primary disabled" href="#" title="<?php _e( 'Load template markup', $this->textdomain ); ?>"><?php echo __( 'Load Template ', $this->textdomain ) . $template['name']; ?></a>
+									</div><?php
+								} ?>
+
+							</div>
 						</div><?php
 					} ?>
-					<a name="load_template" id="load_template" class="button button-primary disabled" href="#" title="<?php _e( 'Load template markup', $this->textdomain ); ?>"><?php _e( 'Load Template', $this->textdomain ); ?>
-						<span class="template-name"></span></a>
 				</div>
 				<div class="action-wrapper submit">
 					<input type="submit" name="save_html_email_options" class="button-primary"
