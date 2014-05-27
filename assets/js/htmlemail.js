@@ -85,6 +85,9 @@ jQuery( document ).ready( function($) {
      */
     jQuery('body').on('click', 'input[name="save_html_email_options"]', function (e) {
         $template_content = jQuery('#template-content').val();
+        if( $template_content == '' ){
+            return true;
+        }
         $message = $template_content.indexOf("{MESSAGE}");
         if (!$message || $message == -1) {
             alert(htmlemail_text['message_missing']);
