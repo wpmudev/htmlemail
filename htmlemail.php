@@ -2,7 +2,7 @@
 /*
 Plugin Name: HTML Email Templates
 Plugin URI: https://premium.wpmudev.org/project/html-email-templates/
-Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates are set network wide.
+Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates can be set network wide or allowed to set site wise template setting, if template is not specified, network template will be used.
 Author: WPMU DEV
 Version: 1.2
 Author URI: http://premium.wpmudev.org/
@@ -282,7 +282,7 @@ class HTML_emailer {
 			$template = stripslashes( $_POST['template'] );
 
 			//Update settings for network or blog
-			if ( 'settings.php' == $pagenow ) {
+			if ( 'settings.php' == $pagenow || ! is_multisite() ) {
 				//settings
 				$htmlemail_settings = isset( $_POST['htmlemail_settings'] ) ? $_POST['htmlemail_settings'] : '';
 
