@@ -108,6 +108,9 @@
     width: 220px;
 }
 /* Placeholder list table styling */
+#placeholder-list-wrapper {
+    display: none;
+}
 .template-placeholders-list {
     background: white;
     border: 1px solid #c1c1c1;
@@ -139,7 +142,7 @@ li.config-step {
     margin: 0 5px 0 0;
     padding: 5px 0;
     vertical-align: top;
-    width: 20%;
+    width: 24%;
 }
 li.config-step:last-child{
     margin: 0;

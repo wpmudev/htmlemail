@@ -8,6 +8,7 @@ Change Log:
 
 1.2 - 5/15/2014
 ----------------------------------------------------------------------
+- New: Option to specify different template for each site or use a common template
 - New: Added Templates and Instant Preview option
 - Filters: Works for template with sidebar:
     htmlemail_sidebar_posts => List of posts to be displayed, 

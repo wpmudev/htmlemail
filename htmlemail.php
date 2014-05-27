@@ -149,7 +149,7 @@ class HTML_emailer {
 	function wp_mail( $args ) {
 		extract( $args );
 
-		$reply_to = '';
+		$reply_to = $html_template = '';
 
 		//Set the content type header, charset, and reply to headers
 		if ( is_array( $headers ) ) {
@@ -163,7 +163,19 @@ class HTML_emailer {
 		//Force WP to add <p> tags to the message content
 		$message = wpautop( $message );
 
-		$message = preg_replace( "/(MESSAGE)/i", $message, get_site_option( 'html_template' ) );
+		//Get site template
+
+		//Fetch HTML email settings
+		$htmlemail_settings = get_blog_option( get_current_blog_id(), 'htmlemail_settings' );
+
+		if ( $htmlemail_settings ) {
+			$html_template = get_blog_option( get_current_blog_id(), 'html_template' );
+		}
+		if ( empty( $html_template ) ) {
+			$html_template = get_site_option( 'html_template' );
+		}
+
+		$message = preg_replace( "/(MESSAGE)/i", $message, $html_template );
 
 		$message = $this->replace_placeholders( $message, $demo_message = false );
 		//Replace User name
@@ -197,26 +209,40 @@ class HTML_emailer {
 	 * @desc Adds the options subpanel
 	 */
 	function admin_menu_link() {
-		global $html_template;
+		global $html_template, $html_template_network, $html_template_site;
 		//If you change this from add_options_page, MAKE SURE you change the filter_plugin_actions function (below) to
 		//reflect the page filename (ie - options-general.php) of the page your plugin is under!
 		if ( is_multisite() ) {
-			$html_template = add_submenu_page( 'settings.php', __( 'HTML Email Template', $this->textdomain ), __( 'HTML Email Template', $this->textdomain ), 'manage_network_options', 'html-template', array(
+			$html_template_network = add_submenu_page( 'settings.php', __( 'HTML Email Template', $this->textdomain ), __( 'HTML Email Template', $this->textdomain ), 'manage_network_options', 'html-template', array(
 				&$this,
 				'admin_options_page'
 			) );
+
+			//Allow to change templates wsitewise if allowed
+			$htmlemail_settings = get_site_option( 'htmlemail_settings' );
+
+			$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings ['site_override'] : '';
+
+			if ( $site_override ) {
+				$html_template_site = add_options_page( __( 'HTML Email Template', $this->textdomain ), __( 'HTML Email Template', $this->textdomain ), 'administrator', 'html-template', array(
+					$this,
+					'admin_options_page'
+				) );
+			}
+			//register scripts for site
+			add_action( "load-{$html_template_site}", array( &$this, 'register_scripts' ) );
 		} else if ( ! is_multisite() ) {
 			$html_template = add_submenu_page( 'options-general.php', __( 'HTML Email Template', $this->textdomain ), __( 'HTML Email Template', $this->textdomain ), 'manage_options', 'html-template', array(
 				&$this,
 				'admin_options_page'
 			) );
 		}
-
 		add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), array(
 			&$this,
 			'filter_plugin_actions'
 		), 10, 2 );
 		add_action( "load-{$html_template}", array( &$this, 'register_scripts' ) );
+		add_action( "load-{$html_template_network}", array( &$this, 'register_scripts' ) );
 	}
 
 	/**
@@ -238,18 +264,30 @@ class HTML_emailer {
 	 * Adds settings/options page
 	 */
 	function admin_options_page() {
-		global $current_user;
-
+		global $current_user, $pagenow;
+		//Save template content and other settings
 		if ( isset( $_POST['save_html_email_options'] ) ) {
 			if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'html_email-update-options' ) ) {
 				die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->textdomain ) );
 			}
 
 			$template = stripslashes( $_POST['template'] );
-			update_site_option( 'html_template', $template );
+			//settings
+			$htmlemail_settings = isset( $_POST['htmlemail_settings'] ) ? $_POST['htmlemail_settings'] : '';
+
+			update_site_option( 'htmlemail_settings', $htmlemail_settings );
+
+			//Update settings for network or blog
+			if ( 'settings.php' == $pagenow ) {
+				update_site_option( 'html_template', $template );
+
+			} else {
+				update_blog_option( get_current_blog_id(), 'html_template', $template );
+			}
+
 			echo '<div class="updated"><p>' . __( 'Success! Your changes were sucessfully saved!', $this->textdomain ) . '</p></div>';
 		}
-
+		//Send a preview email
 		if ( isset( $_POST['preview_html_email'] ) ) {
 			if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'html_email-update-options' ) ) {
 				wp_die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->textdomain ) );
@@ -258,6 +296,20 @@ class HTML_emailer {
 			wp_mail( $email, 'Test HTML Email Subject', "This is a test message I want to try out to see if it works\n\nIs it working well?" );
 			echo '<div class="updated"><p>' . sprintf( __( 'Preview email was mailed to %s!', $this->textdomain ), $email ) . '</p></div>';
 		}
+
+		//Fetch HTML email settings
+		if ( 'settings.php' == $pagenow ) {
+
+			$htmlemail_settings = get_site_option( 'htmlemail_settings' );
+			$html_template = get_site_option( 'html_template' );
+
+		} else {
+
+			$htmlemail_settings = get_blog_option( get_current_blog_id(), 'htmlemail_settings' );
+			$html_template = get_blog_option( get_current_blog_id(), 'html_template' );
+
+		}
+		$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings ['site_override'] : '';
 		?>
 		<div class="wrap">
 			<form method="post">
@@ -266,11 +318,20 @@ class HTML_emailer {
 
 				<p><?php _e( 'This plugin will wrap every WordPress email sent within an HTML template.', $this->textdomain ); ?></p>
 
+				<!--				Add an option for multisite--><?php
+				if ( 'settings.php' == $pagenow ) {
+					?>
+					<label>
+					<input type="checkbox" name="htmlemail_settings[site_override]" <?php echo checked( $site_override, 1 ); ?> value="1"/><?php _e( 'Allow to set site wise template', $this->textdomain ); ?>
+					</label><?php
+				}
+				?>
+
 				<div class='config-guide'>
 					<h3><?php _e( 'Four easy steps to send better emails:', $this->textdomain ); ?></h3>
 					<?php
 					$configuration_steps = array(
-						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a> or type/paste your own HTML into the textarea.', $this->textdomain ),
+						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea.', $this->textdomain ),
 						__( 'Click "Preview" to quickly see what your emails will look like in a popup.', $this->textdomain ),
 						__( 'Send a "Test Email" to preview your template in actual email clients. You can specify an email address for this to be sent to.', $this->textdomain ),
 						__( 'Select "Save" and the HTML you have below will be used as your HTML Email Template for all transactional emails from your site.', $this->textdomain )
@@ -280,8 +341,8 @@ class HTML_emailer {
 						foreach ( $configuration_steps as $step ) {
 							?>
 							<li class='config-step'>
-							<span class="step-count"><?php echo sprintf( __( 'Step %d', $this->textdomain ), $count ) . "<br />"; ?></span><?php
-							echo $step; ?>
+								<span class="step-count"><?php echo sprintf( __( 'Step %d', $this->textdomain ), $count ) . "<br />"; ?></span><?php
+								echo $step; ?>
 							</li><?php
 							$count ++;
 						} ?>
@@ -307,14 +368,15 @@ class HTML_emailer {
 										<a class="template-selector" href="#<?php echo $template['name']; ?>" title="<?php echo __( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
 											<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo $template['name']; ?>"/></a>
 
-										<a id="load_template_<?php echo $template['name']; ?>" class="load_template button-primary disabled" href="#" title="<?php _e( 'Load template markup', $this->textdomain ); ?>"><?php echo __( 'Load Template ', $this->textdomain ) . $template['name']; ?></a>
+										<a id="load_template_<?php echo $template['name']; ?>" class="load_template button-primary disabled" href="#" title="<?php _e( 'Load template html', $this->textdomain ); ?>"><?php echo __( 'Load Template ', $this->textdomain ) . $template['name']; ?></a>
 									</div><?php
 								} ?>
 
 							</div>
 						</div><?php
 					} ?>
-				</div>
+				</div><?php
+					echo $this->list_placeholders( '', true ); ?>
 				<div class="action-wrapper submit">
 					<input type="submit" name="save_html_email_options" class="button-primary"
 					       value="<?php _e( 'Save', $this->textdomain ); ?>"/>
@@ -332,8 +394,8 @@ class HTML_emailer {
 					</div>
 				</div>
 				<div class="template-content-holder">
-					<span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message. <span class="list-ref">For a list of variables, <a href="#placeholder-list-wrapper" title="Variables list for Template">click here</a>. You can use the available variables anywhere in the template, they will be automatically replaced with a default value, or you can manually specify a value in place of them.</span>', $this->textdomain ) ?></span>
-					<textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_textarea( get_site_option( 'html_template' ) ); ?></textarea><br/>
+					<span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message.', $this->textdomain ) ?></span>
+					<textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_textarea( $html_template ); ?></textarea><br/>
 				</div>
 			</form>
 		</div>
@@ -405,8 +467,7 @@ class HTML_emailer {
 			wp_send_json_error( 'no theme specified' );
 		}
 		$content           = $this->get_contents_elements( $_GET['theme'] );
-		$placeholders_list = $this->list_placeholders( $content, true );
-		wp_send_json_success( array( 'content' => $content, 'placeholders' => $placeholders_list ) );
+		wp_send_json_success( $content );
 	}
 
 	/**
@@ -635,14 +696,6 @@ class HTML_emailer {
 	 * Returns the list of placeholders in template content
 	 */
 	function list_placeholders( $content, $desc = false ) {
-		$placeholders = $links = '';
-		preg_match_all( "/\{.+\}/U", $content, $placeholders );
-		//Jugaad, need to find a fix for this
-		preg_match_all( "/\%7B.+\%7D/U", $content, $links );
-
-		$placeholders = ! empty( $placeholders ) ? $placeholders[0] : '';
-		$links        = ! empty( $links ) ? $links[0] : '';
-		$placeholders = array_merge( $placeholders, $links );
 		if ( $desc ) {
 			//Return Placeholder desc table
 			$placeholder_desc = array(
@@ -651,24 +704,22 @@ class HTML_emailer {
 				'{FROM_EMAIL}'       => __( "Sender's email, email specified in site settings", $this->textdomain ),
 				'{BLOG_URL}'         => __( 'Blog / Site URL', $this->textdomain ),
 				'{BLOG_NAME}'        => __( 'Blog / Site name', $this->textdomain ),
-				'{ADMIN_EMAIL}'        => __( 'Email address of the support or contact person. Same as {FROM_EMAIL}', $this->textdomain ),
+				'{ADMIN_EMAIL}'      => __( 'Email address of the support or contact person. Same as {FROM_EMAIL}', $this->textdomain ),
 				'{BLOG_DESCRIPTION}' => __( 'Blog Description', $this->textdomain ),
 				'{DATE}'             => __( 'Current date', $this->textdomain ),
 				'{TIME}'             => __( 'Current time', $this->textdomain ),
-				'{MESSAGE}'            => __( 'Email content', $this->textdomain )
+				'{MESSAGE}'          => __( 'Email content', $this->textdomain )
 			);
 
-			$output = '<div class="placeholders-list-wrapper" id="placeholder-list-wrapper">'
-			          . '<h4>' . __( 'Variables in template', $this->textdomain ) . '</h4>'
+			$output = '<h4><a href="#placeholder-list-wrapper" class="template-toggle" title="' . __( 'variable list', $this->textdomain ) . '">' . __( 'List of variables that can be used in template', $this->textdomain ) .
+			          '[<span class="toggle-indicator">+</span>]</a></h4>'
+			          . '<div class="placeholders-list-wrapper" id="placeholder-list-wrapper">'
 			          . '<table class="template-placeholders-list">';
 			$output .= '<th>Variable name</th>';
 			$output .= '<th>Default value</th>';
 
 			//Get list of common variables
 			foreach ( $placeholder_desc as $p_name => $p_desc ) {
-				if ( ! in_array( $p_name, $placeholders ) ) {
-					continue;
-				}
 				$output .= '<tr>';
 				$output .= '<td>' . $p_name . '</td>';
 				$output .= '<td>' . $p_desc . '</td>';
@@ -679,6 +730,14 @@ class HTML_emailer {
 
 			return $output;
 		}
+		$placeholders = $links = '';
+		preg_match_all( "/\{.+\}/U", $content, $placeholders );
+		//Jugaad, need to find a fix for this
+		preg_match_all( "/\%7B.+\%7D/U", $content, $links );
+
+		$placeholders = ! empty( $placeholders ) ? $placeholders[0] : '';
+		$links        = ! empty( $links ) ? $links[0] : '';
+		$placeholders = array_merge( $placeholders, $links );
 
 		return $placeholders;
 	}
@@ -730,6 +789,7 @@ class HTML_emailer {
 		//Show for preview only
 		if ( $demo_message ) {
 			$content = preg_replace( "/({MESSAGE})/i", $message, $content );
+			$content = preg_replace( "/(MESSAGE)/i", $message, $content );
 			$content = preg_replace( "/({USER_NAME})/i", 'Jon', $content );
 		}
 		$placeholders_list = array(
@@ -743,7 +803,7 @@ class HTML_emailer {
 			'{BLOG_URL}'         => $blog_url,
 			'{BLOG_NAME}'        => get_bloginfo( 'name' ),
 			'{EMAIL_TITLE}'      => get_bloginfo( 'name' ),
-			'{ADMIN_EMAIL}'        => $admin_email,
+			'{ADMIN_EMAIL}'      => $admin_email,
 			'{BG_IMAGE}'         => $bg_image,
 			'{HEADER_IMAGE}'     => $header_image,
 			'{BLOG_DESCRIPTION}' => get_bloginfo( 'description' ),
@@ -768,12 +828,15 @@ class HTML_emailer {
 	 * @return boolean
 	 */
 	function is_htmlemail_setting_page() {
-		global $html_template, $hook_suffix;
-		if ( $GLOBALS['hook_suffix'] !== $GLOBALS['html_template'] ) {
-			return false;
+		global $html_template, $html_template_network, $html_template_site, $hook_suffix;
+		if ( $GLOBALS['hook_suffix'] == $GLOBALS['html_template']
+		     || $GLOBALS['hook_suffix'] == $GLOBALS['html_template_site']
+		     || $GLOBALS['hook_suffix'] == $GLOBALS['html_template_network']
+		) {
+			return true;
 		}
 
-		return true;
+		return false;
 	}
 
 	/**

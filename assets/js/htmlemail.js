@@ -33,22 +33,17 @@ jQuery( document ).ready( function($) {
      */
     jQuery('body').on('click', '.load_template', function(e){
         e.preventDefault();
-        jQuery('.placeholders-list-wrapper').remove();
-        if( ! confirm( htmlemail_text['load_template'] ) ){
+        $textarea = jQuery('#template-content');
+        if( $textarea.val() != '' && ! confirm( htmlemail_text['load_template'] ) ){
             return false;
         }
-        //Display reference link for placeholder list table
-        jQuery('.list-ref').show();
 
         $theme_name = jQuery(this).attr('href');
         $theme_name = $theme_name.substr($theme_name.indexOf("#") + 1);
         jQuery.get( ajaxurl, { 'action': 'htmlemail_get_template_data', 'theme': $theme_name }, function(res){
-            $textarea = jQuery('#template-content');
-            //Append the template content
-            $textarea.val(res.data.content);
 
-            //Append the table
-            $textarea.after(res.data.placeholders);
+            //Append the template content
+            $textarea.val(res.data);
 
         });
     });
@@ -88,11 +83,11 @@ jQuery( document ).ready( function($) {
     /**
      * On click over save, check if template contains 'MESSAGE', otherwise alert and return
      */
-    jQuery('body').on('click', 'input[name="save_html_email_options"]', function(e) {
+    jQuery('body').on('click', 'input[name="save_html_email_options"]', function (e) {
         $template_content = jQuery('#template-content').val();
         $message = $template_content.indexOf("{MESSAGE}");
-        if( !$message || $message == -1 ){
-            alert( htmlemail_text['message_missing'] );
+        if (!$message || $message == -1) {
+            alert(htmlemail_text['message_missing']);
             return false;
         }
         return true;
@@ -103,14 +98,16 @@ jQuery( document ).ready( function($) {
     jQuery('.template-toggle').click ( function( e ){
         e.preventDefault();
         $this = jQuery(this);
-        $templates_wrapper = $this.attr('href');
-        jQuery($templates_wrapper).dequeue().stop().toggle('slow', '', function(){
-            if( jQuery('#template-wrapper').css('display') == 'none' ){
+        $wrapper_div = $this.attr('href');
+        jQuery($wrapper_div).dequeue().stop().toggle('slow', '', function () {
+            if (jQuery($wrapper_div).css('display') == 'none') {
                 $this.find('span').html('+')
-            }else{
+            } else {
                 $this.find('span').html('-')
             }
-            load_templates_slider();
+            if ($wrapper_div == '#template-wrapper') {
+                load_templates_slider();
+            }
         });
     });
     /**
