@@ -149,7 +149,7 @@ class HTML_emailer {
 	function wp_mail( $args ) {
 		extract( $args );
 
-		$reply_to = $html_template = '';
+		$reply_to = $html_template = $htmlemail_settings = '';
 
 		//Set the content type header, charset, and reply to headers
 		if ( is_array( $headers ) ) {
@@ -166,18 +166,23 @@ class HTML_emailer {
 		//Get site template
 
 		//Fetch HTML email settings
-		$htmlemail_settings = get_blog_option( get_current_blog_id(), 'htmlemail_settings' );
+		$htmlemail_settings = get_site_option( 'htmlemail_settings' );
+		//Check if site is allowed to use its own template
+		$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings['site_override'] : '';
 
-		if ( $htmlemail_settings ) {
+		if ( $site_override && is_multisite() ) {
+
 			$html_template = get_blog_option( get_current_blog_id(), 'html_template' );
+
 		}
 		if ( empty( $html_template ) ) {
 			$html_template = get_site_option( 'html_template' );
 		}
 
-		$message = preg_replace( "/(MESSAGE)/i", $message, $html_template );
+		$email_content = $this->replace_placeholders( $html_template, $demo_message = false );
+		$message       = preg_replace( "/({MESSAGE})/", $message, $email_content );
+		$message       = preg_replace( "/(MESSAGE)/", $message, $message );
 
-		$message = $this->replace_placeholders( $message, $demo_message = false );
 		//Replace User name
 		$user = get_user_by( 'email', $to );
 		if ( $user ) {
@@ -272,13 +277,13 @@ class HTML_emailer {
 			}
 
 			$template = stripslashes( $_POST['template'] );
-			//settings
-			$htmlemail_settings = isset( $_POST['htmlemail_settings'] ) ? $_POST['htmlemail_settings'] : '';
-
-			update_site_option( 'htmlemail_settings', $htmlemail_settings );
 
 			//Update settings for network or blog
 			if ( 'settings.php' == $pagenow ) {
+				//settings
+				$htmlemail_settings = isset( $_POST['htmlemail_settings'] ) ? $_POST['htmlemail_settings'] : '';
+
+				update_site_option( 'htmlemail_settings', $htmlemail_settings );
 				update_site_option( 'html_template', $template );
 
 			} else {
@@ -296,15 +301,13 @@ class HTML_emailer {
 			wp_mail( $email, 'Test HTML Email Subject', "This is a test message I want to try out to see if it works\n\nIs it working well?" );
 			echo '<div class="updated"><p>' . sprintf( __( 'Preview email was mailed to %s!', $this->textdomain ), $email ) . '</p></div>';
 		}
-
 		//Fetch HTML email settings
-		if ( 'settings.php' == $pagenow ) {
+		if ( !is_multisite() || 'settings.php' == $pagenow ) {
 
 			$htmlemail_settings = get_site_option( 'htmlemail_settings' );
 			$html_template = get_site_option( 'html_template' );
 
 		} else {
-
 			$htmlemail_settings = get_blog_option( get_current_blog_id(), 'htmlemail_settings' );
 			$html_template = get_blog_option( get_current_blog_id(), 'html_template' );
 
@@ -788,9 +791,9 @@ class HTML_emailer {
 		}
 		//Show for preview only
 		if ( $demo_message ) {
-			$content = preg_replace( "/({MESSAGE})/i", $message, $content );
-			$content = preg_replace( "/(MESSAGE)/i", $message, $content );
-			$content = preg_replace( "/({USER_NAME})/i", 'Jon', $content );
+			$content = preg_replace( "/({MESSAGE})/", $message, $content );
+			$content = preg_replace( "/(MESSAGE)/", $message, $content );
+			$content = preg_replace( "/({USER_NAME})/", 'Jon', $content );
 		}
 		$placeholders_list = array(
 			'{}'                 => '',
@@ -815,7 +818,7 @@ class HTML_emailer {
 			if ( ! isset( $placeholders_list [ $placeholder ] ) ) {
 				continue;
 			}
-			$content = preg_replace( "/($placeholder)/i", $placeholders_list[ $placeholder ], $content );
+			$content = preg_replace( "/($placeholder)/", $placeholders_list[ $placeholder ], $content );
 		}
 
 		return $content;
