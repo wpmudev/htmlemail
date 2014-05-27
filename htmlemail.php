@@ -147,6 +147,7 @@ class HTML_emailer {
 	}
 
 	function wp_mail( $args ) {
+		global $pagenow;
 		extract( $args );
 
 		$reply_to = $html_template = $htmlemail_settings = '';
@@ -163,26 +164,26 @@ class HTML_emailer {
 		//Force WP to add <p> tags to the message content
 		$message = wpautop( $message );
 
-		//Get site template
-
 		//Fetch HTML email settings
 		$htmlemail_settings = get_site_option( 'htmlemail_settings' );
+
 		//Check if site is allowed to use its own template
 		$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings['site_override'] : '';
 
-		if ( $site_override && is_multisite() ) {
-
-			$html_template = get_blog_option( get_current_blog_id(), 'html_template' );
-
-		}
-		if ( empty( $html_template ) ) {
+		//As the network has site id 1, it loads the template for blog with id 1 but for preview we need to show network template
+		if ( isset( $_POST['preview_html_email'] ) && 'Send' == $_POST['preview_html_email'] && 'settings.php' == $pagenow ) {
 			$html_template = get_site_option( 'html_template' );
 		}
 
-		$email_content = $this->replace_placeholders( $html_template, $demo_message = false );
-		$message       = preg_replace( "/({MESSAGE})/", $message, $email_content );
-		$message       = preg_replace( "/(MESSAGE)/", $message, $message );
+		if ( empty( $html_template ) && $site_override && is_multisite() ) {
+			$html_template = get_blog_option( get_current_blog_id(), 'html_template' );
+		}
 
+		if ( empty( $html_template ) ) {
+			$html_template = get_site_option( 'html_template' );
+		}
+		$message = preg_replace( "/({MESSAGE})/", $message, $html_template );
+		$message = preg_replace( "/(MESSAGE)/", $message, $message );
 		//Replace User name
 		$user = get_user_by( 'email', $to );
 		if ( $user ) {
@@ -190,6 +191,8 @@ class HTML_emailer {
 		} else {
 			$message = preg_replace( '~\{USER_NAME}~', '', $message );
 		}
+
+		$message = $this->replace_placeholders( $message, false );
 
 		//Compact & return all the vars
 		return compact( 'to', 'subject', 'message', 'headers', 'attachments' );
@@ -302,14 +305,14 @@ class HTML_emailer {
 			echo '<div class="updated"><p>' . sprintf( __( 'Preview email was mailed to %s!', $this->textdomain ), $email ) . '</p></div>';
 		}
 		//Fetch HTML email settings
-		if ( !is_multisite() || 'settings.php' == $pagenow ) {
+		if ( ! is_multisite() || 'settings.php' == $pagenow ) {
 
 			$htmlemail_settings = get_site_option( 'htmlemail_settings' );
-			$html_template = get_site_option( 'html_template' );
+			$html_template      = get_site_option( 'html_template' );
 
 		} else {
 			$htmlemail_settings = get_blog_option( get_current_blog_id(), 'htmlemail_settings' );
-			$html_template = get_blog_option( get_current_blog_id(), 'html_template' );
+			$html_template      = get_blog_option( get_current_blog_id(), 'html_template' );
 
 		}
 		$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings ['site_override'] : '';
@@ -344,8 +347,8 @@ class HTML_emailer {
 						foreach ( $configuration_steps as $step ) {
 							?>
 							<li class='config-step'>
-								<span class="step-count"><?php echo sprintf( __( 'Step %d', $this->textdomain ), $count ) . "<br />"; ?></span><?php
-								echo $step; ?>
+							<span class="step-count"><?php echo sprintf( __( 'Step %d', $this->textdomain ), $count ) . "<br />"; ?></span><?php
+							echo $step; ?>
 							</li><?php
 							$count ++;
 						} ?>
@@ -362,24 +365,24 @@ class HTML_emailer {
 					if ( ! empty( $templates ) && is_array( $templates ) ) {
 						?>
 						<div class="email-templates-wrapper">
-							<div class="email-templates"><?php
+						<div class="email-templates"><?php
 
-								foreach ( $templates as $template ) {
-									?>
-									<div class="template-holder">
-										<!--Template preview-->
-										<a class="template-selector" href="#<?php echo $template['name']; ?>" title="<?php echo __( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
-											<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo $template['name']; ?>"/></a>
+							foreach ( $templates as $template ) {
+								?>
+								<div class="template-holder">
+								<!--Template preview-->
+								<a class="template-selector" href="#<?php echo $template['name']; ?>" title="<?php echo __( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
+									<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo $template['name']; ?>"/></a>
 
-										<a id="load_template_<?php echo $template['name']; ?>" class="load_template button-primary disabled" href="#" title="<?php _e( 'Load template html', $this->textdomain ); ?>"><?php echo __( 'Load Template ', $this->textdomain ) . $template['name']; ?></a>
-									</div><?php
-								} ?>
+								<a id="load_template_<?php echo $template['name']; ?>" class="load_template button-primary disabled" href="#" title="<?php _e( 'Load template html', $this->textdomain ); ?>"><?php echo __( 'Load Template ', $this->textdomain ) . $template['name']; ?></a>
+								</div><?php
+							} ?>
 
-							</div>
+						</div>
 						</div><?php
 					} ?>
 				</div><?php
-					echo $this->list_placeholders( '', true ); ?>
+				echo $this->list_placeholders( '', true ); ?>
 				<div class="action-wrapper submit">
 					<input type="submit" name="save_html_email_options" class="button-primary"
 					       value="<?php _e( 'Save', $this->textdomain ); ?>"/>
@@ -469,7 +472,7 @@ class HTML_emailer {
 		if ( empty( $_GET['theme'] ) ) {
 			wp_send_json_error( 'no theme specified' );
 		}
-		$content           = $this->get_contents_elements( $_GET['theme'] );
+		$content = $this->get_contents_elements( $_GET['theme'] );
 		wp_send_json_success( $content );
 	}
 
@@ -557,10 +560,11 @@ class HTML_emailer {
                         </html>';
 		}
 		//Merge header, content and footer
-		$content = $contents_parts['header'] . $contents_parts['content'] . $contents_parts['footer'];
+		$content  = $contents_parts['header'] . $contents_parts['content'] . $contents_parts['footer'];
+		$blog_url = is_multisite() ? get_blog_option( $current_blog_id, 'siteurl' ) : get_site_option( 'siteurl' );
 
 		//Replace BLOG_URL with actual URL as DOM compatibility escapes img src
-		$content = preg_replace( "/{BLOG_URL}/i", network_site_url(), $content );
+		$content = preg_replace( "/{BLOG_URL}/", $blog_url, $content );
 		$style   = isset( $contents_parts['default_style'] ) ? $contents_parts['default_style'] . $contents_parts['style'] . $contents_parts['style_header'] : $contents_parts['style'] . $contents_parts['style_header'];
 		//Do the inline styling
 		$content = $this->do_inline_styles( $content, $style );
@@ -750,10 +754,12 @@ class HTML_emailer {
 	 */
 	function replace_placeholders( $content, $demo_message = true ) {
 
-		$placeholders = $this->list_placeholders( $content );
-
-		$blog_url    = network_site_url();
-		$admin_email = get_option( 'admin_email' );
+		$placeholders     = $this->list_placeholders( $content );
+		$current_blog_id  = get_current_blog_id();
+		$blog_url         = is_multisite() ? get_blog_option( $current_blog_id, 'siteurl' ) : get_site_option( 'siteurl' );
+		$admin_email      = is_multisite() ? get_blog_option( $current_blog_id, 'admin_email' ) : get_site_option( 'admin_email' );
+		$blog_name        = is_multisite() ? get_blog_option( $current_blog_id, 'blogname' ) : get_site_option( 'name' );
+		$blog_description = is_multisite() ? get_blog_option( $current_blog_id, 'blogdescription' ) : get_site_option( 'description' );
 
 		$date = date_i18n( get_option( 'date_format' ) );
 		$time = date_i18n( get_option( 'time_format' ) );
@@ -761,7 +767,7 @@ class HTML_emailer {
 		$message = "This is a test message I want to try out to see if it works. This will be replaced with wordpress email content.
              Is it working well?";
 
-		$from_email = get_site_option( 'admin_email' );
+		$from_email = is_multisite() ? get_blog_option( $current_blog_id, 'admin_email' ) : get_site_option( 'admin_email' );
 		$user_info  = get_userdata( $from_email );
 		if ( $user_info ) {
 			$display_name = $user_info->display_name;
@@ -804,12 +810,12 @@ class HTML_emailer {
 			'{FROM_NAME}'        => $display_name,
 			'{FROM_EMAIL}'       => $from_email,
 			'{BLOG_URL}'         => $blog_url,
-			'{BLOG_NAME}'        => get_bloginfo( 'name' ),
-			'{EMAIL_TITLE}'      => get_bloginfo( 'name' ),
+			'{BLOG_NAME}'        => $blog_name,
+			'{EMAIL_TITLE}'      => $blog_name,
 			'{ADMIN_EMAIL}'      => $admin_email,
 			'{BG_IMAGE}'         => $bg_image,
 			'{HEADER_IMAGE}'     => $header_image,
-			'{BLOG_DESCRIPTION}' => get_bloginfo( 'description' ),
+			'{BLOG_DESCRIPTION}' => $blog_description,
 			'{DATE}'             => $date,
 			'{TIME}'             => $time
 		);
@@ -820,6 +826,8 @@ class HTML_emailer {
 			}
 			$content = preg_replace( "/($placeholder)/", $placeholders_list[ $placeholder ], $content );
 		}
+		//Replace admin email, left out due to escaped html
+		$content = preg_replace( "/(%7BADMIN_EMAIL%7D)/", $admin_email, $content );
 
 		return $content;
 	}
