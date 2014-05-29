@@ -285,9 +285,11 @@ class HTML_emailer {
 				$htmlemail_settings = isset( $_POST['htmlemail_settings'] ) ? $_POST['htmlemail_settings'] : '';
 
 				update_option( 'htmlemail_settings', $htmlemail_settings );
+				update_site_option( 'html_template', $template );
 
+			}else {
+				update_option( 'html_template', $template );
 			}
-			update_option( 'html_template', $template );
 
 			echo '<div class="updated"><p>' . __( 'Success! Your changes were sucessfully saved!', $this->textdomain ) . '</p></div>';
 		}
