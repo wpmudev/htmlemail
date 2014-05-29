@@ -326,7 +326,7 @@ class HTML_emailer {
 					<h3><?php _e( 'Four easy steps to send better emails:', $this->textdomain ); ?></h3>
 					<?php
 					$configuration_steps = array(
-						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="' . esc_attr( 'Select template' ) . '">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea.', $this->textdomain ),
+						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea.', $this->textdomain ),
 						__( 'Click "Preview" to quickly see what your emails will look like in a popup.', $this->textdomain ),
 						__( 'Send a "Test Email" to preview your template in actual email clients. You can specify an email address for this to be sent to.', $this->textdomain ),
 						__( 'Select "Save" and the HTML you have below will be used as your HTML Email Template for all transactional emails from your site.', $this->textdomain )
