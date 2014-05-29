@@ -175,7 +175,7 @@ class HTML_emailer {
 		}
 
 		if ( empty( $html_template ) && $site_override && is_multisite() ) {
-			$html_template = get_blog_option( get_current_blog_id(), 'html_template' );
+			$html_template = get_option( 'html_template' );
 		}
 
 		if ( empty( $html_template ) ) {
@@ -289,7 +289,7 @@ class HTML_emailer {
 				update_site_option( 'html_template', $template );
 
 			} else {
-				update_blog_option( get_current_blog_id(), 'html_template', $template );
+				update_option( 'html_template', $template );
 			}
 
 			echo '<div class="updated"><p>' . __( 'Success! Your changes were sucessfully saved!', $this->textdomain ) . '</p></div>';
@@ -310,8 +310,8 @@ class HTML_emailer {
 			$html_template      = get_site_option( 'html_template' );
 
 		} else {
-			$htmlemail_settings = get_blog_option( get_current_blog_id(), 'htmlemail_settings' );
-			$html_template      = get_blog_option( get_current_blog_id(), 'html_template' );
+			$htmlemail_settings = get_option( 'htmlemail_settings' );
+			$html_template      = get_option( 'html_template' );
 
 		}
 		$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings ['site_override'] : '';
@@ -564,7 +564,7 @@ class HTML_emailer {
 		}
 		//Merge header, content and footer
 		$content  = $contents_parts['header'] . $contents_parts['content'] . $contents_parts['footer'];
-		$blog_url = is_multisite() ? get_blog_option( $current_blog_id, 'siteurl' ) : get_site_option( 'siteurl' );
+		$blog_url = is_multisite() ? get_option( 'siteurl' ) : get_site_option( 'siteurl' );
 
 		//Replace BLOG_URL with actual URL as DOM compatibility escapes img src
 		$content = preg_replace( "/{BLOG_URL}/", $blog_url, $content );
@@ -759,10 +759,10 @@ class HTML_emailer {
 
 		$placeholders     = $this->list_placeholders( $content );
 		$current_blog_id  = get_current_blog_id();
-		$blog_url         = is_multisite() ? get_blog_option( $current_blog_id, 'siteurl' ) : get_site_option( 'siteurl' );
-		$admin_email      = is_multisite() ? get_blog_option( $current_blog_id, 'admin_email' ) : get_site_option( 'admin_email' );
-		$blog_name        = is_multisite() ? get_blog_option( $current_blog_id, 'blogname' ) : get_site_option( 'name' );
-		$blog_description = is_multisite() ? get_blog_option( $current_blog_id, 'blogdescription' ) : get_site_option( 'description' );
+		$blog_url         = is_multisite() ? get_option( 'siteurl' ) : get_site_option( 'siteurl' );
+		$admin_email      = is_multisite() ? get_option( 'admin_email' ) : get_site_option( 'admin_email' );
+		$blog_name        = is_multisite() ? get_option( 'blogname' ) : get_site_option( 'name' );
+		$blog_description = is_multisite() ? get_option( 'blogdescription' ) : get_site_option( 'description' );
 
 		$date = date_i18n( get_option( 'date_format' ) );
 		$time = date_i18n( get_option( 'time_format' ) );
@@ -770,7 +770,7 @@ class HTML_emailer {
 		$message = "This is a test message I want to try out to see if it works. This will be replaced with wordpress email content.
              Is it working well?";
 
-		$from_email = is_multisite() ? get_blog_option( $current_blog_id, 'admin_email' ) : get_site_option( 'admin_email' );
+		$from_email = is_multisite() ? get_option( 'admin_email' ) : get_site_option( 'admin_email' );
 		$user_info  = get_userdata( $from_email );
 		if ( $user_info ) {
 			$display_name = $user_info->display_name;

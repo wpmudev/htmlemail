@@ -9,7 +9,7 @@ jQuery( document ).ready( function($) {
     /**
      * Add the templat name to load button, on clicking over a template
      */
-    jQuery('body').on('click', '.template-holder.slick-slide a', function(e){
+    jQuery('body').on('click', '.template-holder.slick-slide a.template-selector', function(e){
         e.preventDefault();
 
         //Remove active class from other templates
@@ -34,7 +34,7 @@ jQuery( document ).ready( function($) {
     jQuery('body').on('click', '.load_template', function(e){
         e.preventDefault();
         $textarea = jQuery('#template-content');
-        if( $textarea.val() != '' && ! confirm( htmlemail_text['load_template'] ) ){
+        if( $textarea.val() != '' && !jQuery(this).hasClass('disabled') && ! confirm( htmlemail_text['load_template'] ) ){
             return false;
         }
 
