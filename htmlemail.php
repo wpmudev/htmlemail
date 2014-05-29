@@ -287,7 +287,7 @@ class HTML_emailer {
 				update_option( 'htmlemail_settings', $htmlemail_settings );
 				update_site_option( 'html_template', $template );
 
-			}else {
+			} else {
 				update_option( 'html_template', $template );
 			}
 
@@ -321,12 +321,12 @@ class HTML_emailer {
 				<h2><?php _e( 'HTML Email Template', $this->textdomain ); ?></h2>
 
 				<p class="description"><?php _e( 'This plugin will wrap every WordPress email sent within an HTML template.', $this->textdomain ); ?></p>
-				
+
 				<div class='config-guide'>
 					<h3><?php _e( 'Four easy steps to send better emails:', $this->textdomain ); ?></h3>
 					<?php
 					$configuration_steps = array(
-						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="'. esc_attr( 'Select template', $this->text ) .'">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea.', $this->textdomain ),
+						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="' . esc_attr( 'Select template' ) . '">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea.', $this->textdomain ),
 						__( 'Click "Preview" to quickly see what your emails will look like in a popup.', $this->textdomain ),
 						__( 'Send a "Test Email" to preview your template in actual email clients. You can specify an email address for this to be sent to.', $this->textdomain ),
 						__( 'Select "Save" and the HTML you have below will be used as your HTML Email Template for all transactional emails from your site.', $this->textdomain )
@@ -375,13 +375,13 @@ class HTML_emailer {
 				<div class="action-wrapper submit">
 					<input type="submit" name="save_html_email_options" class="button-primary"
 					       value="<?php _e( 'Save', $this->textdomain ); ?>"/>
-					
+
 					<?php if ( current_user_can( 'unfiltered_html' ) ) { //it's only safe to allow live previews for unfiltered_html cap to prevent XSS ?>
-					<a name="preview_template" id="preview_template" class="button button-secondary"
-					   href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
-					   title="<?php esc_attr_e( 'Live Preview', $this->textdomain ); ?>"><?php _e( 'Preview', $this->textdomain ); ?></a>
+						<a name="preview_template" id="preview_template" class="button button-secondary"
+						   href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
+						   title="<?php esc_attr_e( 'Live Preview', $this->textdomain ); ?>"><?php _e( 'Preview', $this->textdomain ); ?></a>
 					<?php } ?>
-					
+
 					<input type="button" name="specify_email" class="button-secondary specify_email"
 					       value="<?php _e( 'Test Email', $this->textdomain ); ?>"/>
 					<span class="spinner"></span><br/>
@@ -396,7 +396,7 @@ class HTML_emailer {
 					<span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message.', $this->textdomain ) ?></span>
 					<textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_textarea( $html_template ); ?></textarea><br/>
 				</div>
-				
+
 				<?php
 				if ( is_network_admin() ) {
 					?>
@@ -563,7 +563,7 @@ class HTML_emailer {
 		}
 		//Merge header, content and footer
 		$content  = $contents_parts['header'] . $contents_parts['content'] . $contents_parts['footer'];
-		$blog_url = get_option('siteurl');
+		$blog_url = get_option( 'siteurl' );
 
 		//Replace BLOG_URL with actual URL as DOM compatibility escapes img src
 		$content = preg_replace( "/{BLOG_URL}/", $blog_url . '/', $content );
@@ -720,7 +720,7 @@ class HTML_emailer {
 				'{TIME}'             => __( 'Current time', $this->textdomain ),
 			);
 
-			$output = '<h4><a href="#placeholder-list-wrapper" class="template-toggle" title="' . esc_attr__( 'variable list', $this->textdomain ) . '">' . __( 'List of variables that can be used in template', $this->textdomain ) .
+			$output = '<h4><a href="#placeholder-list-wrapper" class="template-toggle" title="' . esc_attr__( 'Variable list', $this->textdomain ) . '">' . __( 'List of variables that can be used in template', $this->textdomain ) .
 			          '[<span class="toggle-indicator">+</span>]</a></h4>'
 			          . '<div class="placeholders-list-wrapper" id="placeholder-list-wrapper">'
 			          . '<table class="template-placeholders-list">';
@@ -762,8 +762,8 @@ class HTML_emailer {
 		$admin_email      = get_option( 'admin_email' );
 		$blog_name        = get_option( 'blogname' );
 		$blog_description = get_option( 'blogdescription' );
-		$date = date_i18n( get_option( 'date_format' ) );
-		$time = date_i18n( get_option( 'time_format' ) );
+		$date             = date_i18n( get_option( 'date_format' ) );
+		$time             = date_i18n( get_option( 'time_format' ) );
 
 		$message = "This is a test message I want to try out to see if it works. This will be replaced with wordpress email content.
              Is it working well?";
@@ -856,7 +856,7 @@ class HTML_emailer {
 	 */
 	function get_preview_data() {
 		if ( ! current_user_can( 'unfiltered_html' ) ) {
-			wp_send_json_error( __( "Whoops, you don't have permissions to preview html.", $this->textdomain )  );
+			wp_send_json_error( __( "Whoops, you don't have permissions to preview html.", $this->textdomain ) );
 		}
 		if ( empty( $_POST ) ) {
 			wp_send_json_error( __( 'Whoops, you need to enter some html to preview it!', $this->textdomain ) );
@@ -864,11 +864,11 @@ class HTML_emailer {
 		$content = trim( $_POST['content'] );
 		$content = stripslashes( $content );
 		$content = $this->replace_placeholders( $content );
-		
+
 		if ( empty( $content ) ) {
 			wp_send_json_error( __( 'Whoops, you need to enter some html to preview it!', $this->textdomain ) );
 		}
-		
+
 		wp_send_json_success( $content );
 	}
 
