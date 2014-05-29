@@ -326,7 +326,7 @@ class HTML_emailer {
 					<h3><?php _e( 'Four easy steps to send better emails:', $this->textdomain ); ?></h3>
 					<?php
 					$configuration_steps = array(
-						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea.', $this->textdomain ),
+						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="'. esc_attr( 'Select template', $this->text ) .'">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea.', $this->textdomain ),
 						__( 'Click "Preview" to quickly see what your emails will look like in a popup.', $this->textdomain ),
 						__( 'Send a "Test Email" to preview your template in actual email clients. You can specify an email address for this to be sent to.', $this->textdomain ),
 						__( 'Select "Save" and the HTML you have below will be used as your HTML Email Template for all transactional emails from your site.', $this->textdomain )
@@ -344,7 +344,7 @@ class HTML_emailer {
 					</ul>
 				</div>
 				<h5>
-					<a href="#template-wrapper" class="template-toggle" title="<?php _e( 'Click to toggle templates', $this->textdomain ); ?>"><?php _e( 'Choose from sample Templates', $this->textdomain ) ?>
+					<a href="#template-wrapper" class="template-toggle" title="<?php esc_attr_e( 'Click to toggle templates', $this->textdomain ); ?>"><?php _e( 'Choose from sample Templates', $this->textdomain ) ?>
 						[<span class="toggle-indicator">+</span>]</a>
 				</h5>
 
@@ -360,10 +360,10 @@ class HTML_emailer {
 								?>
 								<div class="template-holder">
 								<!--Template preview-->
-								<a class="template-selector" href="#<?php echo $template['name']; ?>" title="<?php echo __( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
-									<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo $template['name']; ?>"/></a>
+								<a class="template-selector" href="#<?php echo $template['name']; ?>" title="<?php esc_attr_e( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
+									<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo esc_attr( $template['name'] ); ?>"/></a>
 
-								<a id="load_template_<?php echo $template['name']; ?>" class="load_template button-primary disabled" href="#" title="<?php _e( 'Load template html', $this->textdomain ); ?>"><?php echo __( 'Load Template ', $this->textdomain ) . $template['name']; ?></a>
+								<a id="load_template_<?php echo $template['name']; ?>" class="load_template button-primary disabled" href="#" title="<?php esc_attr_e( 'Load template html', $this->textdomain ); ?>"><?php echo __( 'Load Template ', $this->textdomain ) . $template['name']; ?></a>
 								</div><?php
 							} ?>
 
@@ -379,7 +379,7 @@ class HTML_emailer {
 					<?php if ( current_user_can( 'unfiltered_html' ) ) { //it's only safe to allow live previews for unfiltered_html cap to prevent XSS ?>
 					<a name="preview_template" id="preview_template" class="button button-secondary"
 					   href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
-					   title="<?php _e( 'Live Preview', $this->textdomain ); ?>"><?php _e( 'Preview', $this->textdomain ); ?></a>
+					   title="<?php esc_attr_e( 'Live Preview', $this->textdomain ); ?>"><?php _e( 'Preview', $this->textdomain ); ?></a>
 					<?php } ?>
 					
 					<input type="button" name="specify_email" class="button-secondary specify_email"
@@ -720,7 +720,7 @@ class HTML_emailer {
 				'{TIME}'             => __( 'Current time', $this->textdomain ),
 			);
 
-			$output = '<h4><a href="#placeholder-list-wrapper" class="template-toggle" title="' . __( 'variable list', $this->textdomain ) . '">' . __( 'List of variables that can be used in template', $this->textdomain ) .
+			$output = '<h4><a href="#placeholder-list-wrapper" class="template-toggle" title="' . esc_attr__( 'variable list', $this->textdomain ) . '">' . __( 'List of variables that can be used in template', $this->textdomain ) .
 			          '[<span class="toggle-indicator">+</span>]</a></h4>'
 			          . '<div class="placeholders-list-wrapper" id="placeholder-list-wrapper">'
 			          . '<table class="template-placeholders-list">';
