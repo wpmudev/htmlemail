@@ -362,7 +362,6 @@ class HTML_emailer {
 								<div class="template-holder">
 								<!--Template preview-->
 								<a class="template-selector" href="#<?php echo $template['name']; ?>" title="<?php esc_attr_e( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
-								<a class="template-selector" href="#<?php echo $template['name']; ?>" title="<?php esc_attr_e( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
 									<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo esc_attr( $template['name'] ); ?>"/></a>
 
 								<a id="load_template_<?php echo $template_name; ?>" class="load_template button-primary disabled" href="#" title="<?php esc_attr_e( 'Load template html', $this->textdomain ); ?>"><?php echo __( 'Load Template ', $this->textdomain ) . $template['name']; ?></a>
