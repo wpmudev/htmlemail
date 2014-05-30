@@ -22,6 +22,8 @@ jQuery( document ).ready( function($) {
         jQuery('.load_template').addClass('disabled');
 
         $theme_name = jQuery(this).attr('href');
+        //remove space from theme name
+        $theme_name = $theme_name.replace(/\s+/g, '');
         $theme_name = $theme_name.substr($theme_name.indexOf("#") + 1);
 
         $load_button = jQuery('#load_template_' + $theme_name );
@@ -33,9 +35,15 @@ jQuery( document ).ready( function($) {
      */
     jQuery('body').on('click', '.load_template', function(e){
         e.preventDefault();
-        $textarea = jQuery('#template-content');
-        if( $textarea.val() != '' && !jQuery(this).hasClass('disabled') && ! confirm( htmlemail_text['load_template'] ) ){
+        if( jQuery(this).hasClass('disabled') ){
             return false;
+        }
+        $textarea = jQuery('#template-content');
+//        if there is already some template content as for confirmation to override the remplate
+        if(  $textarea.val() != '' ){
+            if( ! confirm( htmlemail_text['load_template'] ) ) {
+                return false;
+            }
         }
 
         $theme_name = jQuery(this).attr('href');
