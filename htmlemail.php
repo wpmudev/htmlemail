@@ -284,7 +284,7 @@ class HTML_emailer {
 				//settings
 				$htmlemail_settings = isset( $_POST['htmlemail_settings'] ) ? $_POST['htmlemail_settings'] : '';
 
-				update_option( 'htmlemail_settings', $htmlemail_settings );
+				update_site_option( 'htmlemail_settings', $htmlemail_settings );
 				update_site_option( 'html_template', $template );
 
 			} else {
