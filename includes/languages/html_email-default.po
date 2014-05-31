@@ -1,75 +1,168 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: html emails\n"
+"Project-Id-Version: HTML Email Template\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-03-06 17:40-0600\n"
-"PO-Revision-Date: 2013-03-06 17:40-0600\n"
-"Last-Translator: Aaron Edwards\n"
+"POT-Creation-Date: 2014-05-31 12:47+0530\n"
+"PO-Revision-Date: 2014-05-31 12:47+0530\n"
+"Last-Translator: Umesh Kumar <umeshsingla05@gmail.com>\n"
 "Language-Team: \n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Poedit-KeywordsList: __;_e;_n;_x\n"
-"X-Poedit-Basepath: .\n"
-"Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Poedit-SearchPath-0: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-Basepath: /media/Data/umesh/incsub/\n"
+"X-Poedit-SearchPath-0: htmlemail\n"
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:75
+#: htmlemail/htmlemail.php:107
 msgid "There was an issue determining where HTML Email is installed. Please reinstall."
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:138
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:140
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:183
+#: htmlemail/htmlemail.php:222
+#: htmlemail/htmlemail.php:233
+#: htmlemail/htmlemail.php:241
+#: htmlemail/htmlemail.php:321
 msgid "HTML Email Template"
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:150
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:152
+#: htmlemail/htmlemail.php:259
+#: htmlemail/htmlemail.php:261
 msgid "Settings"
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:166
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:174
+#: htmlemail/htmlemail.php:277
+#: htmlemail/htmlemail.php:299
 msgid "Whoops! There was a problem with the data you posted. Please go back and try again."
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:170
+#: htmlemail/htmlemail.php:294
 msgid "Success! Your changes were sucessfully saved!"
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:177
+#: htmlemail/htmlemail.php:303
 #, php-format
 msgid "Preview email was mailed to %s!"
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:184
+#: htmlemail/htmlemail.php:323
 msgid "This plugin will wrap every WordPress email sent within an HTML template."
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:187
-msgid "HTML Template"
+#: htmlemail/htmlemail.php:326
+msgid "Four easy steps to send better emails:"
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:190
-msgid "Please enter the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message."
+#: htmlemail/htmlemail.php:329
+msgid "Either select a pre-designed template <a href=\"#template-wrapper\" class=\"template-toggle\" title=\"Select template\">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea."
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:194
+#: htmlemail/htmlemail.php:330
+msgid "Click \"Preview\" to quickly see what your emails will look like in a popup."
+msgstr ""
+
+#: htmlemail/htmlemail.php:331
+msgid "Send a \"Test Email\" to preview your template in actual email clients. You can specify an email address for this to be sent to."
+msgstr ""
+
+#: htmlemail/htmlemail.php:332
+msgid "Select \"Save\" and the HTML you have below will be used as your HTML Email Template for all transactional emails from your site."
+msgstr ""
+
+#: htmlemail/htmlemail.php:339
+#, php-format
+msgid "Step %d"
+msgstr ""
+
+#: htmlemail/htmlemail.php:347
+msgid "Choose from sample Templates"
+msgstr ""
+
+#: htmlemail/htmlemail.php:367
+msgid "Load Template "
+msgstr ""
+
+#: htmlemail/htmlemail.php:378
 msgid "Save"
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/htmlemail.php:194
-msgid "Preview &raquo;"
+#: htmlemail/htmlemail.php:383
+msgid "Preview"
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/includes/wpmudev-dash-notification.php:57
-#, php-format
-msgid "Easily get updates, support, and one-click WPMU DEV plugin/theme installations right from in your dashboard - <strong><a href=\"%s\" title=\"Install Now &raquo;\">install the free WPMU DEV Dashboard plugin</a></strong>. &nbsp;&nbsp;&nbsp;<small><a href=\"http://premium.wpmudev.org/wpmu-dev/update-notifications-plugin-information/\">(find out more)</a></small>"
+#: htmlemail/htmlemail.php:387
+msgid "Test Email"
 msgstr ""
 
-#: /Users/aaron2/Documents/WP-Test/wp-content/plugins/htmlemail/includes/wpmudev-dash-notification.php:61
-#, php-format
-msgid "Updates, Support, Premium Plugins, Community - <strong><a href=\"%s\" title=\"Activate Now &raquo;\">activate the WPMU DEV Dashboard plugin now</a></strong>."
+#: htmlemail/htmlemail.php:393
+msgid "Send"
+msgstr ""
+
+#: htmlemail/htmlemail.php:397
+msgid "Edit the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message."
+msgstr ""
+
+#: htmlemail/htmlemail.php:405
+msgid "Allow subsites to override this template with their own."
+msgstr ""
+
+#: htmlemail/htmlemail.php:424
+msgid "Your custom template changes will be lost, are you sure you want to continue?"
+msgstr ""
+
+#: htmlemail/htmlemail.php:425
+msgid "You need to place {MESSAGE} somewhere in the template, preferably a main content section."
+msgstr ""
+
+#: htmlemail/htmlemail.php:712
+msgid "Email content (required)"
+msgstr ""
+
+#: htmlemail/htmlemail.php:713
+msgid "Title for the sidebar in email e.g. What's trending"
+msgstr ""
+
+#: htmlemail/htmlemail.php:714
+msgid "Sender's name if sender's email is associated with a user account"
+msgstr ""
+
+#: htmlemail/htmlemail.php:715
+msgid "Sender's email, email specified in site settings"
+msgstr ""
+
+#: htmlemail/htmlemail.php:716
+msgid "Blog / Site URL"
+msgstr ""
+
+#: htmlemail/htmlemail.php:717
+msgid "Blog / Site name"
+msgstr ""
+
+#: htmlemail/htmlemail.php:718
+msgid "Email address of the support or contact person. Same as {FROM_EMAIL}"
+msgstr ""
+
+#: htmlemail/htmlemail.php:719
+msgid "Blog Description"
+msgstr ""
+
+#: htmlemail/htmlemail.php:720
+msgid "Current date"
+msgstr ""
+
+#: htmlemail/htmlemail.php:721
+msgid "Current time"
+msgstr ""
+
+#: htmlemail/htmlemail.php:724
+msgid "List of variables that can be used in template"
+msgstr ""
+
+#: htmlemail/htmlemail.php:860
+msgid "Whoops, you don't have permissions to preview html."
+msgstr ""
+
+#: htmlemail/htmlemail.php:863
+#: htmlemail/htmlemail.php:870
+msgid "Whoops, you need to enter some html to preview it!"
 msgstr ""
 
