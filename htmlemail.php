@@ -782,8 +782,22 @@ class HTML_emailer {
 
 		//Sidebar
 		$posts_list    = $this->htmlemail_recent_posts();
+		/**
+		 * Filter the post list displayed in email sidebar
+		 *
+		 * @since 2.0
+		 *
+		 * @param array $posts_list, An array of posts, containing ID and post_title for each post
+		 */
 		$posts_list    = apply_filters( 'htmlemail_sidebar_posts', $posts_list );
-		$sidebar_title = apply_filters( 'htmlemail_sidebar_title', "What's new" );
+		/**
+		 * Filter the sidebar title in email template
+		 *
+		 * @since 2.0
+		 *
+		 * @param string $title, Title to be displayed in email
+		 */
+		$sidebar_title = apply_filters( 'htmlemail_sidebar_title', $title = "What's new" );
 
 		//Placeholder for posts
 		$count             = 1;
