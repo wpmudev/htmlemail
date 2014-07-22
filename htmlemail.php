@@ -4,7 +4,7 @@ Plugin Name: HTML Email Templates
 Plugin URI: https://premium.wpmudev.org/project/html-email-templates/
 Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates can be set network wide or can be allowed to set site wise template, if template override for the site is enabled and template is not specified for a site, network template will be used.
 Author: WPMU DEV
-Version: 2.0
+Version: 2.1
 Author URI: http://premium.wpmudev.org/
 Network: true
 WDP ID: 142
@@ -146,6 +146,12 @@ class HTML_emailer {
 		}
 	}
 
+	/**
+	 * Filter the Content, add the template to actual email and then send it
+	 * @param $args
+	 *
+	 * @return array
+	 */
 	function wp_mail( $args ) {
 		extract( $args );
 
@@ -161,7 +167,10 @@ class HTML_emailer {
 		$this->plain_text_message = $message;
 
 		//Force WP to add <p> tags to the message content
-		$message = wpautop( $message );
+		if( $message == strip_tags($message)) {
+			// No HTML, do wpautop
+			$message = wpautop( $message );
+		}
 
 		//Fetch HTML email settings
 		$htmlemail_settings = get_site_option( 'htmlemail_settings' );
@@ -180,8 +189,13 @@ class HTML_emailer {
 		if ( empty( $html_template ) ) {
 			$html_template = get_site_option( 'html_template' );
 		}
+
+		//Replace {MESSAGE} in template with actual email content
 		$message = preg_replace( "/({MESSAGE})/", $message, $html_template );
+
+		//Compatibilty with previous version of the plugin, as it used MESSAGE instead of {MESSAGE}
 		$message = preg_replace( "/(MESSAGE)/", $message, $message );
+
 		//Replace User name
 		$user = get_user_by( 'email', $to );
 		if ( $user ) {
@@ -375,22 +389,22 @@ class HTML_emailer {
 				echo $this->list_placeholders( '', true ); ?>
 				<div class="action-wrapper submit">
 					<input type="submit" name="save_html_email_options" class="button-primary"
-					       value="<?php _e( 'Save', $this->textdomain ); ?>"/>
+						value="<?php _e( 'Save', $this->textdomain ); ?>"/>
 
 					<?php if ( current_user_can( 'unfiltered_html' ) ) { //it's only safe to allow live previews for unfiltered_html cap to prevent XSS ?>
 						<a name="preview_template" id="preview_template" class="button button-secondary"
-						   href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
-						   title="<?php esc_attr_e( 'Live Preview', $this->textdomain ); ?>"><?php _e( 'Preview', $this->textdomain ); ?></a>
+							href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
+							title="<?php esc_attr_e( 'Live Preview', $this->textdomain ); ?>"><?php _e( 'Preview', $this->textdomain ); ?></a>
 					<?php } ?>
 
 					<input type="button" name="specify_email" class="button-secondary specify_email"
-					       value="<?php _e( 'Test Email', $this->textdomain ); ?>"/>
+						value="<?php _e( 'Test Email', $this->textdomain ); ?>"/>
 					<span class="spinner"></span><br/>
 
 					<div class="preview-email">
 						<input type="text" name="preview_html_email_address" value="<?php echo $current_user->user_email; ?>" placeholder="Email address"/>
 						<input type="submit" name="preview_html_email" class="button-primary"
-						       value="<?php _e( 'Send', $this->textdomain ); ?>"/>
+							value="<?php _e( 'Send', $this->textdomain ); ?>"/>
 					</div>
 				</div>
 				<div class="template-content-holder">
@@ -636,8 +650,17 @@ class HTML_emailer {
 	 * @return type
 	 */
 	function dom_compatibility( $contents ) {
+
+		if ( ! class_exists( 'DOMDocument' ) ) {
+			return $contents;
+		}
+
 		$dom = new DOMDocument();
-		$dom->loadHTML( $contents );
+
+		libxml_use_internal_errors( true );
+		@$dom->loadHTML( $contents );
+		libxml_clear_errors();
+
 		$imgs = $dom->getElementsByTagName( 'img' );
 		$ps   = $dom->getElementsByTagName( 'p' );
 		foreach ( $ps as $p ) {
@@ -697,9 +720,9 @@ class HTML_emailer {
 				}
 			}
 		}
-		$content = $dom->saveHTML();
+		$contents = $dom->saveHTML();
 
-		return $content;
+		return $contents;
 	}
 
 	/**
@@ -781,21 +804,21 @@ class HTML_emailer {
 		$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" />' : '';
 
 		//Sidebar
-		$posts_list    = $this->htmlemail_recent_posts();
+		$posts_list = $this->htmlemail_recent_posts();
 		/**
 		 * Filter the post list displayed in email sidebar
 		 *
 		 * @since 2.0
 		 *
-		 * @param array $posts_list, An array of posts, containing ID and post_title for each post
+		 * @param array $posts_list , An array of posts, containing ID and post_title for each post
 		 */
-		$posts_list    = apply_filters( 'htmlemail_sidebar_posts', $posts_list );
+		$posts_list = apply_filters( 'htmlemail_sidebar_posts', $posts_list );
 		/**
 		 * Filter the sidebar title in email template
 		 *
 		 * @since 2.0
 		 *
-		 * @param string $title, Title to be displayed in email
+		 * @param string $title , Title to be displayed in email
 		 */
 		$sidebar_title = apply_filters( 'htmlemail_sidebar_title', $title = "What's new" );
 
@@ -928,6 +951,7 @@ class HTML_emailer {
 //instantiate the class
 $html_email_var = new HTML_emailer();
 
+//Load WPMU DEV Dashboard Notices
 global $wpmudev_notices;
 $wpmudev_notices[] = array(
 	'id'      => 142,
