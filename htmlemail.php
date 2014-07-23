@@ -148,6 +148,7 @@ class HTML_emailer {
 
 	/**
 	 * Filter the Content, add the template to actual email and then send it
+	 *
 	 * @param $args
 	 *
 	 * @return array
@@ -167,7 +168,7 @@ class HTML_emailer {
 		$this->plain_text_message = $message;
 
 		//Force WP to add <p> tags to the message content
-		if( $message == strip_tags($message)) {
+		if ( $message == strip_tags( $message ) ) {
 			// No HTML, do wpautop
 			$message = wpautop( $message );
 		}
@@ -190,11 +191,18 @@ class HTML_emailer {
 			$html_template = get_site_option( 'html_template' );
 		}
 
-		//Replace {MESSAGE} in template with actual email content
-		$message = preg_replace( "/({MESSAGE})/", $message, $html_template );
+		//Removed as it conflicts
+//		$message = preg_replace( "/({MESSAGE})/", $message, $html_template );
+//		$message = preg_replace( "/(MESSAGE)/", $message, $message );
 
-		//Compatibilty with previous version of the plugin, as it used MESSAGE instead of {MESSAGE}
-		$message = preg_replace( "/(MESSAGE)/", $message, $message );
+		if ( strpos( $html_template, '{MESSAGE}' ) !== false ) {
+			//Replace {MESSAGE} in template with actual email content
+			$key = '{MESSAGE}';
+		} else {
+			//Compatibilty with previous version of the plugin, as it used MESSAGE instead of {MESSAGE}
+			$key = 'MESSAGE';
+		}
+		$message = str_replace( $key, $message, $html_template );
 
 		//Replace User name
 		$user = get_user_by( 'email', $to );
@@ -836,8 +844,19 @@ class HTML_emailer {
 		}
 		//Show for preview only
 		if ( $demo_message ) {
-			$content = preg_replace( "/({MESSAGE})/", $message, $content );
-			$content = preg_replace( "/(MESSAGE)/", $message, $content );
+			//Removed as it conflicts
+//			$content = preg_replace( "/({MESSAGE})/", $message, $content );
+//			$content = preg_replace( "/(MESSAGE)/", $message, $content );
+
+			if ( strpos( $content, '{MESSAGE}' ) !== false ) {
+				//Replace {MESSAGE} in template with actual email content
+				$key = '{MESSAGE}';
+			} else {
+				//Compatibility with previous version of the plugin, as it used MESSAGE instead of {MESSAGE}
+				$key = 'MESSAGE';
+			}
+			$content = str_replace( $key, $message, $content );
+
 			$content = preg_replace( "/({USER_NAME})/", 'Jon', $content );
 		}
 		$placeholders_list = array(
