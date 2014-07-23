@@ -1,0 +1,175 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: htmlemail-2.0.1\n"
+"POT-Creation-Date: 2014-07-23 20:18+0530\n"
+"PO-Revision-Date: 2014-07-23 20:18+0530\n"
+"Last-Translator: Umesh <umeshsingla05@gmail.com>\n"
+"Language-Team: \n"
+"Language: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.7\n"
+"X-Poedit-Basepath: /Users/umeshkumar/Documents/umesh/incsub/git/\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: __;_e\n"
+"X-Poedit-SearchPath-0: htmlemail\n"
+
+#: htmlemail/htmlemail.php:107
+msgid "There was an issue determining where HTML Email is installed. Please reinstall."
+msgstr ""
+
+#: htmlemail/htmlemail.php:248 htmlemail/htmlemail.php:259
+#: htmlemail/htmlemail.php:267 htmlemail/htmlemail.php:338
+msgid "HTML Email Template"
+msgstr ""
+
+#: htmlemail/htmlemail.php:285 htmlemail/htmlemail.php:287
+msgid "Settings"
+msgstr ""
+
+#: htmlemail/htmlemail.php:303
+msgid "Whoops! There was a problem with the data you posted. Please go back and try again."
+msgstr ""
+
+#: htmlemail/htmlemail.php:320
+msgid "Success! Your changes were sucessfully saved!"
+msgstr ""
+
+#: htmlemail/htmlemail.php:340
+msgid "This plugin will wrap every WordPress email sent within an HTML template."
+msgstr ""
+
+#: htmlemail/htmlemail.php:343
+msgid "Four easy steps to send better emails:"
+msgstr ""
+
+#: htmlemail/htmlemail.php:346
+msgid "Either select a pre-designed template <a href=\"#template-wrapper\" class=\"template-toggle\" title=\"Select template\">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea."
+msgstr ""
+
+#: htmlemail/htmlemail.php:347
+msgid "Click \"Preview\" to quickly see what your emails will look like in a popup."
+msgstr ""
+
+#: htmlemail/htmlemail.php:348
+msgid "Send a \"Test Email\" to preview your template in actual email clients. You can specify an email address for this to be sent to."
+msgstr ""
+
+#: htmlemail/htmlemail.php:349
+msgid "Select \"Save\" and the HTML you have below will be used as your HTML Email Template for all transactional emails from your site."
+msgstr ""
+
+#: htmlemail/htmlemail.php:356
+#, php-format
+msgid "Step %d"
+msgstr ""
+
+#: htmlemail/htmlemail.php:364
+msgid "Choose from sample Templates"
+msgstr ""
+
+#: htmlemail/htmlemail.php:384
+msgid "Load Template "
+msgstr ""
+
+#: htmlemail/htmlemail.php:395
+msgid "Save"
+msgstr ""
+
+#: htmlemail/htmlemail.php:400
+msgid "Preview"
+msgstr ""
+
+#: htmlemail/htmlemail.php:404
+msgid "Test Email"
+msgstr ""
+
+#: htmlemail/htmlemail.php:409
+msgid "Send"
+msgstr ""
+
+#: htmlemail/htmlemail.php:414
+msgid "Edit the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message."
+msgstr ""
+
+#: htmlemail/htmlemail.php:422
+msgid "Allow subsites to override this template with their own."
+msgstr ""
+
+#: htmlemail/htmlemail.php:441
+msgid "Your custom template changes will be lost, are you sure you want to continue?"
+msgstr ""
+
+#: htmlemail/htmlemail.php:442
+msgid "You need to place {MESSAGE} somewhere in the template, preferably a main content section."
+msgstr ""
+
+#: htmlemail/htmlemail.php:738
+msgid "Email content (required)"
+msgstr ""
+
+#: htmlemail/htmlemail.php:739
+msgid "Title for the sidebar in email e.g. What's trending"
+msgstr ""
+
+#: htmlemail/htmlemail.php:740
+msgid "Sender's name if sender's email is associated with a user account"
+msgstr ""
+
+#: htmlemail/htmlemail.php:741
+msgid "Sender's email, email specified in site settings"
+msgstr ""
+
+#: htmlemail/htmlemail.php:742
+msgid "Blog / Site URL"
+msgstr ""
+
+#: htmlemail/htmlemail.php:743
+msgid "Blog / Site name"
+msgstr ""
+
+#: htmlemail/htmlemail.php:744
+msgid "Email address of the support or contact person. Same as {FROM_EMAIL}"
+msgstr ""
+
+#: htmlemail/htmlemail.php:745
+msgid "Blog Description"
+msgstr ""
+
+#: htmlemail/htmlemail.php:746
+msgid "Current date"
+msgstr ""
+
+#: htmlemail/htmlemail.php:747
+msgid "Current time"
+msgstr ""
+
+#: htmlemail/htmlemail.php:750
+msgid "List of variables that can be used in template"
+msgstr ""
+
+#: htmlemail/htmlemail.php:911
+msgid "Whoops, you don't have permissions to preview html."
+msgstr ""
+
+#: htmlemail/htmlemail.php:914 htmlemail/htmlemail.php:921
+msgid "Whoops, you need to enter some html to preview it!"
+msgstr ""
+
+#: htmlemail/htmlemail.php:972
+msgid "Missing Parameters"
+msgstr ""
+
+#: htmlemail/htmlemail.php:977
+msgid "Nonce verification failed"
+msgstr ""
+
+#: htmlemail/htmlemail.php:985
+#, php-format
+msgid "Preview email was mailed to %s!"
+msgstr ""
+
+#: htmlemail/htmlemail.php:988
+msgid "Unable to send test email"
+msgstr ""
