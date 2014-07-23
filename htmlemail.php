@@ -198,25 +198,26 @@ class HTML_emailer {
 		//Removed as it conflicts
 //		$message = preg_replace( "/({MESSAGE})/", $message, $html_template );
 //		$message = preg_replace( "/(MESSAGE)/", $message, $message );
+		if ( !empty ( $html_template ) ) {
+			if ( strpos( $html_template, '{MESSAGE}' ) !== false ) {
+				//Replace {MESSAGE} in template with actual email content
+				$key = '{MESSAGE}';
+			} else {
+				//Compatibilty with previous version of the plugin, as it used MESSAGE instead of {MESSAGE}
+				$key = 'MESSAGE';
+			}
+			$message = str_replace( $key, $message, $html_template );
 
-		if ( strpos( $html_template, '{MESSAGE}' ) !== false ) {
-			//Replace {MESSAGE} in template with actual email content
-			$key = '{MESSAGE}';
-		} else {
-			//Compatibilty with previous version of the plugin, as it used MESSAGE instead of {MESSAGE}
-			$key = 'MESSAGE';
+			//Replace User name
+			$user = get_user_by( 'email', $to );
+			if ( $user ) {
+				$message = preg_replace( '~\{USER_NAME}~', $user->data->display_name, $message );
+			} else {
+				$message = preg_replace( '~\{USER_NAME}~', '', $message );
+			}
+
+			$message = $this->replace_placeholders( $message, false );
 		}
-		$message = str_replace( $key, $message, $html_template );
-
-		//Replace User name
-		$user = get_user_by( 'email', $to );
-		if ( $user ) {
-			$message = preg_replace( '~\{USER_NAME}~', $user->data->display_name, $message );
-		} else {
-			$message = preg_replace( '~\{USER_NAME}~', '', $message );
-		}
-
-		$message = $this->replace_placeholders( $message, false );
 
 		//Compact & return all the vars
 		return compact( 'to', 'subject', 'message', 'headers', 'attachments' );
