@@ -130,9 +130,13 @@ class HTML_emailer {
 
 		//Enqueue files
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_scripts' ) );
+
 		//Return template data
 		add_action( 'wp_ajax_htmlemail_get_template_data', array( $this, 'htmlemail_template_data' ) );
 		add_action( 'wp_ajax_get_preview_data', array( $this, 'get_preview_data' ) );
+
+		//Handle preview email ajax request
+		add_action( 'wp_ajax_preview_email', array( $this, 'preview_email' ) );
 
 	}
 
@@ -315,15 +319,6 @@ class HTML_emailer {
 
 			echo '<div class="updated"><p>' . __( 'Success! Your changes were sucessfully saved!', $this->textdomain ) . '</p></div>';
 		}
-		//Send a preview email
-		if ( isset( $_POST['preview_html_email'] ) ) {
-			if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'html_email-update-options' ) ) {
-				wp_die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->textdomain ) );
-			}
-			$email = ( isset( $_POST['preview_html_email_address'] ) && is_email( $_POST['preview_html_email_address'] ) ) ? $_POST['preview_html_email_address'] : $current_user->user_email;
-			wp_mail( $email, 'Test HTML Email Subject', "This is a test message I want to try out to see if it works\n\nIs it working well?" );
-			echo '<div class="updated"><p>' . sprintf( __( 'Preview email was mailed to %s!', $this->textdomain ), $email ) . '</p></div>';
-		}
 		//Fetch HTML email settings
 		if ( ! is_multisite() || is_network_admin() ) {
 
@@ -411,8 +406,8 @@ class HTML_emailer {
 
 					<div class="preview-email">
 						<input type="text" name="preview_html_email_address" value="<?php echo $current_user->user_email; ?>" placeholder="Email address"/>
-						<input type="submit" name="preview_html_email" class="button-primary"
-							value="<?php _e( 'Send', $this->textdomain ); ?>"/>
+						<input type="submit" name="preview_html_email" class="button-primary" value="<?php _e( 'Send', $this->textdomain ); ?>"/>
+						<?php wp_nonce_field( 'preview_email', 'preview_email' ); ?>
 					</div>
 				</div>
 				<div class="template-content-holder">
@@ -964,6 +959,33 @@ class HTML_emailer {
 		$recent_posts = wp_get_recent_posts( $args );
 
 		return $recent_posts;
+	}
+
+	/**
+	 * Send a preview email
+	 */
+	function preview_email() {
+		global $current_user;
+
+		//Check for empty email and nonce
+		if ( empty( $_POST['preview_html_email_address'] ) || empty( $_POST['_ajax_nonce'] ) ) {
+			wp_send_json_error( __( 'Missing Parameters', $this->textdomain ) );
+		}
+
+		//Verify nonce
+		if ( ! wp_verify_nonce( $_POST['_ajax_nonce'], 'preview_email' ) ) {
+			wp_send_json_error( __( 'Nonce verification failed', $this->textdomain ) );
+		}
+
+		$email = ( isset( $_POST['preview_html_email_address'] ) && is_email( $_POST['preview_html_email_address'] ) ) ? $_POST['preview_html_email_address'] : $current_user->user_email;
+		$sent  = wp_mail( $email, 'Test HTML Email Subject', "This is a test message I want to try out to see if it works\n\nIs it working well?" );
+
+		//Success
+		if ( $sent ) {
+			wp_send_json_success( sprintf( __( 'Preview email was mailed to %s!', $this->textdomain ), $email ) );
+		}
+		//Unable to send email
+		wp_send_json_error( __( 'Unable to send test email', $this->textdomain ) );
 	}
 
 } //End Class

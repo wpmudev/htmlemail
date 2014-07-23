@@ -7,6 +7,7 @@ Change Log:
 ----------------------------------------------------------------------
 2.0.1 - 7/23/2014 - Umesh Kumar
 ----------------------------------------------------------------------
+- New: Send preview emil using ajax, instead of form submit
 - Fix: remove wpautop for html messages
 - Fix: mail not being site, if template is empty
 - Fix: content being replace multiple times for some templates

@@ -128,6 +128,36 @@ jQuery( document ).ready( function($) {
     jQuery('.specify_email').click( function() {
        jQuery('.preview-email').toggle();
     });
+    //Send previe email using ajax
+    jQuery('input[name="preview_html_email"]').on( 'click', function(e){
+
+       //Do not submit form
+        e.preventDefault();
+
+        //Remove previous message
+        jQuery('.preview-email-status').remove();
+
+        $preview_html_email_address = jQuery('input[name="preview_html_email_address"]').val();
+        if($preview_html_email_address == '' ){
+            return false;
+        }
+        var preview_nonce = jQuery('#preview_email').val();
+        var param = {
+            action: 'preview_email',
+            _ajax_nonce: preview_nonce,
+            preview_html_email_address : $preview_html_email_address
+        };
+
+        jQuery.post(ajaxurl, param, function (res) {
+            $message = res.data;
+            if (res.success == true) {
+                jQuery('.preview-email').append('<div class="updated preview-email-status"><p>' + $message + '</p></div>');
+            } else {
+                jQuery('.preview-email').append('<div class="error preview-email-status"><p>' + $message + '</p></div>');
+            }
+
+        });
+    });
 });
 function load_templates_slider(){
     jQuery('.email-templates').slick({

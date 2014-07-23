@@ -107,6 +107,9 @@
     padding: 4px;
     width: 220px;
 }
+.wrap .updated.preview-email-status, .wrap .error.preview-email-status {
+    margin: 20px 0 0;
+}
 /* Placeholder list table styling */
 #placeholder-list-wrapper {
     display: none;
