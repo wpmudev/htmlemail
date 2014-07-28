@@ -5,6 +5,10 @@ http://premium.wpmudev.org/project/html-email-templates/
 Change Log:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
+2.0.2 - 7/28/2014 - Umesh Kumar
+----------------------------------------------------------------------
+- Fix: WooCommerce text emails being broken
+
 2.0.1 - 7/23/2014 - Umesh Kumar
 ----------------------------------------------------------------------
 - New: Send preview emil using ajax, instead of form submit

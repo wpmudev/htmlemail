@@ -64,6 +64,7 @@
     opacity: 0.6;
 }
 .template-holder.slick-slide a:focus, .template-holder.slick-slide a:active {
+    box-shadow: none;
     outline: 0;
 }
 /*Refernce Link */

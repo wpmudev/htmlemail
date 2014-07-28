@@ -4,7 +4,7 @@ Plugin Name: HTML Email Templates
 Plugin URI: https://premium.wpmudev.org/project/html-email-templates/
 Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates can be set network wide or can be allowed to set site wise template, if template override for the site is enabled and template is not specified for a site, network template will be used.
 Author: WPMU DEV
-Version: 2.0.1
+Version: 2.0.2
 Author URI: http://premium.wpmudev.org/
 Network: true
 WDP ID: 142
@@ -138,6 +138,10 @@ class HTML_emailer {
 		//Handle preview email ajax request
 		add_action( 'wp_ajax_preview_email', array( $this, 'preview_email' ) );
 
+		// Set Content type HTML
+		add_filter( 'wp_mail_content_type', array( $this, 'set_content_type' ), 11 );
+		add_filter( 'woocommerce_email_headers', array( $this, 'set_woocommerce_content_type' ) );
+
 	}
 
 	function localization() {
@@ -198,7 +202,7 @@ class HTML_emailer {
 		//Removed as it conflicts
 //		$message = preg_replace( "/({MESSAGE})/", $message, $html_template );
 //		$message = preg_replace( "/(MESSAGE)/", $message, $message );
-		if ( !empty ( $html_template ) ) {
+		if ( ! empty ( $html_template ) ) {
 			if ( strpos( $html_template, '{MESSAGE}' ) !== false ) {
 				//Replace {MESSAGE} in template with actual email content
 				$key = '{MESSAGE}';
@@ -989,15 +993,40 @@ class HTML_emailer {
 		wp_send_json_error( __( 'Unable to send test email', $this->textdomain ) );
 	}
 
+	/**
+	 * Return Content type as HTML for plain text email
+	 *
+	 * @param $content_type
+	 *
+	 * @return string, Content type
+	 */
+
+	function set_content_type( $content_type ) {
+		if ( $content_type == 'text/plain' ) {
+			return 'text/html';
+		}
+
+		return $content_type;
+	}
+
+	/**
+	 * Set Content type for Woocommerce emails
+	 */
+	function set_woocommerce_content_type( $content_type ) {
+		return "Content-Type: " . 'text/html' . "\r\n";
+	}
 } //End Class
+
 //instantiate the class
 $html_email_var = new HTML_emailer();
 
+//Dash Notification Class
+include_once( dirname( __FILE__ ) . '/includes/dash-notice/wpmudev-dash-notification.php' );
 //Load WPMU DEV Dashboard Notices
 global $wpmudev_notices;
+
 $wpmudev_notices[] = array(
 	'id'      => 142,
 	'name'    => 'HTML Email Templates',
 	'screens' => array( 'settings_page_html-template', 'settings_page_html-template-network' )
 );
-include_once( dirname( __FILE__ ) . '/includes/dash-notice/wpmudev-dash-notification.php' );
