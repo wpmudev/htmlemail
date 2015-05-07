@@ -4,14 +4,14 @@ Plugin Name: HTML Email Templates
 Plugin URI: https://premium.wpmudev.org/project/html-email-templates/
 Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates can be set network wide or can be allowed to set site wise template, if template override for the site is enabled and template is not specified for a site, network template will be used.
 Author: WPMU DEV
-Version: 2.0.2
+Version: 2.0.3
 Author URI: http://premium.wpmudev.org/
 Network: true
 WDP ID: 142
 */
 
 /*
-Copyright 2010-2014 Incsub
+Copyright 2010-2015 Incsub
 Author - Aaron Edwards
 Contributors - Barry Getty, Umesh Kumar
 
@@ -960,7 +960,11 @@ class HTML_emailer {
 	 */
 	function htmlemail_recent_posts() {
 		//Recent Posts with their links
-		$args         = array( 'numberposts' => '4' );
+		$args         = array(
+			'numberposts' => '4',
+			'post_type'   => 'post',
+			'post_status' => 'publish'
+		);
 		$recent_posts = wp_get_recent_posts( $args );
 
 		return $recent_posts;
