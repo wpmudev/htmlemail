@@ -5,6 +5,12 @@ http://premium.wpmudev.org/project/html-email-templates/
 Change Log:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
+
+2.0.4 - 6/25/2015 - Umesh Kumar
+----------------------------------------------------------------------
+- Fixed: Pro Sites compatibility
+- New:  Option to switch off HTML Emails overwrite for existing HTML Email
+
 2.0.3 - 5/7/2015 - Umesh Kumar
 ----------------------------------------------------------------------
 - Fix: Show only published recent posts

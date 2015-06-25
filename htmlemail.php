@@ -4,7 +4,7 @@ Plugin Name: HTML Email Templates
 Plugin URI: https://premium.wpmudev.org/project/html-email-templates/
 Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates can be set network wide or can be allowed to set site wise template, if template override for the site is enabled and template is not specified for a site, network template will be used.
 Author: WPMU DEV
-Version: 2.0.3
+Version: 2.0.4
 Author URI: http://premium.wpmudev.org/
 Network: true
 WDP ID: 142
@@ -88,6 +88,19 @@ class HTML_emailer {
 	 */
 	var $settings = array();
 
+	/**
+	 * Content type of email
+	 * @var bool
+	 */
+	var $is_html = '';
+
+	/**
+	 * Plain Text Message
+	 *
+	 * @var string
+	 */
+	var $plain_text_message = '';
+
 	//Class Functions
 	/**
 	 * PHP 5 Constructor
@@ -164,14 +177,31 @@ class HTML_emailer {
 	function wp_mail( $args ) {
 		extract( $args );
 
-		$reply_to = $html_template = $htmlemail_settings = '';
-
-		//Set the content type header, charset, and reply to headers
-		if ( is_array( $headers ) ) {
-			$headers[] = 'Content-Type: text/html; charset="' . get_option( 'blog_charset' ) . '"';
+		if ( ! is_multisite() || is_network_admin() ) {
+			$modify_html_email = get_site_option( 'modify_html_email' );
 		} else {
-			$headers .= 'Content-Type: text/html; charset="' . get_option( 'blog_charset' ) . "\"\n";
+			$modify_html_email = get_option( 'modify_html_email' );
 		}
+		$modify_html_email = isset( $modify_html_email ) ? $modify_html_email : 1;
+		/**
+		 * Check if the current mail is a html mail and template adding is allowed or not
+		 */
+		if ( ! empty( $this->is_html ) ) {
+			if ( $this->is_html && ! $modify_html_email ) {
+				return $args;
+			}
+		} elseif ( ! empty( $headers ) ) {
+			//check headers
+			if ( is_array( $headers ) ) {
+				if ( in_array( 'text/html', $headers ) && ! $modify_html_email ) {
+					return $args;
+				}
+			} elseif ( strpos( $headers, 'text/html' ) !== false && ! $modify_html_email ) {
+				return $args;
+			}
+		}
+
+		$html_template = $htmlemail_settings = '';
 
 		$this->plain_text_message = $message;
 
@@ -199,9 +229,6 @@ class HTML_emailer {
 			$html_template = get_site_option( 'html_template' );
 		}
 
-		//Removed as it conflicts
-//		$message = preg_replace( "/({MESSAGE})/", $message, $html_template );
-//		$message = preg_replace( "/(MESSAGE)/", $message, $message );
 		if ( ! empty ( $html_template ) ) {
 			if ( strpos( $html_template, '{MESSAGE}' ) !== false ) {
 				//Replace {MESSAGE} in template with actual email content
@@ -237,7 +264,7 @@ class HTML_emailer {
 
 	function convert_plain_text( $phpmailer ) {
 		// Create plain text version of email if it doesn't exist
-		if ( $phpmailer->ContentType == 'text/html' && $phpmailer->AltBody == '' ) {
+		if ( $phpmailer->AltBody == '' ) {
 			$phpmailer->AltBody = $this->plain_text_message;
 		}
 	}
@@ -255,7 +282,6 @@ class HTML_emailer {
 				'admin_options_page'
 			) );
 
-			//Allow to change templates wsitewise if allowed
 			$htmlemail_settings = get_site_option( 'htmlemail_settings' );
 
 			$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings ['site_override'] : '';
@@ -302,45 +328,32 @@ class HTML_emailer {
 	 */
 	function admin_options_page() {
 		global $current_user;
-		//Save template content and other settings
-		if ( isset( $_POST['save_html_email_options'] ) ) {
-			if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'html_email-update-options' ) ) {
-				die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->textdomain ) );
-			}
 
-			$template = stripslashes( $_POST['template'] );
+		//Process $_POST
+		$this->save_settings();
 
-			//Update settings for network or blog
-			if ( is_network_admin() || ! is_multisite() ) {
-				//settings
-				$htmlemail_settings = isset( $_POST['htmlemail_settings'] ) ? $_POST['htmlemail_settings'] : '';
-
-				update_site_option( 'htmlemail_settings', $htmlemail_settings );
-				update_site_option( 'html_template', $template );
-
-			} else {
-				update_option( 'html_template', $template );
-			}
-
-			echo '<div class="updated"><p>' . __( 'Success! Your changes were sucessfully saved!', $this->textdomain ) . '</p></div>';
-		}
 		//Fetch HTML email settings
 		if ( ! is_multisite() || is_network_admin() ) {
 
 			$htmlemail_settings = get_site_option( 'htmlemail_settings' );
 			$html_template      = get_site_option( 'html_template' );
+			$modify_html_email  = get_site_option( 'modify_html_email' );
 
 		} else {
 			$htmlemail_settings = get_option( 'htmlemail_settings' );
 			$html_template      = get_option( 'html_template' );
+			$modify_html_email  = get_option( 'modify_html_email' );
 
 		}
+		$modify_html_email = isset( $modify_html_email ) ? $modify_html_email : 1;
+
+		//Whether to allow subsites to specify their own html template
 		$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings ['site_override'] : '';
 		?>
 		<div class="wrap">
 			<form method="post">
 				<?php wp_nonce_field( 'html_email-update-options' ); ?>
-				<h2><?php _e( 'HTML Email Template', $this->textdomain ); ?></h2>
+				<h2><?php esc_html_e( 'HTML Email Template', $this->textdomain ); ?></h2>
 
 				<p class="description"><?php _e( 'This plugin will wrap every WordPress email sent within an HTML template.', $this->textdomain ); ?></p>
 
@@ -365,6 +378,8 @@ class HTML_emailer {
 						} ?>
 					</ul>
 				</div>
+				<!-- Overwrite HTML Emails -->
+				<label><input type="checkbox" name="modify_html_email" <?php checked( $modify_html_email, 1 ); ?> value="1"/><strong><?php echo esc_html__( "Modify HTML Emails", $this->textdomain ) ?></strong></label>
 				<h5>
 					<a href="#template-wrapper" class="template-toggle" title="<?php esc_attr_e( 'Click to toggle templates', $this->textdomain ); ?>"><?php _e( 'Choose from sample Templates', $this->textdomain ) ?>
 						[<span class="toggle-indicator">+</span>]</a>
@@ -1007,8 +1022,11 @@ class HTML_emailer {
 
 	function set_content_type( $content_type ) {
 		if ( $content_type == 'text/plain' ) {
+			$this->is_html = false;
+
 			return 'text/html';
 		}
+		$this->is_html = true;
 
 		return $content_type;
 	}
@@ -1018,6 +1036,36 @@ class HTML_emailer {
 	 */
 	function set_woocommerce_content_type( $content_type ) {
 		return "Content-Type: " . 'text/html' . "\r\n";
+	}
+
+	/**
+	 * Save settings for Network or Subsite
+	 */
+	function save_settings() {
+		//Save template content and other settings
+		if ( isset( $_POST['save_html_email_options'] ) ) {
+			if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'html_email-update-options' ) ) {
+				die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', $this->textdomain ) );
+			}
+
+			$template          = stripslashes( $_POST['template'] );
+			$modify_html_email = ! empty( $_POST['modify_html_email'] ) ? $_POST['modify_html_email'] : 0;
+
+			//Update settings for network or blog
+			if ( is_network_admin() || ! is_multisite() ) {
+
+				$htmlemail_settings = isset( $_POST['htmlemail_settings'] ) ? $_POST['htmlemail_settings'] : '';
+
+				update_site_option( 'htmlemail_settings', $htmlemail_settings );
+				update_site_option( 'html_template', $template );
+				update_site_option( 'modify_html_email', $modify_html_email );
+			} else {
+				update_option( 'html_template', $template );
+				update_option( 'modify_html_email', $modify_html_email );
+			}
+
+			echo '<div class="updated"><p>' . esc_html__( 'Success! Your changes were sucessfully saved!', $this->textdomain ) . '</p></div>';
+		}
 	}
 } //End Class
 
