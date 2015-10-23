@@ -1,14 +1,14 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<!-- If you delete this tag, the sky will fall on your head -->
-<meta name="viewport" content="width=device-width" />
+	<!-- If you delete this tag, the sky will fall on your head -->
+	<meta name="viewport" content="width=device-width"/>
 
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<title>{EMAIL_SUBJECT}</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<title>{EMAIL_SUBJECT}</title>
 
 </head>
- 
+
 <body bgcolor="#FFFFFF">
 
 <!-- HEADER -->
@@ -16,28 +16,28 @@
 	<tr>
 		<td></td>
 		<td class="header container">
-			
-				<div class="content">
-					<table bgcolor="#999999">
+
+			<div class="content">
+				<table bgcolor="#999999">
 					<tr>
 						<td>
-<!--                                                This is a demo image it can be replaced by company logo
-                                                    you just need to specify a image URL-->
-                                                    <img src="https://lorempixel.com/200/50/" />
-                                                </td>
+							<!--This is a demo image it can be replaced by company logo you just need to specify a image URL-->
+							<img src="http://lorempixel.com/200/50/"/>
+						</td>
 						<td align="right">
-                                                    <!-- BLOG_NAME is replaced by site name when sending email,
-                                                    Although you can place any text here -->
-                                                    <h6 class="collapse">{BLOG_NAME}</h6>
-                                                </td>
+							<!-- BLOG_NAME is replaced by site name when sending email,
+							Although you can place any text here -->
+							<h6 class="collapse">{BLOG_NAME}</h6>
+						</td>
 					</tr>
 				</table>
-				</div>
-				
+			</div>
+
 		</td>
 		<td></td>
 	</tr>
-</table><!-- /HEADER -->
+</table>
+<!-- /HEADER -->
 
 
 <!-- BODY -->
@@ -47,101 +47,107 @@
 		<td class="container" bgcolor="#FFFFFF">
 
 			<div class="content">
-			<table>
-				<tr>
-					<td>
-<!--						{USER_NAME} is replaced if the email to which notification is sent, is associated
-                                                with a user account, otherwise it is removed -->
-						<h3>Hey, {USER_NAME}</h3>
-                                                <!--message is replace by email content while sending out an email-->
-						<p class="lead">{MESSAGE}</p>
-						
-						<!-- A Real Hero (and a real human being) -->
-						<p>
-<!--                                                    This is a demo image it can be replaced by any branding image or
-                                                you can simply remove it -->
-                                                    <img src="https://lorempixel.com/600/300" /></p><!-- /hero -->
-						<br/>							
-												
-						<!-- social & contact -->
-						<table class="social" width="100%">
-							<tr>
-								<td>
-									
-									<!--- column 1 -->
-									<table align="left" class="column">
-										<tr>
-											<td>				
-												
-												<h5 class="">Connect with Us:</h5>
-												<p class="">
-                                                                                                    <!--Specify URLs to Social links-->
-                                                                                                    <a href="#" class="soc-btn fb">Facebook</a>
-                                                                                                    <a href="#" class="soc-btn tw">Twitter</a>
-                                                                                                    <a href="#" class="soc-btn gp">Google+</a>
-                                                                                                </p>
-						
-											</td>
-										</tr>
-									</table><!-- /column 1 -->	
-									
-									<!--- column 2 -->
-									<table align="left" class="column">
-										<tr>
-											<td>				
-																			
-												<h5 class="">Contact Info:</h5>
-                                                                                                <!--Change business contact-->
-												<p>Phone: <strong>408.341.0600</strong><br/>
-                Email: <strong>{FROM_EMAIL}</strong></p>
-                <!-- FROM_EMAIL is replaced by admin email specified in site settings,
-                    You can directly replace the parameter with a specific email -->
-											</td>
-										</tr>
-									</table><!-- /column 2 -->
-									
-									<span class="clear"></span>	
-									
-								</td>
-							</tr>
-						</table><!-- /social & contact -->
-					
-					
-					</td>
-				</tr>
-			</table>
+				<table>
+					<tr>
+						<td>
+							<!--						{USER_NAME} is replaced if the email to which notification is sent, is associated
+																			with a user account, otherwise it is removed -->
+							<h3>Hey, {USER_NAME}</h3>
+							<!--message is replace by email content while sending out an email-->
+							<p class="lead">{MESSAGE}</p>
+
+							<!-- A Real Hero (and a real human being) -->
+							<p>
+								<!-- This is a demo image it can be replaced by any branding image or you can simply remove it -->
+								<img src="http://lorempixel.com/600/300"/></p><!-- /hero -->
+							<br/>
+
+							<!-- social & contact -->
+							<table class="social" width="100%">
+								<tr>
+									<td>
+
+										<!--- column 1 -->
+										<table align="left" class="column">
+											<tr>
+												<td>
+
+													<h5 class="">Connect with Us:</h5>
+
+													<p class="">
+														<!--Specify URLs to Social links-->
+														<a href="#" class="soc-btn fb">Facebook</a>
+														<a href="#" class="soc-btn tw">Twitter</a>
+														<a href="#" class="soc-btn gp">Google+</a>
+													</p>
+
+												</td>
+											</tr>
+										</table>
+										<!-- /column 1 -->
+
+										<!--- column 2 -->
+										<table align="left" class="column">
+											<tr>
+												<td>
+
+													<h5 class="">Contact Info:</h5>
+													<!--Change business contact-->
+													<p>Phone: <strong>408.341.0600</strong><br/>
+														Email: <strong>{FROM_EMAIL}</strong></p>
+													<!-- FROM_EMAIL is replaced by admin email specified in site settings,
+														You can directly replace the parameter with a specific email -->
+												</td>
+											</tr>
+										</table>
+										<!-- /column 2 -->
+
+										<span class="clear"></span>
+
+									</td>
+								</tr>
+							</table>
+							<!-- /social & contact -->
+
+
+						</td>
+					</tr>
+				</table>
 			</div>
-									
+
 		</td>
 		<td></td>
 	</tr>
-</table><!-- /BODY -->
+</table>
+<!-- /BODY -->
 
 <!-- FOOTER -->
 <table class="footer-wrap">
 	<tr>
 		<td></td>
 		<td class="container">
-			
-				<!-- content -->
-				<div class="content">
+
+			<!-- content -->
+			<div class="content">
 				<table>
-				<tr>
-					<td align="center">
-						<p>
-                                                    <!--Specify a page link to terms and privacy pages in site-->
-							<a href="#">Terms</a> |
-							<a href="#">Privacy</a>
-						</p>
-					</td>
-				</tr>
-			</table>
-				</div><!-- /content -->
-				
+					<tr>
+						<td align="center">
+							<p>
+								<!--Specify a page link to terms and privacy pages in site-->
+								<a href="#">Terms</a> |
+								<a href="#">Privacy</a>
+							</p>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<!-- /content -->
+
 		</td>
 		<td></td>
 	</tr>
-</table><!-- /FOOTER -->
+</table>
+<!-- /FOOTER -->
 
 </body>
 </html>

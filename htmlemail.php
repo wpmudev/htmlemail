@@ -4,7 +4,7 @@ Plugin Name: HTML Email Templates
 Plugin URI: https://premium.wpmudev.org/project/html-email-templates/
 Description: Allows you to add HTML templates for all of the standard Wordpress emails. In Multisite templates can be set network wide or can be allowed to set site wise template, if template override for the site is enabled and template is not specified for a site, network template will be used.
 Author: WPMU DEV
-Version: 2.0.5
+Version: 2.0.6
 Author URI: http://premium.wpmudev.org/
 Network: true
 WDP ID: 142
@@ -216,13 +216,10 @@ class HTML_emailer {
 		// Clean Links
 		$message = $this->clean_links( $message );
 
-		// Clickable Links
-		$message = make_clickable( $message );
-
 		/**
 		 * Allows to enable or disable Next Line to br tag conversion
 		 */
-		$nl2br = apply_filters( 'wp_htmlemail_nl2br', true );
+		$nl2br = apply_filters( 'wp_htmlemail_nl2br', false );
 
 		$message = $nl2br ? nl2br( $message ) : $message;
 
