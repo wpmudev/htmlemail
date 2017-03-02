@@ -158,6 +158,27 @@ jQuery( document ).ready( function($) {
 
         });
     });
+
+    jQuery('body').on( 'click', '.template-image-upload', function(e) {
+        e.preventDefault();
+
+        var image_box = jQuery( '#' + jQuery( this ).data( 'image-box' ) );
+        var title = jQuery( this ).attr("title");
+
+        var image = wp.media({ 
+            title: title,
+            // mutiple: true if we want to upload multiple files at once
+            multiple: false
+        }).open()
+        .on('select', function(e){
+            // This will return the selected image from the Media Uploader, the result is an object
+            var uploaded_image = image.state().get('selection').first();
+            // We convert uploaded_image to a JSON object to make accessing it easier
+            var image_url = uploaded_image.toJSON().url;
+            image_box.val(image_url);
+        });
+    });
+
 });
 function load_templates_slider(){
     jQuery('.email-templates').slick({
