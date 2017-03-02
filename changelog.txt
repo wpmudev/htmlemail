@@ -6,6 +6,12 @@ Change Log:
 ----------------------------------------------------------------------
 ----------------------------------------------------------------------
 
+2.0.6 - 10/23/2015 - Umesh Kumar
+----------------------------------------------------------------------
+
+-Fixed: Compatibility with Subscribe by email
+-Updated: wp_htmlemail_nl2br` is set to false by default nowonwards
+
 2.0.5 - 10/1/2015 - Umesh Kumar
 ----------------------------------------------------------------------
 - Fixed: Password reset link missing for New users
