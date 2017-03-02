@@ -368,15 +368,15 @@ class HTML_emailer {
 		//Whether to allow subsites to specify their own html template
 		$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings ['site_override'] : '';
 		?>
-		<div class="wrap">
-			<form method="post">
+        <div class="wrap">
+            <form method="post">
 				<?php wp_nonce_field( 'html_email-update-options' ); ?>
-				<h2><?php esc_html_e( 'HTML Email Template', 'htmlemail' ); ?></h2>
+                <h2><?php esc_html_e( 'HTML Email Template', 'htmlemail' ); ?></h2>
 
-				<p class="description"><?php _e( 'This plugin will wrap every WordPress email sent within an HTML template.', 'htmlemail' ); ?></p>
+                <p class="description"><?php _e( 'This plugin will wrap every WordPress email sent within an HTML template.', 'htmlemail' ); ?></p>
 
-				<div class='config-guide'>
-					<h3><?php _e( 'Four easy steps to send better emails:', 'htmlemail' ); ?></h3>
+                <div class='config-guide'>
+                    <h3><?php _e( 'Four easy steps to send better emails:', 'htmlemail' ); ?></h3>
 					<?php
 					$configuration_steps = array(
 						__( 'Either select a pre-designed template <a href="#template-wrapper" class="template-toggle" title="Select template">below</a>  by clicking over a template and then click over the load template button or type/paste your own HTML into the textarea.', 'htmlemail' ),
@@ -384,86 +384,97 @@ class HTML_emailer {
 						__( 'Send a "Test Email" to preview your template in actual email clients. You can specify an email address for this to be sent to.', 'htmlemail' ),
 						__( 'Select "Save" and the HTML you have below will be used as your HTML Email Template for all transactional emails from your site.', 'htmlemail' )
 					); ?>
-					<ul class='config-steps'><?php
+                    <ul class='config-steps'><?php
 						$count = 1;
 						foreach ( $configuration_steps as $step ) {
 							?>
-							<li class='config-step'>
-							<span class="step-count"><?php echo sprintf( __( 'Step %d', 'htmlemail' ), $count ) . "<br />"; ?></span><?php
+                            <li class='config-step'>
+                            <span class="step-count"><?php echo sprintf( __( 'Step %d', 'htmlemail' ), $count ) . "<br />"; ?></span><?php
 							echo $step; ?>
-							</li><?php
+                            </li><?php
 							$count ++;
 						} ?>
-					</ul>
-				</div>
-				<!-- Overwrite HTML Emails -->
-				<label><input type="checkbox" name="modify_html_email" <?php checked( $modify_html_email, 1 ); ?> value="1"/><strong><?php echo esc_html__( "Modify HTML Emails", 'htmlemail' ) ?></strong></label>
-				<h5>
-					<a href="#template-wrapper" class="template-toggle" title="<?php esc_attr_e( 'Click to toggle templates', 'htmlemail' ); ?>"><?php _e( 'Choose from sample Templates', 'htmlemail' ) ?>
-						[<span class="toggle-indicator">+</span>]</a>
-				</h5>
+                    </ul>
+                </div>
+                <!-- Overwrite HTML Emails -->
+                <label><input type="checkbox" name="modify_html_email" <?php checked( $modify_html_email, 1 ); ?>
+                              value="1"/><strong><?php echo esc_html__( "Modify HTML Emails", 'htmlemail' ) ?></strong></label>
+                <h5>
+                    <a href="#template-wrapper" class="template-toggle"
+                       title="<?php esc_attr_e( 'Click to toggle templates', 'htmlemail' ); ?>"><?php _e( 'Choose from sample Templates', 'htmlemail' ) ?>
+                        [<span class="toggle-indicator">+</span>]</a>
+                </h5>
 
-				<div class="template-wrapper" id="template-wrapper"><?php
+                <div class="template-wrapper" id="template-wrapper"><?php
 					$templates = array();
 					$templates = apply_filters( 'htmlemail_templates', $templates );
 					if ( ! empty( $templates ) && is_array( $templates ) ) {
 						?>
-						<div class="email-templates-wrapper">
-						<div class="email-templates"><?php
+                        <div class="email-templates-wrapper">
+                        <div class="email-templates"><?php
 
 							foreach ( $templates as $template ) {
 								$template_name = preg_replace( '/\s+/', '', $template['name'] );
 								?>
-								<div class="template-holder">
-								<!--Template preview-->
-								<a class="template-selector" href="#<?php echo $template['name']; ?>" title="<?php esc_attr_e( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
-									<br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>" alt="<?php echo esc_attr( $template['name'] ); ?>"/></a>
+                                <div class="template-holder">
+                                <!--Template preview-->
+                                <a class="template-selector" href="#<?php echo $template['name']; ?>"
+                                   title="<?php esc_attr_e( 'Click over the template to select it' ); ?>"><?php echo $template['name']; ?>
+                                    <br/><img class="theme-preview" src="<?php echo $template['screenshot']; ?>"
+                                              alt="<?php echo esc_attr( $template['name'] ); ?>"/></a>
 
-								<a id="load_template_<?php echo $template_name; ?>" class="load_template button-primary disabled" href="#" title="<?php esc_attr_e( 'Load template html', 'htmlemail' ); ?>"><?php echo __( 'Load Template ', 'htmlemail' ) . $template['name']; ?></a>
-								</div><?php
+                                <a id="load_template_<?php echo $template_name; ?>"
+                                   class="load_template button-primary disabled" href="#"
+                                   title="<?php esc_attr_e( 'Load template html', 'htmlemail' ); ?>"><?php echo __( 'Load Template ', 'htmlemail' ) . $template['name']; ?></a>
+                                </div><?php
 							} ?>
 
-						</div>
-						</div><?php
+                        </div>
+                        </div><?php
 					} ?>
-				</div><?php
+                </div><?php
 				echo $this->list_placeholders( '', true );
 				echo $this->template_images(); ?>
-				<div class="action-wrapper submit">
-					<input type="submit" name="save_html_email_options" class="button-primary"
-						value="<?php _e( 'Save', 'htmlemail' ); ?>"/>
+                <div class="action-wrapper submit">
+                    <input type="submit" name="save_html_email_options" class="button-primary"
+                           value="<?php _e( 'Save', 'htmlemail' ); ?>"/>
 
 					<?php if ( current_user_can( 'unfiltered_html' ) ) { //it's only safe to allow live previews for unfiltered_html cap to prevent XSS ?>
-						<a name="preview_template" id="preview_template" class="button button-secondary"
-							href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
-							title="<?php esc_attr_e( 'Live Preview', 'htmlemail' ); ?>"><?php _e( 'Preview', 'htmlemail' ); ?></a>
+                        <a name="preview_template" id="preview_template" class="button button-secondary"
+                           href="<?php echo plugins_url( 'preview.html?TB_iframe=true&height=500&width=700', __FILE__ ); ?>"
+                           title="<?php esc_attr_e( 'Live Preview', 'htmlemail' ); ?>"><?php _e( 'Preview', 'htmlemail' ); ?></a>
 					<?php } ?>
 
-					<input type="button" name="specify_email" class="button-secondary specify_email"
-						value="<?php _e( 'Test Email', 'htmlemail' ); ?>"/>
-					<span class="spinner"></span><br/>
+                    <input type="button" name="specify_email" class="button-secondary specify_email"
+                           value="<?php _e( 'Test Email', 'htmlemail' ); ?>"/>
+                    <span class="spinner"></span><br/>
 
-					<div class="preview-email">
-						<input type="text" name="preview_html_email_address" value="<?php echo $current_user->user_email; ?>" placeholder="Email address"/>
-						<input type="submit" name="preview_html_email" class="button-primary" value="<?php _e( 'Send', 'htmlemail' ); ?>"/>
+                    <div class="preview-email">
+                        <input type="text" name="preview_html_email_address"
+                               value="<?php echo $current_user->user_email; ?>" placeholder="Email address"/>
+                        <input type="submit" name="preview_html_email" class="button-primary"
+                               value="<?php _e( 'Send', 'htmlemail' ); ?>"/>
 						<?php wp_nonce_field( 'preview_email', 'preview_email' ); ?>
-					</div>
-				</div>
-				<div class="template-content-holder">
-					<span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message.', 'htmlemail' ) ?></span>
-					<textarea name="template" id="template-content" rows="25" style="width: 100%"><?php echo esc_textarea( $html_template ); ?></textarea><br/>
-				</div>
+                    </div>
+                </div>
+                <div class="template-content-holder">
+                    <span class="description"><?php _e( 'Edit the HTML of your email template here. You need to place {MESSAGE} somewhere in the template, preferably a main content section. That will be replaced with the email message.', 'htmlemail' ) ?></span>
+                    <textarea name="template" id="template-content" rows="25"
+                              style="width: 100%"><?php echo esc_textarea( $html_template ); ?></textarea><br/>
+                </div>
 
 				<?php
 				if ( is_network_admin() ) {
 					?>
-					<label>
-					<input type="checkbox" name="htmlemail_settings[site_override]" <?php echo checked( $site_override, 1 ); ?> value="1"/><?php _e( 'Allow subsites to override this template with their own.', 'htmlemail' ); ?>
-					</label><?php
+                    <label>
+                    <input type="checkbox"
+                           name="htmlemail_settings[site_override]" <?php echo checked( $site_override, 1 ); ?>
+                           value="1"/><?php _e( 'Allow subsites to override this template with their own.', 'htmlemail' ); ?>
+                    </label><?php
 				}
 				?>
-			</form>
-		</div>
+            </form>
+        </div>
 		<?php
 	}
 
@@ -782,14 +793,14 @@ class HTML_emailer {
 				'{BLOG_URL}'         => __( 'Blog / Site URL', 'htmlemail' ),
 				'{BLOG_NAME}'        => __( 'Blog / Site name', 'htmlemail' ),
 				'{ADMIN_EMAIL}'      => __( 'Email address of the support or contact person. Same as {FROM_EMAIL}', 'htmlemail' ),
-				'{USER_NAME}'		 => __( 'The display name of the recipient', 'htmlemail' ),
-				'{EMAIL_TITLE}'		 => __( 'By default displays the Blog / Site name. It can be extended with the <code>wpmudev_htmlemail/email_title</code> filter. For example in order to return the subject instead of the Blog / Site name: <code>
+				'{USER_NAME}'        => __( 'The display name of the recipient', 'htmlemail' ),
+				'{EMAIL_TITLE}'      => __( 'By default displays the Blog / Site name. It can be extended with the <code>wpmudev_htmlemail/email_title</code> filter. For example in order to return the subject instead of the Blog / Site name: <code>
 											add_filter( \'wpmudev_htmlemail/email_title\', function( $blog_url, $subject, $mail_args ){
 											return $subject;
 										}, 10, 3 );
 											</code>', 'htmlemail' ),
-				'{BG_IMAGE}'		 => __( 'A background image of the email template. You can upload background image from the "Images that can be used in template" section', 'htmlemail' ),
-				'{HEADER_IMAGE}'	 => __( 'An image that appears in the email header. You can upload header image from the "Images that can be used in template" section', 'htmlemail' ),
+				'{BG_IMAGE}'         => __( 'A background image of the email template. You can upload background image from the "Images that can be used in template" section', 'htmlemail' ),
+				'{HEADER_IMAGE}'     => __( 'An image that appears in the email header. You can upload header image from the "Images that can be used in template" section', 'htmlemail' ),
 				'{BLOG_DESCRIPTION}' => __( 'Blog Description', 'htmlemail' ),
 				'{DATE}'             => __( 'Current date', 'htmlemail' ),
 				'{TIME}'             => __( 'Current time', 'htmlemail' ),
@@ -826,44 +837,44 @@ class HTML_emailer {
 		return $placeholders;
 	}
 
-	function template_images(){
+	function template_images() {
 
 		//Fetch the images if set
 		$html_images = array();
 		if ( ! is_multisite() || is_network_admin() ) {
-			$html_images 			= get_site_option( 'html_template_images' );
+			$html_images = get_site_option( 'html_template_images' );
 		} else {
-			$html_images 			= get_option( 'html_template_images' );
+			$html_images = get_option( 'html_template_images' );
 		}
 
 		$bg_image = $header_image = '';
-		if( is_array( $html_images ) ){
+		if ( is_array( $html_images ) ) {
 
-			$bg_image = isset( $html_images['bg'] ) ? esc_url( $html_images['bg'] ) : '';
+			$bg_image     = isset( $html_images['bg'] ) ? esc_url( $html_images['bg'] ) : '';
 			$header_image = isset( $html_images['header'] ) ? esc_url( $html_images['header'] ) : '';
-				
+
 		}
 
 		$output = '<h4><a href="#template-images-wrapper" class="template-toggle" title="' . esc_attr__( 'Template images', 'htmlemail' ) . '">' . __( 'Images that can be used in template', 'htmlemail' ) .
-			          '[<span class="toggle-indicator">+</span>]</a></h4>';
+		          '[<span class="toggle-indicator">+</span>]</a></h4>';
 
 		$output .= '<div class="template-settings-section template-images-section" id="template-images-wrapper">';
 
-			$output .= '<div class="template-settings-options template-images-options">';
-			
-				$output .= '<div class="template-bg-image-wrap">';
-					$output .= '<label class="options-label">' . __( 'Background image', 'htmlemail' ) . '</label>';
-					$output .= '<input type="text" id="template-bg-image" name="html_template_images[bg]" value="' . $bg_image . '" />';
-					$output .= '<input type="button" name="upload-bg-btn" id="upload-bg-btn" class="button-secondary template-image-upload" data-image-box="template-bg-image" value="' . __( 'Upload Image', 'htmlemail' ) . '" title="' . __( 'Upload background image', 'htmlemail' ) . '">';
-				$output .= '</div>';
+		$output .= '<div class="template-settings-options template-images-options">';
 
-				$output .= '<div class="template-header-image-wrap">';
-					$output .= '<label class="options-label">' . __( 'Header image', 'htmlemail' ) . '</label>';
-					$output .= '<input type="text" id="template-header-image" name="html_template_images[header]" value="' . $header_image . '" />';
-					$output .= '<input type="button" name="upload-header-btn" id="upload-header-btn" class="button-secondary template-image-upload" data-image-box="template-header-image" value="' . __( 'Upload Image', 'htmlemail' ) . '" title="' . __( 'Upload header image', 'htmlemail' ) . '" />';
-				$output .= '</div>';
+		$output .= '<div class="template-bg-image-wrap">';
+		$output .= '<label class="options-label">' . __( 'Background image', 'htmlemail' ) . '</label>';
+		$output .= '<input type="text" id="template-bg-image" name="html_template_images[bg]" value="' . $bg_image . '" />';
+		$output .= '<input type="button" name="upload-bg-btn" id="upload-bg-btn" class="button-secondary template-image-upload" data-image-box="template-bg-image" value="' . __( 'Upload Image', 'htmlemail' ) . '" title="' . __( 'Upload background image', 'htmlemail' ) . '">';
+		$output .= '</div>';
 
-			$output .= '</div>';
+		$output .= '<div class="template-header-image-wrap">';
+		$output .= '<label class="options-label">' . __( 'Header image', 'htmlemail' ) . '</label>';
+		$output .= '<input type="text" id="template-header-image" name="html_template_images[header]" value="' . $header_image . '" />';
+		$output .= '<input type="button" name="upload-header-btn" id="upload-header-btn" class="button-secondary template-image-upload" data-image-box="template-header-image" value="' . __( 'Upload Image', 'htmlemail' ) . '" title="' . __( 'Upload header image', 'htmlemail' ) . '" />';
+		$output .= '</div>';
+
+		$output .= '</div>';
 		$output .= '</div>';
 
 		return $output;
@@ -896,26 +907,26 @@ class HTML_emailer {
 
 		$html_images = array();
 		if ( ! is_multisite() || is_network_admin() ) {
-			$html_images 			= get_site_option( 'html_template_images' );
+			$html_images = get_site_option( 'html_template_images' );
 		} else {
-			$html_images 			= get_option( 'html_template_images' );
+			$html_images = get_option( 'html_template_images' );
 		}
 
 		$bg_image = $header_image = '';
-		if( is_array( $html_images ) ){
+		if ( is_array( $html_images ) ) {
 
-			$bg_image = isset( $html_images['bg'] ) ? '<img src="' . esc_url( $html_images['bg'] ) . '" />' : false;
+			$bg_image     = isset( $html_images['bg'] ) ? '<img src="' . esc_url( $html_images['bg'] ) . '" />' : false;
 			$header_image = isset( $html_images['header'] ) ? '<img src="' . esc_url( $html_images['header'] ) . '" />' : false;
-				
+
 		}
 
-		if( ! $bg_image ){
-			$bg_image     = defined( 'BUILDER_DEFAULT_BG_IMAGE' ) ? $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_BG_IMAGE' ) : '';
+		if ( ! $bg_image ) {
+			$bg_image = defined( 'BUILDER_DEFAULT_BG_IMAGE' ) ? $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_BG_IMAGE' ) : '';
 		}
-		
-		if( ! $header_image ){
+
+		if ( ! $header_image ) {
 			$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" />' : '';
-		}		
+		}
 
 		//Sidebar
 		$posts_list = $this->htmlemail_recent_posts();
@@ -966,8 +977,8 @@ class HTML_emailer {
 			$content = preg_replace( "/({USER_NAME})/", 'Jon', $content );
 		}
 
-		$subject = isset( $mail_args['subject'] ) ? $mail_args['subject'] : '';
-		$email_title = apply_filters( 'wpmudev_htmlemail/email_title', $blog_name, $subject, $mail_args );
+		$subject     = isset( $mail_args['subject'] ) ? $mail_args['subject'] : '';
+		$email_title = apply_filters( 'wpmudev_htmlemail_email_title', $blog_name, $subject, $mail_args );
 
 		$placeholders_list = array(
 			'{}'                 => '',
@@ -1143,13 +1154,13 @@ class HTML_emailer {
 				die( __( 'Whoops! There was a problem with the data you posted. Please go back and try again.', 'htmlemail' ) );
 			}
 
-			$template          = stripslashes( $_POST['template'] );
-			$modify_html_email = ! empty( $_POST['modify_html_email'] ) ? $_POST['modify_html_email'] : 0;
+			$template             = stripslashes( $_POST['template'] );
+			$modify_html_email    = ! empty( $_POST['modify_html_email'] ) ? $_POST['modify_html_email'] : 0;
 			$html_template_images = array(
-				'bg'		=> '',
-				'header'	=> ''
+				'bg'     => '',
+				'header' => ''
 			);
-			if( is_array( $_POST['html_template_images'] ) ){
+			if ( is_array( $_POST['html_template_images'] ) ) {
 				$html_template_images = array_map( "esc_url_raw", $_POST['html_template_images'] );
 			}
 
