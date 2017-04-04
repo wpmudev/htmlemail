@@ -904,6 +904,8 @@ class HTML_emailer {
 		} else {
 			$display_name = '';
 		}
+		
+		$display_name = apply_filters( 'html_email_placeholder_display_name', $display_name, $from_email, $user_info );
 
 		$html_images = array();
 		if ( ! is_multisite() || is_network_admin() ) {
