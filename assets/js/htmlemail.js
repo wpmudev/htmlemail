@@ -39,6 +39,7 @@ jQuery( document ).ready( function($) {
             return false;
         }
         $textarea = jQuery('#template-content');
+        var current_template_name = jQuery( '#current_template_name' );
 //        if there is already some template content as for confirmation to override the remplate
         if(  $textarea.val() != '' ){
             if( ! confirm( htmlemail_text['load_template'] ) ) {
@@ -52,6 +53,7 @@ jQuery( document ).ready( function($) {
 
             //Append the template content
             $textarea.val(res.data);
+            current_template_name.val( $theme_name );
 
         });
     });
