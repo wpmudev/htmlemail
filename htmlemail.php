@@ -232,6 +232,21 @@ class HTML_emailer {
 		//Fetch HTML email settings
 		$htmlemail_settings = get_site_option( 'htmlemail_settings' );
 
+		$current_template_name = isset( $htmlemail_settings['template_name'] ) ? ucfirst( strtolower( $htmlemail_settings['template_name'] ) ) : false;
+
+		if( !$current_template_name ){
+			return compact( 'to', 'subject', 'message', 'headers', 'attachments' );
+		}
+
+		$template_directory = $this->plugin_dir . 'lib/templates/';
+		$theme_path = $template_directory . $current_template_name;
+
+		$this->template_url       = $this->plugin_url . 'lib/templates/';
+		$this->theme_url = $this->template_url . $current_template_name;
+
+		//Get Default Variables
+		require_once( $theme_path . '/index.php' );
+
 		//Check if site is allowed to use its own template
 		$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings['site_override'] : '';
 		//As the network has site id 1, it loads the template for blog with id 1 but for preview we need to show network template
@@ -363,10 +378,14 @@ class HTML_emailer {
 			$modify_html_email  = get_option( 'modify_html_email' );
 
 		}
+
+		$current_template_name = isset( $htmlemail_settings['template_name'] ) ? $htmlemail_settings['template_name'] : '';
+
 		$modify_html_email = isset( $modify_html_email ) ? $modify_html_email : 1;
 
 		//Whether to allow subsites to specify their own html template
 		$site_override = isset( $htmlemail_settings['site_override'] ) ? $htmlemail_settings ['site_override'] : '';
+
 		?>
 		<div class="wrap">
 			<form method="post">
@@ -462,6 +481,9 @@ class HTML_emailer {
 					</label><?php
 				}
 				?>
+
+				<input type="hidden" id="current_template_name" name="htmlemail_settings[template_name]" value="<?php echo $current_template_name; ?>" />
+
 			</form>
 		</div>
 		<?php
@@ -635,7 +657,7 @@ class HTML_emailer {
 		//Replace CSS Variabls
 		$possible_settings = array(
 			'BG_COLOR',
-			'BG_IMAGE',
+			//'BG_IMAGE', //Now it's controlled by uploader
 			'LINK_COLOR',
 			'BODY_COLOR',
 			'ALTERNATIVE_COLOR',
@@ -650,6 +672,11 @@ class HTML_emailer {
 
 		foreach ( $this->settings as $setting ) {
 			if ( defined( 'BUILDER_DEFAULT_' . $setting ) ) {
+				/*
+				// Since BG_IMAGE removed from $possible_settings
+				// It was causing issues when
+				// wp-content/plugins/htmlemail/lib/templates/sometheme/template.php file includes the BG_IMAGE placeholder,
+				// in the editor it will show as empty {} 
 				if ( $setting == 'BG_IMAGE' ) {
 					//full path for image
 					$value = defined( constant( 'BUILDER_DEFAULT_' . $setting ) ) ? $this->theme_url . constant( 'BUILDER_DEFAULT_' . $setting ) : '';
@@ -657,6 +684,8 @@ class HTML_emailer {
 				} else {
 					$value = constant( 'BUILDER_DEFAULT_' . $setting );
 				}
+				*/
+				$value = constant( 'BUILDER_DEFAULT_' . $setting );
 			}
 			if ( stripos( $setting, 'color' ) ) {
 				$value = preg_replace( '/[^A-Za-z0-9\-]/', '', $value );
@@ -901,11 +930,11 @@ class HTML_emailer {
 			$html_images 			= get_option( 'html_template_images' );
 		}
 
-		$bg_image = $header_image = '';
+		$bg_image = $header_image = false;
 		if( is_array( $html_images ) ){
 
-			$bg_image = isset( $html_images['bg'] ) ? '<img src="' . esc_url( $html_images['bg'] ) . '" />' : false;
-			$header_image = isset( $html_images['header'] ) ? '<img src="' . esc_url( $html_images['header'] ) . '" />' : false;
+			$bg_image = isset( $html_images['bg'] ) && $html_images['bg'] != '' ? esc_url( $html_images['bg'] ) : false;
+			$header_image = isset( $html_images['header'] ) && $html_images['header'] != '' ? $this->get_image_by_url( $html_images['header'] ) : false;
 				
 		}
 
@@ -914,7 +943,7 @@ class HTML_emailer {
 		}
 		
 		if( ! $header_image ){
-			$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" />' : '';
+			$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" alt="" />' : '';
 		}		
 
 		//Sidebar
@@ -998,6 +1027,21 @@ class HTML_emailer {
 		$content = preg_replace( "/(%7BADMIN_EMAIL%7D)/", $admin_email, $content );
 
 		return $content;
+	}
+
+	/**
+	 * Returns the whole img by url
+	 * @param string $url, the url of the image we want to retrieve
+	 * @param string $size, the size of the image
+	 * @return string
+	 */
+	function get_image_by_url( $url, $size = 'full' ){
+		global $wpdb;
+		if( $url == '' ){
+			return false;
+		}
+		$attachment = $wpdb->get_col($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE guid='%s';", $url ));
+		return wp_get_attachment_image( $attachment[0], $size );
 	}
 
 	/**
