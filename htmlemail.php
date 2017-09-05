@@ -446,7 +446,7 @@ class HTML_emailer {
 								<a id="load_template_<?php echo $template_name; ?>" class="load_template button-primary disabled" href="#" title="<?php esc_attr_e( 'Load template html', 'htmlemail' ); ?>"><?php echo __( 'Load Template ', 'htmlemail' ) . $template['name']; ?></a>
 								</div><?php
 							} ?>
-							<input type="hidden" name="html_theme" id="html_theme" value="<?php echo $this->get_html_theme(); ?>" />
+							<input type="hidden" name="html_theme" id="html_theme" value="<?php echo esc_attr( $this->get_html_theme() ); ?>" />
 						</div>
 						</div><?php
 					} ?>
@@ -495,7 +495,7 @@ class HTML_emailer {
 	}
 	
 	function update_html_theme($html_theme){
-		$this->html_theme = $html_theme;		
+		$this->html_theme = esc_attr( $html_theme );		
 		if ( is_network_admin() || ! is_multisite() ) {
 			update_site_option( 'html_theme', $html_theme );
 		}else{
@@ -505,29 +505,29 @@ class HTML_emailer {
 	
 	function get_html_theme(){
 		if ( $this->html_theme != "" ){
-			return $this->html_theme;
+			return esc_attr( $this->html_theme );
 		}else{
 			if ( is_network_admin() || is_multisite() ) {
-				return get_site_option( 'html_theme' );
+				return esc_attr( get_site_option( 'html_theme' ) );
 			}else{
-				return get_option( 'html_theme' );
+				return esc_attr( get_option( 'html_theme' ) );
 			}	
 		}
 		return false;
 	}
 	
 	function get_html_theme_path($html_theme = ""){
-		if ($html_theme=="") $html_theme = $this->get_html_theme();
+		if ($html_theme=="") $html_theme = esc_attr( $this->get_html_theme() );
 		if ( $this->theme_path == "") {
-			$this->theme_path = $this->template_directory . $html_theme;
+			$this->theme_path = esc_url( $this->template_directory . $html_theme );
 		}
 		return $this->theme_path;
 	}
 	
 	function get_html_theme_url($html_theme = ""){
-		if ($html_theme=="") $html_theme = $this->get_html_theme();
+		$html_theme = ($html_theme=="")? esc_attr( $this->get_html_theme() ) : "";
 		if ( $this->theme_url == "") {
-			$this->theme_url = $this->template_url . $html_theme;
+			$this->theme_url = esc_url( $this->template_url . $html_theme );
 		}
 		return $this->theme_url ;
 	}
@@ -997,24 +997,24 @@ class HTML_emailer {
 		}
 
 		if( ! $bg_image ){
-			$bg_image     = defined( 'BUILDER_DEFAULT_BG_IMAGE' ) ? $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_BG_IMAGE' ) : '';
+			$bg_image     = defined( 'BUILDER_DEFAULT_BG_IMAGE' ) ? esc_url( $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_BG_IMAGE' ) ) : '';
 		}
 		
 		if( ! $header_image ){
-			$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" alt="" />' : '';
+			$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . esc_url( $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ) . '" alt="" />' : '';
 		}	
 
 		if ( ! $header_image ){
 			if ( defined( 'BUILDER_DEFAULT_HEADER_IMAGE') && ! defined('HEADER_IMAGE') ){
-				$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant('BUILDER_DEFAULT_HEADER_IMAGE') . '" style="max-width:100%;" height="auto" />' : '';
+				$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . esc_url( $this->theme_url . '/' . constant('BUILDER_DEFAULT_HEADER_IMAGE') ) . '" style="max-width:100%;" height="auto" />' : '';
 			}
 			elseif ( defined('HEADER_IMAGE') ){
 				$host = parse_url( constant('HEADER_IMAGE'), PHP_URL_HOST);
 				if ( $host == "" ) {
-					$header_image = '<img src="' . $this->theme_url . '/' . constant('HEADER_IMAGE') . '" style="max-width:100%;" height="auto" />';
+					$header_image = '<img src="' . esc_url( $this->theme_url . '/' . constant('HEADER_IMAGE') ) . '" style="max-width:100%;" height="auto" />';
 				}
 				else{
-					$header_image = '<img src="' . constant('HEADER_IMAGE') . '" style="max-width:100%;" height="auto" />';
+					$header_image = '<img src="' . esc_url( constant('HEADER_IMAGE') ) . '" style="max-width:100%;" height="auto" />';
 				}
 			}
 		}
@@ -1279,14 +1279,13 @@ class HTML_emailer {
 				update_site_option( 'html_template', $template );
 				update_site_option( 'modify_html_email', $modify_html_email );
 				update_site_option( 'html_template_images', $html_template_images );
-				update_site_option( 'html_theme', ucfirst( strtolower ( $_POST['html_theme']) ) );
 			} else {
 				update_option( 'html_template', $template );
 				update_option( 'modify_html_email', $modify_html_email );
-				update_option( 'html_template_images', $html_template_images );
-				update_option( 'html_theme', ucfirst( strtolower ( $_POST['html_theme'] ) ) );
+				update_option( 'html_template_images', $html_template_images );				
 			}
-
+			$this->update_html_theme( ucfirst( strtolower( $_POST['html_theme'] ) ) );
+			
 			echo '<div class="updated"><p>' . esc_html__( 'Success! Your changes were sucessfully saved!', 'htmlemail' ) . '</p></div>';
 		}
 	}
