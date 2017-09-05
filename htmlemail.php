@@ -518,7 +518,7 @@ class HTML_emailer {
 	}
 	
 	function get_html_theme_path($html_theme = ""){
-		if ($html_theme=="") $html_theme = $this->get_html_theme();
+		$html_theme = ( $html_theme == "" ) ? $this->get_html_theme() : "";
 		if ( $this->theme_path == "") {
 			$this->theme_path = $this->template_directory . $html_theme;
 		}
