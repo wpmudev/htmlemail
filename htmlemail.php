@@ -495,39 +495,40 @@ class HTML_emailer {
 	}
 	
 	function update_html_theme($html_theme){
-		$this->html_theme = esc_attr( $html_theme );		
+		$html_theme = preg_replace("/[^-_a-z0-9]+/", "", $html_theme);
+		$this->html_theme = $html_theme;		
 		if ( is_network_admin() || ! is_multisite() ) {
 			update_site_option( 'html_theme', $html_theme );
 		}else{
 			update_option( 'html_theme', $html_theme );
-		}	
+		}
 	}
 	
 	function get_html_theme(){
 		if ( $this->html_theme != "" ){
-			return esc_attr( $this->html_theme );
+			return $this->html_theme;
 		}else{
 			if ( is_network_admin() || is_multisite() ) {
-				return esc_attr( get_site_option( 'html_theme' ) );
+				return get_site_option( 'html_theme' );
 			}else{
-				return esc_attr( get_option( 'html_theme' ) );
+				return get_option( 'html_theme' );
 			}	
 		}
 		return false;
 	}
 	
 	function get_html_theme_path($html_theme = ""){
-		if ($html_theme=="") $html_theme = esc_attr( $this->get_html_theme() );
+		if ($html_theme=="") $html_theme = $this->get_html_theme();
 		if ( $this->theme_path == "") {
-			$this->theme_path = esc_url( $this->template_directory . $html_theme );
+			$this->theme_path = $this->template_directory . $html_theme;
 		}
 		return $this->theme_path;
 	}
 	
 	function get_html_theme_url($html_theme = ""){
-		$html_theme = ($html_theme=="")? esc_attr( $this->get_html_theme() ) : "";
+		if ($html_theme=="") $html_theme = $this->get_html_theme();
 		if ( $this->theme_url == "") {
-			$this->theme_url = esc_url( $this->template_url . $html_theme );
+			$this->theme_url = $this->template_url . $html_theme;
 		}
 		return $this->theme_url ;
 	}
@@ -997,7 +998,7 @@ class HTML_emailer {
 		}
 
 		if( ! $bg_image ){
-			$bg_image     = defined( 'BUILDER_DEFAULT_BG_IMAGE' ) ? esc_url( $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_BG_IMAGE' ) ) : '';
+			$bg_image     = defined( 'BUILDER_DEFAULT_BG_IMAGE' ) ? $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_BG_IMAGE' ) : '';
 		}
 		
 		if( ! $header_image ){
@@ -1282,10 +1283,9 @@ class HTML_emailer {
 			} else {
 				update_option( 'html_template', $template );
 				update_option( 'modify_html_email', $modify_html_email );
-				update_option( 'html_template_images', $html_template_images );				
+				update_option( 'html_template_images', $html_template_images );
 			}
 			$this->update_html_theme( ucfirst( strtolower( $_POST['html_theme'] ) ) );
-			
 			echo '<div class="updated"><p>' . esc_html__( 'Success! Your changes were sucessfully saved!', 'htmlemail' ) . '</p></div>';
 		}
 	}
