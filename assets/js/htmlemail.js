@@ -49,6 +49,7 @@ jQuery( document ).ready( function($) {
 
         $theme_name = jQuery(this).attr('href');
         $theme_name = $theme_name.substr($theme_name.indexOf("#") + 1);
+		jQuery('#html_theme').val($theme_name);
         jQuery.get( ajaxurl, { 'action': 'htmlemail_get_template_data', 'theme': $theme_name }, function(res){
 
             //Append the template content

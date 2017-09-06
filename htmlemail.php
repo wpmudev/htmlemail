@@ -77,6 +77,11 @@ class HTML_emailer {
 	 * @var path Template URL
 	 */
 	var $theme_url = '';
+	
+	/**
+	* @var theme
+	*/
+	public $html_theme = '';
 
 	/**
 	 * @var path to assets
@@ -441,7 +446,7 @@ class HTML_emailer {
 								<a id="load_template_<?php echo $template_name; ?>" class="load_template button-primary disabled" href="#" title="<?php esc_attr_e( 'Load template html', 'htmlemail' ); ?>"><?php echo __( 'Load Template ', 'htmlemail' ) . $template['name']; ?></a>
 								</div><?php
 							} ?>
-
+							<input type="hidden" name="html_theme" id="html_theme" value="<?php echo esc_attr( $this->get_html_theme() ); ?>" />
 						</div>
 						</div><?php
 					} ?>
@@ -487,6 +492,45 @@ class HTML_emailer {
 			</form>
 		</div>
 		<?php
+	}
+	
+	function update_html_theme($html_theme){
+		$html_theme = preg_replace("/[^-_a-z0-9]+/", "", $html_theme);
+		$this->html_theme = $html_theme;		
+		if ( is_network_admin() || ! is_multisite() ) {
+			update_site_option( 'html_theme', $html_theme );
+		}else{
+			update_option( 'html_theme', $html_theme );
+		}
+	}
+	
+	function get_html_theme(){
+		if ( $this->html_theme != "" ){
+			return $this->html_theme;
+		}else{
+			if ( is_network_admin() || is_multisite() ) {
+				return get_site_option( 'html_theme' );
+			}else{
+				return get_option( 'html_theme' );
+			}	
+		}
+		return false;
+	}
+	
+	function get_html_theme_path($html_theme = ""){
+		$html_theme = ( $html_theme == "" ) ? $this->get_html_theme() : "";
+		if ( $this->theme_path == "") {
+			$this->theme_path = $this->template_directory . $html_theme;
+		}
+		return $this->theme_path;
+	}
+	
+	function get_html_theme_url($html_theme = ""){
+		if ($html_theme=="") $html_theme = $this->get_html_theme();
+		if ( $this->theme_url == "") {
+			$this->theme_url = $this->template_url . $html_theme;
+		}
+		return $this->theme_url ;
 	}
 
 	function register_scripts() {
@@ -554,6 +598,8 @@ class HTML_emailer {
 		if ( empty( $_GET['theme'] ) ) {
 			wp_send_json_error( 'no theme specified' );
 		}
+		$this->html_theme = $_GET['theme'];
+		$this->update_html_theme( ucfirst( strtolower( $_GET['theme'] ) ) );
 		$content = $this->get_contents_elements( $_GET['theme'] );
 		wp_send_json_success( $content );
 	}
@@ -569,6 +615,13 @@ class HTML_emailer {
 		if ( ! $theme_name ) {
 			return false;
 		}
+		$this->html_theme = $theme_name;
+		
+		$html_theme = $this->get_html_theme();		
+		if ( ! $html_theme ){
+			$this->update_html_theme( $theme_name );
+		}
+		
 		$contents         = array();
 		$theme_name       = explode( ' ', $theme_name );
 		$theme_name       = implode( '', $theme_name );
@@ -901,7 +954,13 @@ class HTML_emailer {
 	/**
 	 * Replaces placeholder text in email templates
 	 */
-	function replace_placeholders( $content, $mail_args = array(), $demo_message = true ) {
+	function replace_placeholders( $content, $mail_args = array(), $demo_message = true ) {		
+		$html_theme = $this->get_html_theme();
+		$html_theme = ( $html_theme ) ? $html_theme : $this->html_theme;
+		
+		$this->theme_path = $this->get_html_theme_path($html_theme);
+		$this->theme_url = $this->get_html_theme_url($html_theme);
+		require_once( $this->theme_path . '/index.php' );
 
 		$placeholders     = $this->list_placeholders( $content );
 		$current_blog_id  = get_current_blog_id();
@@ -943,8 +1002,23 @@ class HTML_emailer {
 		}
 		
 		if( ! $header_image ){
-			$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) . '" alt="" />' : '';
-		}		
+			$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . esc_url( $this->theme_url . '/' . constant( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ) . '" alt="" />' : '';
+		}	
+
+		if ( ! $header_image ){
+			if ( defined( 'BUILDER_DEFAULT_HEADER_IMAGE') && ! defined('HEADER_IMAGE') ){
+				$header_image = defined( 'BUILDER_DEFAULT_HEADER_IMAGE' ) ? '<img src="' . esc_url( $this->theme_url . '/' . constant('BUILDER_DEFAULT_HEADER_IMAGE') ) . '" style="max-width:100%;" height="auto" />' : '';
+			}
+			elseif ( defined('HEADER_IMAGE') ){
+				$host = parse_url( constant('HEADER_IMAGE'), PHP_URL_HOST);
+				if ( $host == "" ) {
+					$header_image = '<img src="' . esc_url( $this->theme_url . '/' . constant('HEADER_IMAGE') ) . '" style="max-width:100%;" height="auto" />';
+				}
+				else{
+					$header_image = '<img src="' . esc_url( constant('HEADER_IMAGE') ) . '" style="max-width:100%;" height="auto" />';
+				}
+			}
+		}
 
 		//Sidebar
 		$posts_list = $this->htmlemail_recent_posts();
@@ -1211,7 +1285,7 @@ class HTML_emailer {
 				update_option( 'modify_html_email', $modify_html_email );
 				update_option( 'html_template_images', $html_template_images );
 			}
-
+			$this->update_html_theme( ucfirst( strtolower( $_POST['html_theme'] ) ) );
 			echo '<div class="updated"><p>' . esc_html__( 'Success! Your changes were sucessfully saved!', 'htmlemail' ) . '</p></div>';
 		}
 	}
