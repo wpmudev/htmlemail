@@ -284,6 +284,7 @@ class HTML_emailer {
 			} else {
 				$message = preg_replace( '~\{USER_NAME}~', '', $message );
 			}
+			$message = preg_replace( '~\{USER_EMAIL}~', $to, $message );
 
 			$message = $this->replace_placeholders( $message, $args, false );
 		}
@@ -865,6 +866,7 @@ class HTML_emailer {
 				'{BLOG_NAME}'        => __( 'Blog / Site name', 'htmlemail' ),
 				'{ADMIN_EMAIL}'      => __( 'Email address of the support or contact person. Same as {FROM_EMAIL}', 'htmlemail' ),
 				'{USER_NAME}'		 => __( 'The display name of the recipient', 'htmlemail' ),
+				'{USER_EMAIL}'		 => __( 'The display email of the recipient', 'htmlemail' ),
 				'{EMAIL_TITLE}'		 => __( 'By default displays the Blog / Site name. It can be extended with the <code>wpmudev_htmlemail/email_title</code> filter. For example in order to return the subject instead of the Blog / Site name: <code>
 											add_filter( \'wpmudev_htmlemail/email_title\', function( $blog_url, $subject, $mail_args ){
 											return $subject;
@@ -1064,9 +1066,7 @@ class HTML_emailer {
 				//Compatibility with previous version of the plugin, as it used MESSAGE instead of {MESSAGE}
 				$key = 'MESSAGE';
 			}
-			$content = str_replace( $key, $message, $content );
-
-			$content = preg_replace( "/({USER_NAME})/", 'Jon', $content );
+			$content = str_replace( array( $key, '{USER_NAME}', '{USER_EMAIL}' ), array( $message, 'Jon', 'example@domain.com' ), $content );
 		}
 
 		$subject = isset( $mail_args['subject'] ) ? $mail_args['subject'] : '';
